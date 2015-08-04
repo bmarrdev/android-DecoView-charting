@@ -1,0 +1,700 @@
+/*
+ * Copyright (C) 2015 Brent Marriott
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.hookedonplay.decoviewlib;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Path;
+import android.graphics.RectF;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.View;
+
+import com.hookedonplay.decoviewlib.charts.ChartSeries;
+import com.hookedonplay.decoviewlib.charts.DecoDrawEffect;
+import com.hookedonplay.decoviewlib.charts.LineArcSeries;
+import com.hookedonplay.decoviewlib.charts.LineSeries;
+import com.hookedonplay.decoviewlib.charts.PieSeries;
+import com.hookedonplay.decoviewlib.charts.SeriesItem;
+import com.hookedonplay.decoviewlib.events.DecoEvent;
+import com.hookedonplay.decoviewlib.events.DecoEventManager;
+import com.hookedonplay.decoviewlib.util.GenericFunctions;
+
+import java.util.ArrayList;
+
+/**
+ * Android Custom View for displaying animated Arc based charts
+ */
+public class DecoView extends View implements DecoEventManager.ArcEventManagerListener {
+    private final String TAG = getClass().getSimpleName();
+
+    public enum VertGravity {
+        GRAVITY_VERTICAL_TOP,
+        GRAVITY_VERTICAL_CENTER,
+        GRAVITY_VERTICAL_BOTTOM,
+        GRAVITY_VERTICAL_FILL
+    }
+
+    public enum HorizGravity {
+        GRAVITY_HORIZONTAL_LEFT,
+        GRAVITY_HORIZONTAL_CENTER,
+        GRAVITY_HORIZONTAL_RIGHT,
+        GRAVITY_HORIZONTAL_FILL
+    }
+
+    private VertGravity mVertGravity = VertGravity.GRAVITY_VERTICAL_CENTER;
+    private HorizGravity mHorizGravity = HorizGravity.GRAVITY_HORIZONTAL_CENTER;
+
+    /**
+     * List of arcs to draw for this view. Generally this will be 1 series for the background arc
+     * and then 1 or more for the data being presented
+     */
+    private ArrayList<ChartSeries> mChartSeries;
+
+    /**
+     * Width/Height of the view
+     */
+    private int mCanvasWidth = -1;
+    private int mCanvasHeight = -1;
+
+    /**
+     * Keep the aspect ration 1:1, rather than fitting fully to the view dimensions
+     */
+    private boolean mMaintainAspectRatio = true;
+
+    /**
+     * Bounds for drawing the arcs
+     */
+    private RectF mArcBounds;
+
+    /**
+     * Bounds for drawing the background center fill
+     */
+    //private RectF mArcBoundsBack;
+
+    /**
+     * Paint used to fill center of view
+     */
+    //private Paint mPaintBackground;
+
+    /**
+     * Color used for background paint
+     */
+    //private int mColorBackground;
+
+    /**
+     * The default line width used for the arcs
+     */
+    private float mDefaultLineWidth = 30;
+
+    /**
+     * RotateAngle adjusts the angle of the start point for drawing. It should be noted that the
+     * behavior is different based on if the arc is a full circle or a part circle. If it is a
+     * full circle the default position starts at 270 degrees while if it is a part circle the
+     * default start point is 90 degrees. This is by design to provide the most common positions
+     * as the defaults
+     */
+    private int mRotateAngle = 0;
+
+    /**
+     * Total angle of the orb. 360 = full circle, < 360 horseshoe/arc shape
+     */
+    private int mTotalAngle;
+
+    /**
+     * Event manager that controls the timing of events to be executed on the
+     * {@link DecoView}
+     */
+    private DecoEventManager mDecoEventManager;
+
+    private float mMeasureViewableArea[];
+
+    public DecoView(Context context) {
+        super(context);
+        initView();
+    }
+
+    public DecoView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+
+        TypedArray a = context.getTheme().obtainStyledAttributes(
+                attrs,
+                R.styleable.DecoView,
+                0, 0);
+
+
+        int rotateAngle = 0;
+        try {
+            mDefaultLineWidth = a.getDimension(R.styleable.DecoView_lineWidth, 30f);
+            rotateAngle = a.getInt(R.styleable.DecoView_rotateAngle, 0);
+            mTotalAngle = a.getInt(R.styleable.DecoView_totalAngle, 360);
+
+            mVertGravity = VertGravity.values()[a.getInt(R.styleable.DecoView_arc_gravity_vertical, VertGravity.GRAVITY_VERTICAL_CENTER.ordinal())];
+            mHorizGravity = HorizGravity.values()[a.getInt(R.styleable.DecoView_arc_gravity_horizontal, HorizGravity.GRAVITY_HORIZONTAL_CENTER.ordinal())];
+        } finally {
+            a.recycle();
+        }
+
+        configureAngles(mTotalAngle, rotateAngle);
+
+        initView();
+    }
+
+    public DecoView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initView();
+    }
+
+    /**
+     * Alter the total degrees of the ArcView and applys a rotation angle to change the start
+     * position. If this is 360 then the view is a full circle. 270 degrees is 3/4 of a circle
+     *
+     * @param totalAngle  Total angle of the view in degrees
+     * @param rotateAngle Number of degrees to rotate the start position
+     */
+    public void configureAngles(int totalAngle, int rotateAngle) {
+        if (totalAngle <= 0) {
+            throw new IllegalArgumentException("Total angle of the arc must be > 0");
+        }
+        final int circleStartPosition = 270;
+        final int arcStartPosition = 90;
+        final int degreesInCircle = 360;
+
+        mTotalAngle = totalAngle;
+        mRotateAngle = (circleStartPosition + rotateAngle) % degreesInCircle;
+
+        if (mTotalAngle < degreesInCircle) {
+            mRotateAngle = ((arcStartPosition + (degreesInCircle - totalAngle) / 2) + rotateAngle) % degreesInCircle;
+        }
+
+        if (mChartSeries != null) {
+            for (ChartSeries chartSeries : mChartSeries) {
+                chartSeries.setupView(mTotalAngle, mRotateAngle);
+            }
+        }
+    }
+
+    private void initView() {
+        GenericFunctions.initialize(getContext());
+        enableCompatibilityMode();
+        //createBackgroundPaint(mColorBackground);
+        createVisualEditorTrack();
+
+
+    }
+
+    /**
+     * Create paint used for drawing the background in the center of the view
+     *
+     * @param color Color to be used for fill. If alpha == 0 then no paint
+     *              will be created
+     */
+//    private void createBackgroundPaint(int color) {
+//        if (Color.alpha(color) != 0) {
+//            mPaintBackground = new Paint();
+//            mPaintBackground.setColor(color);
+//            mPaintBackground.setStyle(Paint.Style.FILL);
+//            mPaintBackground.setStrokeWidth(0);
+//            mPaintBackground.setAntiAlias(true);
+//        }
+//    }
+
+    /**
+     * Retrieve event manager for delayed events
+     *
+     * @return event manager
+     */
+    private DecoEventManager getEventManager() {
+        if (mDecoEventManager == null) {
+            mDecoEventManager = new DecoEventManager(this);
+        }
+        return mDecoEventManager;
+    }
+
+    /**
+     * Determines if any arcs have been added to the view
+     *
+     * @return true if one or more arcs have been added to the view
+     */
+    public boolean isEmpty() {
+        return mChartSeries == null || mChartSeries.isEmpty();
+    }
+
+    /**
+     * Add a new item to the ArcView. An ArcView may have any number of arcs
+     *
+     * @param seriesItem orb item attributes
+     * @return index into orb item list
+     */
+    public int addSeries(@NonNull SeriesItem seriesItem) {
+        if (mChartSeries == null) {
+            mChartSeries = new ArrayList<>();
+        }
+
+        seriesItem.addArcSeriesItemListener(new SeriesItem.SeriesItemListener() {
+
+            @Override
+            public void onSeriesItemAnimationProgress(float percentComplete, float currentPosition) {
+                invalidate();
+            }
+
+            @Override
+            public void onSeriesItemDisplayProgress(float percentComplete) {
+                invalidate();
+            }
+        });
+
+        if (seriesItem.getLineWidth() < 0) {
+            seriesItem.setLineWidth(mDefaultLineWidth);
+        }
+
+        ChartSeries chartSeries;
+        switch (seriesItem.getChartStyle()) {
+            case STYLE_DONUT:
+                chartSeries = new LineArcSeries(seriesItem, mTotalAngle, mRotateAngle);
+                break;
+            case STYLE_PIE:
+                chartSeries = new PieSeries(seriesItem, mTotalAngle, mRotateAngle);
+                break;
+            case STYLE_LINE_HORIZONTAL:
+            case STYLE_LINE_VERTICAL:
+                LineSeries lineSeries = new LineSeries(seriesItem, mTotalAngle, mRotateAngle);
+                lineSeries.setHorizGravity(mHorizGravity);
+                lineSeries.setVertGravity(mVertGravity);
+                chartSeries = lineSeries;
+                break;
+            //throw new IllegalStateException("Chart Style not implemented");
+            default:
+                throw new IllegalStateException("Chart Style not implemented");
+        }
+        mChartSeries.add(mChartSeries.size(), chartSeries);
+        mMeasureViewableArea = new float[mChartSeries.size()];
+
+        recalcLayout();
+        return mChartSeries.size() - 1;
+    }
+
+    /**
+     * When displaying this view in the visual design editor we just mock up a background
+     * series. This will not be executed when your app is run
+     */
+    private void createVisualEditorTrack() {
+        if (isInEditMode()) {
+            addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218))
+                    .setRange(0, 100, 100)
+                    .setLineWidth(mDefaultLineWidth)
+                    .build());
+            addSeries(new SeriesItem.Builder(Color.argb(255, 255, 64, 64))
+                    .setRange(0, 100, 25)
+                    .setLineWidth(mDefaultLineWidth)
+                    .build());
+
+        }
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+
+        mCanvasWidth = w;
+        mCanvasHeight = h;
+
+        recalcLayout();
+    }
+
+    /**
+     * Calculate the bounds based on the size of the view and the maximum width of any of the
+     * ArcSeries. Must be called when:
+     * <p/>
+     * (a) OnSizeChanged() is called
+     * (b) A new series of data is added
+     */
+    private void recalcLayout() {
+        if (mCanvasWidth <= 0 || mCanvasHeight <= 0) {
+            Log.w(TAG, "Unable to recalculate layout: Canvas size invalid w: " + mCanvasWidth + " h: " + mCanvasHeight);
+            return;
+        }
+
+        float offsetLineWidth = getWidestLine() / 2;
+        float offsetX = 0;
+        float offsetY = 0;
+
+        if (mCanvasWidth != mCanvasHeight) {
+            if (mCanvasWidth > mCanvasHeight) {
+                offsetX = (mCanvasWidth - mCanvasHeight) / 2;
+            } else {
+                offsetY = (mCanvasHeight - mCanvasWidth) / 2;
+            }
+        }
+
+        if (mVertGravity == VertGravity.GRAVITY_VERTICAL_FILL) {
+            offsetY = 0;
+        }
+
+        if (mHorizGravity == HorizGravity.GRAVITY_HORIZONTAL_FILL) {
+            offsetX = 0;
+        }
+        /**
+         * Respect the padding of the view and ensure we have at least that amount of
+         * space on each edge
+         */
+        float paddingLeft = offsetX + getPaddingLeft();
+        float paddingTop = offsetY + getPaddingTop();
+        float paddingRight = offsetX + getPaddingRight();
+        float paddingBottom = offsetY + getPaddingBottom();
+
+        mArcBounds = new RectF(offsetLineWidth + paddingLeft,
+                offsetLineWidth + paddingTop,
+                mCanvasWidth - offsetLineWidth - paddingRight,
+                mCanvasHeight - offsetLineWidth - paddingBottom);
+
+        if (mVertGravity == VertGravity.GRAVITY_VERTICAL_TOP) {
+            mArcBounds.offset(0, -offsetY);
+        } else if (mVertGravity == VertGravity.GRAVITY_VERTICAL_BOTTOM) {
+            mArcBounds.offset(0, offsetY);
+        }
+
+        if (mHorizGravity == HorizGravity.GRAVITY_HORIZONTAL_LEFT) {
+            mArcBounds.offset(-offsetX, 0);
+        } else if (mHorizGravity == HorizGravity.GRAVITY_HORIZONTAL_RIGHT) {
+            mArcBounds.offset(offsetX, 0);
+        }
+    }
+
+    /**
+     * find the width of the widest line used for any of the series of data
+     *
+     * @return widest arc line
+     */
+    private float getWidestLine() {
+        if (mChartSeries == null) {
+            return 0;
+        }
+
+        float widest = 0;
+        for (ChartSeries chartSeries : mChartSeries) {
+            widest = Math.max(chartSeries.getSeriesItem().getLineWidth(), widest);
+        }
+        return widest;
+    }
+
+    /**
+     * Drawing routine that is called automatically when the view needs to be redrawn
+     *
+     * @param canvas the canvas on which the view will be drawn
+     */
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        if (mArcBounds == null || mArcBounds.isEmpty()) {
+            return;
+        }
+
+        //drawBackground(canvas);
+
+        if (mChartSeries != null) {
+
+            boolean labelsSupported = true;
+            for (int i = 0; i < mChartSeries.size(); i++) {
+                ChartSeries chartSeries = mChartSeries.get(i);
+                chartSeries.draw(canvas, mArcBounds);
+                // labels Unsupported when some series run anticlockwise
+                labelsSupported &= (!chartSeries.isVisible() || chartSeries.getSeriesItem().getSpinClockwise());
+                mMeasureViewableArea[i] = getVisibleArea(chartSeries, i);
+            }
+
+            // Draw the labels as a second pass as we want all labels to be on top of all
+            // series data
+            if (labelsSupported) {
+                for (int i = 0; i < mMeasureViewableArea.length; i++) {
+                    //Log.e(TAG, "area[" + i + "] " + mMeasureViewableArea[i]);
+                    if (mMeasureViewableArea[i] >= 0f) {
+                        ChartSeries chartSeries = mChartSeries.get(i);
+                        RectF drawBounds = chartSeries.drawLabel(canvas, mArcBounds, mMeasureViewableArea[i]);
+                    }
+                }
+            }
+        }
+    }
+
+    private float getVisibleArea(ChartSeries chartSeries, int index) {
+
+        float max = 0.0f;
+        for (int j = index + 1; j < mChartSeries.size(); j++) {
+            ChartSeries innerSeries = mChartSeries.get(j);
+            if (innerSeries.isVisible()) {
+                if (max < innerSeries.getPositionPercent()) {
+                    max = innerSeries.getPositionPercent();
+                }
+            }
+        }
+
+        if (max < chartSeries.getPositionPercent()) {
+            float pos = (chartSeries.getPositionPercent() + max) / 2;
+
+            // Adjust for incomplete circles
+            float adjusted = pos * ((float)mTotalAngle / 360f);
+            //float adjust2 = pos * tmp2;
+
+            //float tmp = ((mRotateAngle + 90f) / 360f);
+            // Adjust for rotation of start point
+            float adjust = adjusted + (((float)mRotateAngle + 90f) / 360f);
+
+            // Normalize
+            while (adjust > 1.0f) {
+                adjust -= 1.0f;
+            }
+            return adjust;
+        }
+        return -1f;
+    }
+
+    /**
+     * Draw the background fill for the center of the view
+     *
+     * @param canvas Canvas to draw onto
+     */
+//    private void drawBackground(@NonNull Canvas canvas) {
+//        if (mArcSeries == null || mArcBounds == null || mArcBounds.isEmpty()) {
+//            return;
+//        }
+//
+//        if (mPaintBackground != null) {
+//            if (mArcBoundsBack == null) {
+//                ArcSeries arcSeries = mArcSeries.get(0);
+//                if (arcSeries == null) {
+//                    return;
+//                }
+//
+//                float widthLine = arcSeries.getArcItem().getLineWidth();
+//                mArcBoundsBack = new RectF(mArcBounds);
+//                if (mTotalAngle < 360) {
+//                    mArcBoundsBack.bottom += (widthLine / 2);
+//                } else {
+//                    mArcBoundsBack.inset(widthLine / 2, widthLine / 2);
+//                }
+//            }
+//
+//            canvas.drawArc(mArcBoundsBack, mRotateAngle, mTotalAngle, false, mPaintBackground);
+//        }
+//    }
+
+    /**
+     * Execute a move event
+     *
+     * @param event Event to execute
+     */
+    private void executeMove(@NonNull DecoEvent event) {
+        if (event.getEventType() != DecoEvent.EventType.EVENT_MOVE) {
+            return;
+        }
+
+        if (mChartSeries != null) {
+            if (mChartSeries.size() <= event.getIndexPosition()) {
+                throw new IllegalArgumentException("Invalid index: Position out of range (Index: " + event.getIndexPosition() + " Arc Count: " + mChartSeries.size() + ")");
+            }
+
+            final int index = event.getIndexPosition();
+            if (index >= 0 && index < mChartSeries.size()) {
+                ChartSeries item = mChartSeries.get(event.getIndexPosition());
+                item.startAnimateMove(event);
+            } else {
+                Log.e(TAG, "Ignoring move request: Invalid array index. Index: " + index + " Size: " + mChartSeries.size());
+            }
+        }
+    }
+
+    /**
+     * Add an event to the DynamicArcViews {@link DecoEventManager} for processing. This can be
+     * executed immediately or if the event has a {@link DecoEvent#mDelay} set then it will be
+     * executed at a future time.
+     * <p/>
+     * When this event is to be executed the {@link DecoEventManager.ArcEventManagerListener#onExecuteEventStart(DecoEvent)}
+     * callback will be executed
+     * <p/>
+     * To create an event see {@link DecoEvent.Builder}
+     *
+     * @param event Event to be processed
+     */
+    public void addEvent(@NonNull DecoEvent event) {
+        getEventManager().add(event);
+    }
+
+    /**
+     * Basic wrapper function to create an event with all defaults for the arc and simply execute
+     * a move for the current position of the arc. If you want to customize the move (such as delay,
+     * speed, interpolator...) then you need to use create an {@link DecoEvent} and call
+     * {@link #addEvent(DecoEvent)}
+     *
+     * @param index    index of the arc series to apply the move
+     * @param position position of the arc
+     */
+    @SuppressWarnings("unused")
+    public void moveTo(int index, float position) {
+        addEvent(new DecoEvent.Builder(position).setIndex(index).build());
+    }
+
+    /**
+     * Reset all arcs back to the start positions and remove all queued events
+     */
+    public void executeReset() {
+        if (mDecoEventManager != null) {
+            mDecoEventManager.resetEvents();
+        }
+
+        if (mChartSeries != null) {
+            for (ChartSeries chartSeries : mChartSeries) {
+                chartSeries.reset();
+            }
+        }
+    }
+
+    public void deleteAll() {
+        if (mDecoEventManager != null) {
+            mDecoEventManager.resetEvents();
+        }
+
+        mChartSeries = null;
+    }
+
+    private boolean executeReveal(@NonNull DecoEvent event) {
+        if ((event.getEventType() != DecoEvent.EventType.EVENT_SHOW) &&
+                (event.getEventType() != DecoEvent.EventType.EVENT_HIDE)) {
+            return false;
+        }
+
+        if (event.getEventType() == DecoEvent.EventType.EVENT_SHOW) {
+            setVisibility(View.VISIBLE);
+        }
+
+        if (mChartSeries != null) {
+            for (int i = 0; i < mChartSeries.size(); i++) {
+                if ((event.getIndexPosition() == i) || (event.getIndexPosition() < 0)) {
+                    ChartSeries chartSeries = mChartSeries.get(i);
+                    chartSeries.startAnimateHideShow(event, event.getEventType() == DecoEvent.EventType.EVENT_SHOW);
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean executeEffect(@NonNull DecoEvent event) {
+        if (event.getEventType() != DecoEvent.EventType.EVENT_EFFECT) {
+            return false;
+        }
+
+        if (mChartSeries == null) {
+            return false;
+        }
+
+        if (event.getIndexPosition() < 0) {
+            throw new IllegalStateException("This EffectType must specify valid data series index");
+        }
+
+        /**
+         * The EFFECT_SPIRAL_EXPLODE is a special case where different operations are applied to
+         * different series automatically. Must specify a valid series to use this effect
+         */
+        if (event.getEffectType() == DecoDrawEffect.EffectType.EFFECT_SPIRAL_EXPLODE) {
+            // hide all series, except the one to apply the effect
+            for (int i = 0; i < mChartSeries.size(); i++) {
+                ChartSeries chartSeries = mChartSeries.get(i);
+                if (i != event.getIndexPosition()) {
+                    chartSeries.startAnimateHideShow(event, false);
+                } else {
+                    chartSeries.startAnimateEffect(event);
+                }
+            }
+            return true;
+        }
+        if (mChartSeries != null) {
+            for (int i = 0; i < mChartSeries.size(); i++) {
+                if ((event.getIndexPosition() == i) || event.getIndexPosition() < 0) {
+                    ChartSeries chartSeries = mChartSeries.get(i);
+                    chartSeries.startAnimateEffect(event);
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * This is called when the view is detached from a window. At this point it no longer has a
+     * surface for drawing, so we need to remove all scheduled events from the event manager
+     */
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mDecoEventManager != null) {
+            mDecoEventManager.resetEvents();
+        }
+    }
+
+    /**
+     * Event Manager wants to start an event. It is this classes responsibility to execute the
+     * event
+     *
+     * @param event Event to be executed
+     */
+    @Override
+    public void onExecuteEventStart(@NonNull DecoEvent event) {
+        executeMove(event);
+        executeReveal(event);
+        executeEffect(event);
+    }
+
+    @SuppressWarnings("unused")
+    public void setVertGravity(VertGravity vertGravity) {
+        mVertGravity = vertGravity;
+    }
+
+    @SuppressWarnings("unused")
+    public void setHorizGravity(HorizGravity horizGravity) {
+        mHorizGravity = horizGravity;
+
+    }
+
+    /**
+     * Allows your app to use the EdgeDetail decoration by disabling Hardware acceleration
+     * for the view on android API 11 - 17.
+     * <p/>
+     * Calling this function will do nothing on all other API versions
+     * <p/>
+     * This will turn off Hardware Acceleration for this view only
+     * <p/>
+     * If you do not call this function and you use EdgeDetails they will not display on the
+     * affected API versions.
+     * <p/>
+     * For more information about Hardware acceleration and this issue
+     * {@see http://developer.android.com/guide/topics/graphics/hardware-accel.html}
+     * <p/>
+     * The function causing the incompatibility is
+     * {@link Canvas#clipPath(Path)}
+     * This is used to clip the drawing rectangle to help render the Edge details decorations
+     */
+    @SuppressWarnings("unused")
+    public void enableCompatibilityMode() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            setLayerType(LAYER_TYPE_SOFTWARE, null);
+        }
+    }
+}

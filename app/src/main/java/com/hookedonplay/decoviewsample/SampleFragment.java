@@ -1,0 +1,213 @@
+/*
+ * Copyright (C) 2015 Hooked On Play
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.hookedonplay.decoviewsample;
+
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.TextView;
+
+import com.hookedonplay.decoviewlib.DecoView;
+import com.hookedonplay.decoviewlib.charts.SeriesItem;
+
+abstract public class SampleFragment extends Fragment {
+    protected final String TAG = getClass().getSimpleName();
+
+    protected boolean mInitialized = false;
+
+    protected boolean mUpdateListeners = true;
+    /**
+     * Add a listener to update the progress on a TextView
+     *
+     * @param seriesItem ArcItem to listen for update changes
+     * @param view View to update
+     * @param format String.format to display the progress
+     *
+     * If the string format includes a percentage character we assume that we should set
+     * a percentage into the string, otherwise the current position is added into the string
+     * For example if the arc has a min of 0 and a max of 50 and the current position is 20
+     *      Format -> "%.0f%% Complete" -> "40% Complete"
+     *      Format -> "%.1f Km" -> "20.0 Km"
+     *      Format -> "%.0f/40 Levels Complete" -> "20/40 Levels Complete"
+     */
+    protected void addProgressListener(@NonNull final SeriesItem seriesItem, @NonNull final TextView view, @NonNull final String format) {
+        if (format == null || format.isEmpty()) {
+            throw new IllegalArgumentException("String formatter can not be empty");
+        }
+
+        seriesItem.addArcSeriesItemListener(new SeriesItem.SeriesItemListener() {
+            @Override
+            public void onSeriesItemAnimationProgress(float percentComplete, float currentPosition) {
+                if (mUpdateListeners) {
+                    if (format.contains("%%")) {
+                        // We found a percentage so we insert a percentage
+                        float percentFilled = ((currentPosition - seriesItem.getMinValue()) / (seriesItem.getMaxValue() - seriesItem.getMinValue()));
+                        view.setText(String.format(format, percentFilled * 100f));
+                    } else {
+                        view.setText(String.format(format, currentPosition));
+                    }
+                }
+            }
+
+            @Override
+            public void onSeriesItemDisplayProgress(float percentComplete) {
+
+            }
+        });
+    }
+
+    protected void addProgressRemainingListener(@NonNull final SeriesItem seriesItem, @NonNull final TextView view, @NonNull final String format, final float maxValue) {
+        if (format == null || format.isEmpty()) {
+            throw new IllegalArgumentException("String formatter can not be empty");
+        }
+
+        seriesItem.addArcSeriesItemListener(new SeriesItem.SeriesItemListener() {
+
+            @Override
+            public void onSeriesItemAnimationProgress(float percentComplete, float currentPosition) {
+                if (mUpdateListeners) {
+                    if (format.contains("%%")) {
+                        // We found a percentage so we insert a percentage
+                        view.setText(String.format(format, (1.0f - (currentPosition / seriesItem.getMaxValue())) * 100f));
+                    } else {
+                        view.setText(String.format(format, maxValue - currentPosition));
+                    }
+                }
+            }
+
+            @Override
+            public void onSeriesItemDisplayProgress(float percentComplete) {
+
+            }
+        });
+    }
+
+    protected boolean createAnimation() {
+        if (mInitialized) {
+            createTracks();
+            if (super.getUserVisibleHint()) {
+                setupEvents();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            if (getView() != null) {
+                setDemoFinished(false);
+                createAnimation();
+            }
+        }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mInitialized = true;
+        final View replay = getView().findViewById(R.id.imageReplay);
+        final View swipe = getView().findViewById(R.id.imageSwipe);
+        if (replay != null) {
+            replay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Animation animation = AnimationUtils.loadAnimation(getActivity(),
+                            R.anim.rotate_hide);
+
+                    animation.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                            swipe.setVisibility(View.INVISIBLE);
+                            replay.setEnabled(false);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            setDemoFinished(false);
+                            createAnimation();
+                            replay.setEnabled(true);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
+                    replay.startAnimation(animation);
+                }
+            });
+        }
+        createAnimation();
+    }
+
+    /**
+     * Override to create events for demo. For example move, reveal or effect
+     */
+    abstract protected void setupEvents();
+
+    /**
+     * Override to create all the tracks (arcs) required for current page
+     */
+    abstract protected void createTracks();
+
+    protected void setDemoFinished(boolean finished) {
+        if (getView() != null) {
+            final View continueLayout = getView().findViewById(R.id.layoutContinue);
+            final View swipe = getView().findViewById(R.id.imageSwipe);
+            if (finished) {
+                if (continueLayout != null) {
+                    continueLayout.setVisibility(View.VISIBLE);
+                }
+                if (swipe != null) {
+                    swipe.setVisibility(View.VISIBLE);
+                }
+            }
+            else {
+                if (continueLayout != null) {
+                    continueLayout.setVisibility(View.INVISIBLE);
+                }
+            }
+        }
+    }
+
+    /**
+     * Convert base dip into pixels based on the display metrics of the current device
+     *
+     * @param base dip value
+     * @return pixels from base dip
+     */
+    protected float getDimension(float base) {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, base, getResources().getDisplayMetrics());
+    }
+
+    protected DecoView getArcView() {
+        try {
+            return (DecoView) getView().findViewById(R.id.dynamicArcView);
+        }
+        catch (NullPointerException npe) {
+            Log.e("DecoViewSample", "Unable to get view");
+        }
+        return null;
+    }
+}

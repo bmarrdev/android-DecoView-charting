@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DecoView">
+        <attr name="lineWidth" format="dimension" />
+        <attr name="rotateAngle" format="integer" />
+        <attr name="totalAngle" format="integer" />
+        <attr name="arc_gravity_horizontal" format="enum">
+            <enum name="Left" value="0"/>
+            <enum name="Center" value="1"/>
+            <enum name="Right" value="2"/>
+            <enum name="Fill" value="3"/>
+        </attr>
+        <attr name="arc_gravity_vertical" format="enum">
+            <enum name="Top" value="0"/>
+            <enum name="Center" value="1"/>
+            <enum name="Bottom" value="2"/>
+            <enum name="Fill" value="3"/>
+        </attr>
+    </declare-styleable>
+</resources>

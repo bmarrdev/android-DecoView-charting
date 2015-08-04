@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/layoutActivities">
+
+        <ImageView
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:id="@+id/imageView2"
+            android:src="@drawable/ic_acme_fit"
+            android:layout_alignTop="@+id/dynamicArcView"
+            android:layout_alignLeft="@+id/dynamicArcView"
+            android:layout_alignStart="@+id/dynamicArcView"
+            android:scaleType="fitStart"/>
+
+        <com.hookedonplay.decoviewlib.DecoView
+            xmlns:custom="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/dynamicArcView"
+            android:layout_margin="8dp">
+
+        </com.hookedonplay.decoviewlib.DecoView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:textSize="40sp"
+            android:id="@+id/textPercentage"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text=""
+            android:id="@+id/textRemaining"
+            android:layout_below="@+id/textPercentage"
+            android:layout_centerHorizontal="true"
+            android:maxWidth="200dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/layoutActivities"
+        android:padding="4dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageActivity1"
+            android:src="@drawable/ic_activity1"
+            android:background="@drawable/circle_activity1"
+            android:contentDescription="@string/fit_cycling"
+            android:padding="16dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageActivity2"
+            android:src="@drawable/ic_activity2"
+            android:background="@drawable/circle_activity2"
+            android:padding="16dp"
+            android:contentDescription="@string/fit_running"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/textActivity2"
+            android:layout_centerVertical="true"
+            android:layout_below="@+id/textActivity1"
+            android:layout_toLeftOf="@+id/imageActivity2"
+            android:layout_toStartOf="@+id/imageActivity2"
+            android:paddingRight="4dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/textActivity1"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/imageActivity1"
+            android:layout_toEndOf="@+id/imageActivity1"
+            android:paddingLeft="4dp" />
+
+    </RelativeLayout>
+
+    <include layout="@layout/layout_replay"/>
+
+</RelativeLayout>

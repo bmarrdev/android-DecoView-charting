@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">DecoView Sample</string>
+    <string name="fit_running">Running</string>
+    <string name="fit_cycling">Cycling</string>
+</resources>
