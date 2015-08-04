@@ -23,10 +23,6 @@ import android.graphics.SweepGradient;
 import android.support.annotation.NonNull;
 
 abstract public class ArcSeries extends ChartSeries {
-    ArcSeries(@NonNull SeriesItem seriesItem, int totalAngle, int rotateAngle) {
-        super(seriesItem, totalAngle, rotateAngle);
-    }
-
     /**
      * Angle that the arc starts
      */
@@ -35,6 +31,9 @@ abstract public class ArcSeries extends ChartSeries {
      * Sweep angle starts at {@link #mArcAngleStart}
      */
     protected float mArcAngleSweep;
+    ArcSeries(@NonNull SeriesItem seriesItem, int totalAngle, int rotateAngle) {
+        super(seriesItem, totalAngle, rotateAngle);
+    }
 
     /**
      * Draw the arc in the current state

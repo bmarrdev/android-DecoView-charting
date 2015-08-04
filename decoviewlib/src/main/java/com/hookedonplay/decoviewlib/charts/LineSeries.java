@@ -36,6 +36,7 @@ public class LineSeries extends ChartSeries {
 
     public LineSeries(@NonNull SeriesItem seriesItem, int totalAngle, int rotateAngle) {
         super(seriesItem, totalAngle, rotateAngle);
+        Log.e(TAG, "LineSeries is experimental. Not all functionality is implemented.");
     }
 
     @Override
@@ -56,14 +57,14 @@ public class LineSeries extends ChartSeries {
             }
         }
 
-        final float totalWidth = posNow * (canvas.getWidth() - (2*lineWidth));
-        final float totalHeight = posNow * (canvas.getHeight() - (2*lineWidth));
+        final float totalWidth = posNow * (canvas.getWidth() - (2 * lineWidth));
+        final float totalHeight = posNow * (canvas.getHeight() - (2 * lineWidth));
         float xVal1 = (!reverse ? lineWidth : canvas.getWidth() - lineWidth);
         float yVal1 = (!reverse ? lineWidth : canvas.getHeight() - lineWidth);
         float xVal2 = (!reverse ? lineWidth + totalWidth : xVal1 - totalWidth);
         float yVal2 = (!reverse ? lineWidth + totalHeight : yVal1 - totalHeight);
 
-        if (isHoritzontal()) {
+        if (isHorizontal()) {
             switch (mVertGravity) {
                 case GRAVITY_VERTICAL_TOP:
                     yVal1 = yVal2 = lineWidth / 2;
@@ -82,8 +83,7 @@ public class LineSeries extends ChartSeries {
                     yVal1 += insetY;
                     yVal2 += insetY;
             }
-        }
-        else {
+        } else {
             switch (mHorizGravity) {
                 case GRAVITY_HORIZONTAL_LEFT:
                     xVal1 = xVal2 = lineWidth;
@@ -117,37 +117,13 @@ public class LineSeries extends ChartSeries {
      */
     protected void applyGradientToPaint() {
         if (Color.alpha(mSeriesItem.getSecondaryColor()) != 0) {
+            /**
+             * Linear gradient is used for straight lines
+             */
             int colorOne = mSeriesItem.getSpinClockwise() ? mSeriesItem.getColor() : mSeriesItem.getSecondaryColor();
             int colorTwo = mSeriesItem.getSpinClockwise() ? mSeriesItem.getSecondaryColor() : mSeriesItem.getColor();
             LinearGradient gradient = new LinearGradient(mBounds.left, mBounds.top, mBounds.right, mBounds.bottom, colorOne, colorTwo, Shader.TileMode.CLAMP);
             mPaint.setShader(gradient);
-//            SweepGradient gradient;
-//            if (mAngleSweep < 360) {
-//                /**
-//                 * When we have left than a full circle we change the style of gradient so that
-//                 * the two colors start at the same point. The two provided colors meet rather than
-//                 * a fade the complete circumference. A matrix is rotated so the meeting of the
-//                 * two colors occurs in the middle of the gap when the part circle is not drawn
-//                 */
-//                gradient = new SweepGradient(mBounds.centerX(), mBounds.centerY(), colors, positions);
-//                Matrix gradientRotationMatrix = new Matrix();
-//                gradientRotationMatrix.preRotate(mAngleStart - ((360f - mAngleSweep) / 2), mBounds.centerX(), mBounds.centerY());
-//                gradient.setLocalMatrix(gradientRotationMatrix);
-//            } else {
-//                /**
-//                 * Drawing a gradient around the complete circumference of the circle. This
-//                 * gradient fades gently between the two colors.
-//                 */
-//                final int[] colors = {mArcItem.getSecondaryColor(), mArcItem.getColor(), mArcItem.getSecondaryColor()};
-//                final float[] positions = {0, 0.5f * (mAngleSweep / 360f), 1};
-//                gradient = new SweepGradient(mBounds.centerX(), mBounds.centerY(), colors, positions);
-//            }
-
-//            final int[] colors = {mArcItem.getSecondaryColor(), mArcItem.getColor()};
-//            final float[] positions = {0, 1};
-//            LinearGradient gradient = new LinearGradient();
-//
-//            mPaint.setShader(gradient);
         }
     }
 
@@ -159,7 +135,7 @@ public class LineSeries extends ChartSeries {
         mVertGravity = vertGravity;
     }
 
-    private boolean isHoritzontal() {
+    private boolean isHorizontal() {
         return mSeriesItem.getChartStyle() == SeriesItem.ChartStyle.STYLE_LINE_HORIZONTAL;
     }
 }

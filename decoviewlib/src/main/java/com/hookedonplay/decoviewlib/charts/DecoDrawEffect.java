@@ -24,19 +24,36 @@ import android.support.annotation.Nullable;
 
 import com.hookedonplay.decoviewlib.DecoView;
 
+/**
+ * Animates some non-core movements for the series of data, such as fades and swirls.
+ */
 public class DecoDrawEffect {
-
     /**
-     * Type of effect to display
+     * Value for fully opaque alpha value
      */
-    public enum EffectType {
-        EFFECT_SPIRAL_OUT_FILL, /* Fill track after outward spiral animation */
-        EFFECT_SPIRAL_OUT, /* Animation from center to outside in spiral motion */
-        EFFECT_SPIRAL_IN, /* Animation from outside to center in spiral motion */
-        EFFECT_EXPLODE, /* Explode animation where several lines are produced from center */
-        EFFECT_SPIRAL_EXPLODE /* Combines EFFECT_SPIRAL_IN and EFFECT_EXPLODE */
-    }
-
+    static private final int MAX_ALPHA = 255;
+    /**
+     * Minimum percentage of dimension to allow explode lines
+     */
+    static private final float EXPLODE_LINE_MIN = 0.01f;
+    /**
+     * Maximum percentage of dimension to allow explode lines
+     */
+    static private final float EXPLODE_LINE_MAX = 0.1f;
+    /**
+     * Minimum radius of circle in explode mode
+     */
+    static private final float EXPLODE_CIRCLE_MIN = 0.01f;
+    /**
+     * Maximum radius of circle in explode mode
+     */
+    static private final float EXPLODE_CIRCLE_MAX = 0.1f;
+    /**
+     * Number of lines created during explode animation
+     */
+    static private final int EXPLODE_LINE_COUNT = 9;
+    static private final float MIN_LINE_WIDTH = 22f;
+    static private final float MAX_LINE_WIDTH = 100f;
     /**
      * Effect type to draw
      * {@link EffectType}
@@ -62,34 +79,6 @@ public class DecoDrawEffect {
      * Bounds used to allow contraction (or expansion) of spiral animations
      */
     private RectF mSpinBounds = new RectF();
-    /**
-     * Value for fully opaque alpha value
-     */
-    static private final int MAX_ALPHA = 255;
-    /**
-     * Minimum percentage of dimension to allow explode lines
-     */
-    static private final float EXPLODE_LINE_MIN = 0.01f;
-    /**
-     * Maximum percentage of dimension to allow explode lines
-     */
-    static private final float EXPLODE_LINE_MAX = 0.1f;
-    /**
-     * Minimum radius of circle in explode mode
-     */
-    static private final float EXPLODE_CIRCLE_MIN = 0.01f;
-    /**
-     * Maximum radius of circle in explode mode
-     */
-    static private final float EXPLODE_CIRCLE_MAX = 0.1f;
-    /**
-     * Number of lines created during explode animation
-     */
-    static private final int EXPLODE_LINE_COUNT = 9;
-
-    static private final float MIN_LINE_WIDTH = 22f;
-    static private final float MAX_LINE_WIDTH = 100f;
-
     /**
      * Construct the delegate for painting the special effects for the arc
      *
@@ -119,11 +108,8 @@ public class DecoDrawEffect {
      * @return should remain visible
      */
     public boolean postExecuteVisibility() {
-        if ((mEffectType == EffectType.EFFECT_SPIRAL_OUT) ||
-                (mEffectType == EffectType.EFFECT_SPIRAL_OUT_FILL)) {
-            return true;
-        }
-        return false;
+        return (mEffectType == EffectType.EFFECT_SPIRAL_OUT) ||
+                (mEffectType == EffectType.EFFECT_SPIRAL_OUT_FILL);
     }
 
     private void setPaint(@NonNull Paint paint) {
@@ -131,6 +117,12 @@ public class DecoDrawEffect {
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         mPaint.setStrokeWidth(determineLineWidth(paint, 1f));
+
+        /**
+         * Create the explode line based on the same paint attributes to keep consistent
+         * The line width is made smaller as they will be X lines created during this explode
+         * effect
+         */
         mPaintExplode = new Paint(paint);
         mPaintExplode.setStrokeCap(Paint.Cap.ROUND);
         mPaintExplode.setStyle(Paint.Style.FILL);
@@ -365,5 +357,16 @@ public class DecoDrawEffect {
             float radius = (bounds.width() * EXPLODE_CIRCLE_MIN) + ((bounds.width() * EXPLODE_CIRCLE_MAX - bounds.width() * EXPLODE_CIRCLE_MIN) * percentComplete);
             canvas.drawCircle(endX, endY, radius, mPaintExplode);
         }
+    }
+
+    /**
+     * Type of effect to display
+     */
+    public enum EffectType {
+        EFFECT_SPIRAL_OUT_FILL, /* Fill track after outward spiral animation */
+        EFFECT_SPIRAL_OUT, /* Animation from center to outside in spiral motion */
+        EFFECT_SPIRAL_IN, /* Animation from outside to center in spiral motion */
+        EFFECT_EXPLODE, /* Explode animation where several lines are produced from center */
+        EFFECT_SPIRAL_EXPLODE /* Combines EFFECT_SPIRAL_IN and EFFECT_EXPLODE */
     }
 }

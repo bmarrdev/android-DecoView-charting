@@ -114,7 +114,7 @@ public class SeriesItem {
      */
     private ArrayList<EdgeDetail> mEdgeDetail;
 
-    private ChartLabel mChartLabel;
+    private SeriesLabel mSeriesLabel;
 
     public int getColor() {
         return mColor;
@@ -187,8 +187,8 @@ public class SeriesItem {
         return mEdgeDetail;
     }
 
-    public ChartLabel getChartLabel() {
-        return mChartLabel;
+    public SeriesLabel getSeriesLabel() {
+        return mSeriesLabel;
     }
 
     /**
@@ -213,7 +213,7 @@ public class SeriesItem {
         private boolean mShowPointWhenEmpty = true;
         private PointF mInset = null;
         private ArrayList<EdgeDetail> mEdgeDetail = null;
-        private ChartLabel mChartLabel = null;
+        private SeriesLabel mSeriesLabel = null;
 
         public Builder(int color) {
             mColor = color;
@@ -317,8 +317,8 @@ public class SeriesItem {
             return this;
         }
 
-        public Builder setChartLabel(@Nullable ChartLabel chartLabel) {
-            mChartLabel = chartLabel;
+        public Builder setSeriesLabel(@Nullable SeriesLabel seriesLabel) {
+            mSeriesLabel = seriesLabel;
             return this;
         }
 
@@ -348,7 +348,7 @@ public class SeriesItem {
         mShowPointWhenEmpty = builder.mShowPointWhenEmpty;
         mInset = builder.mInset;
         mEdgeDetail = builder.mEdgeDetail;
-        mChartLabel = builder.mChartLabel;
+        mSeriesLabel = builder.mSeriesLabel;
     }
 
     /**

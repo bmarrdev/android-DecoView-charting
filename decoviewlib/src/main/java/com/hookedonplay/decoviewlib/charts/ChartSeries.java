@@ -36,15 +36,16 @@ import com.nineoldandroids.animation.ValueAnimator;
  * @author BrentM
  */
 abstract public class ChartSeries {
+    /**
+     * Minimum sweep angle. We need this to be greater than 0 as we want something drawn
+     * even the data value is 0
+     */
+    static final private float MIN_SWEEP_ANGLE = 0.1f;
+    static final private float MIN_SWEEP_ANGLE_FLAT = 0.1f;
+    static final private float MIN_SWEEP_ANGLE_NONE = 0f;
+    static final private float MIN_SWEEP_ANGLE_PIE = MIN_SWEEP_ANGLE_NONE;
     @SuppressWarnings("unused")
     protected final String TAG = getClass().getSimpleName();
-
-    protected enum DrawMode {
-        DRAW_REVEAL, /* animated reveal of series */
-        DRAW_MOVE, /* animated move of series */
-        DRAW_EFFECT /* animated effect on series */
-    }
-
     /**
      * Current Mode of drawing
      */
@@ -63,10 +64,6 @@ abstract public class ChartSeries {
     protected float mPositionStart = 0;
     protected float mPositionEnd = 0;
     protected float mPositionCurrentEnd = 0;
-    /**
-     * Arc visible or hidden
-     */
-    private boolean mVisible;
     /**
      * 0..1.0f The percentage of the animation complete
      */
@@ -92,18 +89,13 @@ abstract public class ChartSeries {
      */
     protected Paint mPaint;
     /**
+     * Arc visible or hidden
+     */
+    private boolean mVisible;
+    /**
      * ValueAnimator to calculate arc drawing position during animation
      */
     private ValueAnimator mValueAnimator;
-    /**
-     * Minimum sweep angle. We need this to be greater than 0 as we want something drawn
-     * even the data value is 0
-     */
-    static final private float MIN_SWEEP_ANGLE = 0.1f;
-    static final private float MIN_SWEEP_ANGLE_FLAT = 0.1f;
-    static final private float MIN_SWEEP_ANGLE_NONE = 0f;
-    static final private float MIN_SWEEP_ANGLE_PIE = MIN_SWEEP_ANGLE_NONE;
-
     /**
      * Construct an ArcSeries based on the ArcItem attributes and the angle and shape
      * of the arc
@@ -391,8 +383,8 @@ abstract public class ChartSeries {
         if (bounds == null || bounds.isEmpty()) {
             throw new IllegalArgumentException("Drawing bounds can not be null or empty");
         }
-        if (mSeriesItem.getChartLabel() != null) {
-            return mSeriesItem.getChartLabel().draw(canvas, bounds, anglePercent, getPositionPercent(), mPositionCurrentEnd);
+        if (mSeriesItem.getSeriesLabel() != null) {
+            return mSeriesItem.getSeriesLabel().draw(canvas, bounds, anglePercent, getPositionPercent(), mPositionCurrentEnd);
         }
         return null;
     }
@@ -429,15 +421,6 @@ abstract public class ChartSeries {
         return false;
     }
 
-//    /**
-//     * Determine if the arc should be drawn as a wedge from the center of the bounds
-//     *
-//     * @return true for wedge, false for line arc
-//     */
-//    protected boolean drawAsWedge() {
-//        return mSeriesItem.getChartStyle() == SeriesItem.ChartStyle.STYLE_PIE;
-//    }
-
     /**
      * Determine if the bounds are square, ie. same width and height
      *
@@ -446,6 +429,15 @@ abstract public class ChartSeries {
     protected boolean areBoundsSquare() {
         return Math.abs(mBoundsInset.width() - mBoundsInset.height()) < 0.01;
     }
+
+//    /**
+//     * Determine if the arc should be drawn as a wedge from the center of the bounds
+//     *
+//     * @return true for wedge, false for line arc
+//     */
+//    protected boolean drawAsWedge() {
+//        return mSeriesItem.getChartStyle() == SeriesItem.ChartStyle.STYLE_PIE;
+//    }
 
     /**
      * Adjust the sweep value if the direction of the arc is not being drawn in a
@@ -490,7 +482,6 @@ abstract public class ChartSeries {
         }
         mPaint.setStrokeWidth(lineWidth);
     }
-
 
     /**
      * Adjusts the gradient used for the chart series to set the shader used in the paint. This is only done
@@ -580,7 +571,6 @@ abstract public class ChartSeries {
         return MIN_SWEEP_ANGLE_FLAT;
     }
 
-
     public float getPositionPercent() {
         return mPositionCurrentEnd / (mSeriesItem.getMaxValue() - mSeriesItem.getMinValue());
     }
@@ -592,5 +582,11 @@ abstract public class ChartSeries {
      */
     public boolean isVisible() {
         return mVisible;
+    }
+
+    protected enum DrawMode {
+        DRAW_REVEAL, /* animated reveal of series */
+        DRAW_MOVE, /* animated move of series */
+        DRAW_EFFECT /* animated effect on series */
     }
 }

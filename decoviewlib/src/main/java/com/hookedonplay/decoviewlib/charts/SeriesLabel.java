@@ -27,7 +27,21 @@ import android.support.annotation.Nullable;
 
 import com.hookedonplay.decoviewlib.util.GenericFunctions;
 
-public class ChartLabel {
+/**
+ * Label for one series of data. One DecoView chart can have many series and each series can have
+ * one label. As the series is animated the label will move to be centered over the visible area
+ * of the series. For example if another series is on top then potentially only a small portion of
+ * the complete area of the series will be visible.
+ * <p/>
+ * The initial implementation of a series label does not support anti-clockwise series.
+ * <p/>
+ * To update the SeriesLabel text as the series is animation there are two options:
+ * (a) you can use the listener for the series to update the label text
+ * (b) you can add a formatted string as the label and it will be updated automatically. If your
+ * label text includes %% then the percentage will be substituted. eg: "Goal %.0f%%" or
+ * if you want the actual current value of the series "%.0f min to goal"
+ */
+public class SeriesLabel {
     static private Typeface mDefaultTypeFace;
     private String mLabel;
     private Paint mPaintBack;
@@ -41,9 +55,22 @@ public class ChartLabel {
     private int mColorText;
     private int mColorBack;
 
-    static public ChartLabel createLabel(String label) {
+    private SeriesLabel(Builder builder) {
+        mLabel = builder.mLabel;
+        mVisible = builder.mVisible;
+        mColorText = builder.mColorText;
+        mColorBack = builder.mColorBack;
+        mTypeface = builder.mTypeface;
+        mFontSize = builder.mFontSize;
+        recalcLayout();
+    }
+
+    @SuppressWarnings("unused")
+    static public SeriesLabel createLabel(String label) {
         return new Builder(label).build();
     }
+
+    @SuppressWarnings("unused")
     static public void setDefaultFont(Context context, String fontName) {
         mDefaultTypeFace = Typeface.createFromAsset(context.getAssets(), fontName);
     }
@@ -59,7 +86,10 @@ public class ChartLabel {
             mPaintText.setColor(mColorText);
             mPaintText.setTextSize(GenericFunctions.spToPixels(mFontSize));
             mPaintText.setTextAlign(Paint.Align.CENTER);
-            if (mDefaultTypeFace != null) {
+
+            if (mTypeface != null) {
+                mPaintText.setTypeface(mDefaultTypeFace);
+            } else if (mDefaultTypeFace != null) {
                 mPaintText.setTypeface(mDefaultTypeFace);
             }
         }
@@ -73,22 +103,26 @@ public class ChartLabel {
     }
 
     private String getDisplayString(float percentComplete, float positionValue) {
+        // Check if we have dynamically generated text
         if (mLabel.contains("%%")) {
-            // We found a percentage so we insert a percentage
-
+            // We found a percentage symbol so we insert a percentage
             return String.format(mLabel, percentComplete * 100f);
-        } else if (mLabel.contains("%")){
+        } else if (mLabel.contains("%")) {
             return String.format(mLabel, positionValue);
         }
-
+        // Static label
         return mLabel;
     }
 
+    @SuppressWarnings("unused")
     public void setLabel(@NonNull String label) {
         mLabel = label;
+        mTextBounds = null;
+        recalcLayout();
     }
 
-    public RectF draw(@NonNull Canvas canvas, RectF rect, float percentAngle, float percentComplete, float positionValue) {
+    public RectF draw(@NonNull Canvas canvas, @NonNull RectF rect,
+                      float percentAngle, float percentComplete, float positionValue) {
         if (!mVisible) {
             return null;
         }
@@ -142,44 +176,39 @@ public class ChartLabel {
             mLabel = labelText;
         }
 
+        @SuppressWarnings("unused")
         public Builder setTypeface(@Nullable Typeface typeface) {
             mTypeface = typeface;
             return this;
         }
 
+        @SuppressWarnings("unused")
         public Builder setFontSize(float fontSize) {
             mFontSize = fontSize;
             return this;
         }
 
+        @SuppressWarnings("unused")
         public Builder setVisible(boolean visible) {
             mVisible = visible;
             return this;
         }
 
+        @SuppressWarnings("unused")
         public Builder setColorText(int colorText) {
             mColorText = colorText;
             return this;
         }
 
+        @SuppressWarnings("unused")
         public Builder setColorBack(int colorBack) {
             mColorBack = colorBack;
             return this;
         }
 
         @SuppressWarnings("unused")
-        public ChartLabel build() {
-            return new ChartLabel(this);
+        public SeriesLabel build() {
+            return new SeriesLabel(this);
         }
-    }
-
-    private ChartLabel(Builder builder) {
-        mLabel = builder.mLabel;
-        mVisible = builder.mVisible;
-        mColorText = builder.mColorText;
-        mColorBack = builder.mColorBack;
-        mTypeface = builder.mTypeface;
-        mFontSize = builder.mFontSize;
-        recalcLayout();
     }
 }

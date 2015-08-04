@@ -16,7 +16,6 @@
 package com.hookedonplay.decoviewlib.charts;
 
 import android.graphics.Canvas;
-import android.graphics.Path;
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -25,6 +24,7 @@ public class RoundRectSeries extends ChartSeries {
 
     RoundRectSeries(@NonNull SeriesItem seriesItem, int totalAngle, int rotateAngle) {
         super(seriesItem, totalAngle, rotateAngle);
+        Log.e(TAG, "RoundRectSeries is experimental. Functionality is implemented.");
     }
 
     @Override
@@ -33,32 +33,32 @@ public class RoundRectSeries extends ChartSeries {
             return true;
         }
 
-        processRevealEffect();
-
-        final float endPos = calcCurrentPosition(mPositionStart, mPositionEnd, mSeriesItem.getMinValue(), mSeriesItem.getMaxValue(), mPercentComplete);
-        float sweep = verifyMinSweepAngle(endPos * mAngleSweep);
-        float startAngle = mAngleStart;
-
-        sweep = adjustSweepDirection(sweep);
-
-        if (mSeriesItem.getDrawAsPoint()) {
-            startAngle = adjustDrawPointAngle(sweep);
-            sweep = adjustSweepDirection(getMinSweepAngle());
-
-        }
-
-        float insetX = mSeriesItem.getInset() != null ? mSeriesItem.getInset().x : 0;
-        float insetY = mSeriesItem.getInset() != null ? mSeriesItem.getInset().y : 0;
-        float lineWidth = (getSeriesItem().getLineWidth() / 2);
-
-        Log.e("TAG", " Inset  x: " + insetX +" y: " + insetY + " line " + lineWidth);
-        Path path = new Path();
-        path.moveTo(insetX + lineWidth, lineWidth + insetY);
-        path.lineTo(canvas.getWidth() - insetX - lineWidth, lineWidth + insetY);
-        path.lineTo(canvas.getWidth() - insetX - lineWidth, canvas.getHeight() - lineWidth - insetY);
-
-
-        canvas.drawPath(path, mPaint);
+//        processRevealEffect();
+//
+//        final float endPos = calcCurrentPosition(mPositionStart, mPositionEnd, mSeriesItem.getMinValue(), mSeriesItem.getMaxValue(), mPercentComplete);
+//        float sweep = verifyMinSweepAngle(endPos * mAngleSweep);
+//        float startAngle = mAngleStart;
+//
+//        sweep = adjustSweepDirection(sweep);
+//
+//        if (mSeriesItem.getDrawAsPoint()) {
+//            startAngle = adjustDrawPointAngle(sweep);
+//            sweep = adjustSweepDirection(getMinSweepAngle());
+//
+//        }
+//
+//        float insetX = mSeriesItem.getInset() != null ? mSeriesItem.getInset().x : 0;
+//        float insetY = mSeriesItem.getInset() != null ? mSeriesItem.getInset().y : 0;
+//        float lineWidth = (getSeriesItem().getLineWidth() / 2);
+//
+//        Log.e("TAG", " Inset  x: " + insetX + " y: " + insetY + " line " + lineWidth);
+//        Path path = new Path();
+//        path.moveTo(insetX + lineWidth, lineWidth + insetY);
+//        path.lineTo(canvas.getWidth() - insetX - lineWidth, lineWidth + insetY);
+//        path.lineTo(canvas.getWidth() - insetX - lineWidth, canvas.getHeight() - lineWidth - insetY);
+//
+//
+//        canvas.drawPath(path, mPaint);
         return true;
     }
 
