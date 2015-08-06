@@ -75,6 +75,7 @@ public class PieSeries extends ArcSeries {
         for (EdgeDetail edgeDetail : edgeDetailList) {
             final boolean drawInner = edgeDetail.getEdgeType() == EdgeDetail.EdgeType.EDGE_INNER;
             if (drawInner) {
+                //TODO: Implement EDGE_INNER for pie
                 Log.w(TAG, "EDGE_INNER Not Yet Implemented for pie chart");
                 continue;
             }
@@ -87,6 +88,7 @@ public class PieSeries extends ArcSeries {
                 clipPath.addOval(clipRect, Path.Direction.CW);
                 edgeDetail.setClipPath(clipPath);
             }
+            //noinspection ConstantConditions
             drawClippedArc(canvas, edgeDetail.getClipPath(), edgeDetail.getColor(),
                     drawInner ? Region.Op.INTERSECT : Region.Op.DIFFERENCE);
         }

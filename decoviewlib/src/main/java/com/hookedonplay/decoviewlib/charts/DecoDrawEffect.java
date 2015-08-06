@@ -58,7 +58,7 @@ public class DecoDrawEffect {
      * Effect type to draw
      * {@link EffectType}
      */
-    private EffectType mEffectType;
+    private final EffectType mEffectType;
     /**
      * Paint to use for drawing arc item in effect
      */
@@ -79,6 +79,8 @@ public class DecoDrawEffect {
      * Bounds used to allow contraction (or expansion) of spiral animations
      */
     private RectF mSpinBounds = new RectF();
+
+    private int mCircuits = 6;
     /**
      * Construct the delegate for painting the special effects for the arc
      *
@@ -150,6 +152,11 @@ public class DecoDrawEffect {
         mPaintText.setAntiAlias(true);
     }
 
+    @SuppressWarnings("unused")
+    public void setRotationCount(int circuits) {
+        mCircuits = circuits;
+    }
+
     /**
      * Draw effect at current percentage
      *
@@ -206,7 +213,6 @@ public class DecoDrawEffect {
         final boolean moveOutward = (mEffectType == EffectType.EFFECT_SPIRAL_OUT ||
                 mEffectType == EffectType.EFFECT_SPIRAL_OUT_FILL);
 
-
         // Animation spins in a clockwise direction
         final boolean spinClockwise = mEffectType != EffectType.EFFECT_SPIRAL_IN &&
                 mEffectType != EffectType.EFFECT_SPIRAL_EXPLODE;
@@ -215,7 +221,7 @@ public class DecoDrawEffect {
         final float halfWidth = (bounds.width() / 2) - buffer;
         final float halfHeight = (bounds.height() / 2) - buffer;
 
-        final float baseRotateAngle = 720f;
+        final float baseRotateAngle = mCircuits * 360f;//720f;
         float rotateAmount = (mEffectType == EffectType.EFFECT_SPIRAL_OUT_FILL) ? baseRotateAngle + 360f : baseRotateAngle;
         float rotateOffset = (rotateAmount * percentComplete);
         float newAngle = (startAngle + (spinClockwise ? rotateOffset : -rotateOffset)) % 360;

@@ -57,7 +57,7 @@ abstract public class ChartSeries {
     /**
      * ArcItem attributes to be drawn
      */
-    protected SeriesItem mSeriesItem;
+    protected final SeriesItem mSeriesItem;
     /**
      * Positions for current animation
      */
@@ -310,6 +310,7 @@ abstract public class ChartSeries {
         mVisible = true;
         mDrawMode = DrawMode.DRAW_EFFECT;
         mEffect = new DecoDrawEffect(event.getEffectType(), mPaint, event.getDisplayText());
+        mEffect.setRotationCount(event.getEffectRotations());
 
         mPercentComplete = 0f;
 
@@ -362,9 +363,6 @@ abstract public class ChartSeries {
         mPaint.setStrokeCap(mSeriesItem.getRoundCap() ? Paint.Cap.ROUND : Paint.Cap.BUTT);
         mPaint.setAntiAlias(true);
 
-        //mPaint.setStrokeJoin(Paint.Join.ROUND);
-        //mPaint.setPathEffect(new CornerPathEffect(100f));
-
         // We need to reset the bounds for the case we are drawing a gradient and need to recreate
         // based on the bounds
         mBounds = null;
@@ -374,6 +372,7 @@ abstract public class ChartSeries {
         }
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public RectF drawLabel(Canvas canvas, RectF bounds, float anglePercent) {
 
         if (!mVisible) {
@@ -421,14 +420,14 @@ abstract public class ChartSeries {
         return false;
     }
 
-    /**
-     * Determine if the bounds are square, ie. same width and height
-     *
-     * @return true if width and height are equal
-     */
-    protected boolean areBoundsSquare() {
-        return Math.abs(mBoundsInset.width() - mBoundsInset.height()) < 0.01;
-    }
+//    /**
+//     * Determine if the bounds are square, ie. same width and height
+//     *
+//     * @return true if width and height are equal
+//     */
+//    protected boolean areBoundsSquare() {
+//        return Math.abs(mBoundsInset.width() - mBoundsInset.height()) < 0.01;
+//    }
 
 //    /**
 //     * Determine if the arc should be drawn as a wedge from the center of the bounds
@@ -571,6 +570,15 @@ abstract public class ChartSeries {
         return MIN_SWEEP_ANGLE_FLAT;
     }
 
+    /**
+     * Calculate the percentage filled the series is at the current position. eg if the series
+     * runs from (empty) 100 to 200 (full) and the current position is set to 175, then the
+     * current position percent is 75%. This should not be confused with the current animation
+     * percentage, which is the progress of the current operation, say moving from 100 to 110 may
+     * be 50% complete at 105.
+     *
+     * @return Current percentage that the chart is filled
+     */
     public float getPositionPercent() {
         return mPositionCurrentEnd / (mSeriesItem.getMaxValue() - mSeriesItem.getMinValue());
     }

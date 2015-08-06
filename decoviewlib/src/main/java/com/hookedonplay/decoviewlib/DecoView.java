@@ -59,6 +59,9 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
         GRAVITY_HORIZONTAL_FILL
     }
 
+    /**
+     *
+     */
     private VertGravity mVertGravity = VertGravity.GRAVITY_VERTICAL_CENTER;
     private HorizGravity mHorizGravity = HorizGravity.GRAVITY_HORIZONTAL_CENTER;
 
@@ -75,29 +78,9 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
     private int mCanvasHeight = -1;
 
     /**
-     * Keep the aspect ration 1:1, rather than fitting fully to the view dimensions
-     */
-    private boolean mMaintainAspectRatio = true;
-
-    /**
      * Bounds for drawing the arcs
      */
     private RectF mArcBounds;
-
-    /**
-     * Bounds for drawing the background center fill
-     */
-    //private RectF mArcBoundsBack;
-
-    /**
-     * Paint used to fill center of view
-     */
-    //private Paint mPaintBackground;
-
-    /**
-     * Color used for background paint
-     */
-    //private int mColorBackground;
 
     /**
      * The default line width used for the arcs
@@ -116,7 +99,7 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
     /**
      * Total angle of the orb. 360 = full circle, < 360 horseshoe/arc shape
      */
-    private int mTotalAngle;
+    private int mTotalAngle = 360;
 
     /**
      * Event manager that controls the timing of events to be executed on the
@@ -139,13 +122,11 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
                 R.styleable.DecoView,
                 0, 0);
 
-
         int rotateAngle = 0;
         try {
             mDefaultLineWidth = a.getDimension(R.styleable.DecoView_lineWidth, 30f);
             rotateAngle = a.getInt(R.styleable.DecoView_rotateAngle, 0);
             mTotalAngle = a.getInt(R.styleable.DecoView_totalAngle, 360);
-
             mVertGravity = VertGravity.values()[a.getInt(R.styleable.DecoView_arc_gravity_vertical, VertGravity.GRAVITY_VERTICAL_CENTER.ordinal())];
             mHorizGravity = HorizGravity.values()[a.getInt(R.styleable.DecoView_arc_gravity_horizontal, HorizGravity.GRAVITY_HORIZONTAL_CENTER.ordinal())];
         } finally {
@@ -163,7 +144,7 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
     }
 
     /**
-     * Alter the total degrees of the ArcView and applys a rotation angle to change the start
+     * Alter the total degrees of the ArcView and applies a rotation angle to change the start
      * position. If this is 360 then the view is a full circle. 270 degrees is 3/4 of a circle
      *
      * @param totalAngle  Total angle of the view in degrees
@@ -194,27 +175,8 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
     private void initView() {
         GenericFunctions.initialize(getContext());
         enableCompatibilityMode();
-        //createBackgroundPaint(mColorBackground);
         createVisualEditorTrack();
-
-
     }
-
-    /**
-     * Create paint used for drawing the background in the center of the view
-     *
-     * @param color Color to be used for fill. If alpha == 0 then no paint
-     *              will be created
-     */
-//    private void createBackgroundPaint(int color) {
-//        if (Color.alpha(color) != 0) {
-//            mPaintBackground = new Paint();
-//            mPaintBackground.setColor(color);
-//            mPaintBackground.setStyle(Paint.Style.FILL);
-//            mPaintBackground.setStrokeWidth(0);
-//            mPaintBackground.setAntiAlias(true);
-//        }
-//    }
 
     /**
      * Retrieve event manager for delayed events
@@ -280,7 +242,6 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
                 lineSeries.setVertGravity(mVertGravity);
                 chartSeries = lineSeries;
                 break;
-            //throw new IllegalStateException("Chart Style not implemented");
             default:
                 throw new IllegalStateException("Chart Style not implemented");
         }
@@ -310,11 +271,11 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
+    protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
+        super.onSizeChanged(width, height, oldWidth, oldHeight);
 
-        mCanvasWidth = w;
-        mCanvasHeight = h;
+        mCanvasWidth = width;
+        mCanvasHeight = height;
 
         recalcLayout();
     }
@@ -408,8 +369,6 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
             return;
         }
 
-        //drawBackground(canvas);
-
         if (mChartSeries != null) {
 
             boolean labelsSupported = true;
@@ -425,10 +384,10 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
             // series data
             if (labelsSupported) {
                 for (int i = 0; i < mMeasureViewableArea.length; i++) {
-                    //Log.e(TAG, "area[" + i + "] " + mMeasureViewableArea[i]);
                     if (mMeasureViewableArea[i] >= 0f) {
                         ChartSeries chartSeries = mChartSeries.get(i);
-                        RectF drawBounds = chartSeries.drawLabel(canvas, mArcBounds, mMeasureViewableArea[i]);
+                        chartSeries.drawLabel(canvas, mArcBounds, mMeasureViewableArea[i]);
+                        //TODO: Keep bounds of all labels and don't allow overlap
                     }
                 }
             }
@@ -436,10 +395,9 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
     }
 
     private float getVisibleArea(ChartSeries chartSeries, int index) {
-
         float max = 0.0f;
-        for (int j = index + 1; j < mChartSeries.size(); j++) {
-            ChartSeries innerSeries = mChartSeries.get(j);
+        for (int i = index + 1; i < mChartSeries.size(); i++) {
+            ChartSeries innerSeries = mChartSeries.get(i);
             if (innerSeries.isVisible()) {
                 if (max < innerSeries.getPositionPercent()) {
                     max = innerSeries.getPositionPercent();
@@ -448,15 +406,11 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
         }
 
         if (max < chartSeries.getPositionPercent()) {
-            float pos = (chartSeries.getPositionPercent() + max) / 2;
-
             // Adjust for incomplete circles
-            float adjusted = pos * ((float)mTotalAngle / 360f);
-            //float adjust2 = pos * tmp2;
+            float adjusted = ((chartSeries.getPositionPercent() + max) / 2) * ((float) mTotalAngle / 360f);
 
-            //float tmp = ((mRotateAngle + 90f) / 360f);
             // Adjust for rotation of start point
-            float adjust = adjusted + (((float)mRotateAngle + 90f) / 360f);
+            float adjust = adjusted + (((float) mRotateAngle + 90f) / 360f);
 
             // Normalize
             while (adjust > 1.0f) {
@@ -466,36 +420,6 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
         }
         return -1f;
     }
-
-    /**
-     * Draw the background fill for the center of the view
-     *
-     * @param canvas Canvas to draw onto
-     */
-//    private void drawBackground(@NonNull Canvas canvas) {
-//        if (mArcSeries == null || mArcBounds == null || mArcBounds.isEmpty()) {
-//            return;
-//        }
-//
-//        if (mPaintBackground != null) {
-//            if (mArcBoundsBack == null) {
-//                ArcSeries arcSeries = mArcSeries.get(0);
-//                if (arcSeries == null) {
-//                    return;
-//                }
-//
-//                float widthLine = arcSeries.getArcItem().getLineWidth();
-//                mArcBoundsBack = new RectF(mArcBounds);
-//                if (mTotalAngle < 360) {
-//                    mArcBoundsBack.bottom += (widthLine / 2);
-//                } else {
-//                    mArcBoundsBack.inset(widthLine / 2, widthLine / 2);
-//                }
-//            }
-//
-//            canvas.drawArc(mArcBoundsBack, mRotateAngle, mTotalAngle, false, mPaintBackground);
-//        }
-//    }
 
     /**
      * Execute a move event
@@ -567,6 +491,9 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
         }
     }
 
+    /**
+     * Remove all scheduled events and all data series
+     */
     public void deleteAll() {
         if (mDecoEventManager != null) {
             mDecoEventManager.resetEvents();
@@ -575,6 +502,7 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
         mChartSeries = null;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     private boolean executeReveal(@NonNull DecoEvent event) {
         if ((event.getEventType() != DecoEvent.EventType.EVENT_SHOW) &&
                 (event.getEventType() != DecoEvent.EventType.EVENT_HIDE)) {
@@ -596,6 +524,7 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
         return true;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     private boolean executeEffect(@NonNull DecoEvent event) {
         if (event.getEventType() != DecoEvent.EventType.EVENT_EFFECT) {
             return false;
@@ -606,7 +535,8 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
         }
 
         if (event.getIndexPosition() < 0) {
-            throw new IllegalStateException("This EffectType must specify valid data series index");
+            Log.e(TAG, "EffectType " + event.getEventType().toString() + " must specify valid data series index");
+            return false;
         }
 
         /**
@@ -625,14 +555,14 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
             }
             return true;
         }
-        if (mChartSeries != null) {
-            for (int i = 0; i < mChartSeries.size(); i++) {
-                if ((event.getIndexPosition() == i) || event.getIndexPosition() < 0) {
-                    ChartSeries chartSeries = mChartSeries.get(i);
-                    chartSeries.startAnimateEffect(event);
-                }
+
+        for (int i = 0; i < mChartSeries.size(); i++) {
+            if ((event.getIndexPosition() == i) || event.getIndexPosition() < 0) {
+                ChartSeries chartSeries = mChartSeries.get(i);
+                chartSeries.startAnimateEffect(event);
             }
         }
+
         return true;
     }
 

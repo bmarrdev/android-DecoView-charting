@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2015 Brent Marriott
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,6 +35,7 @@ import java.util.ArrayList;
  * .setShowPointWhenEmpty(false)
  * .build();
  */
+@SuppressWarnings("unused")
 public class SeriesItem {
     public enum ChartStyle {
         STYLE_DONUT, /* Default: Hole in middle */
@@ -120,8 +121,16 @@ public class SeriesItem {
         return mColor;
     }
 
+    public void setColor(int color) {
+        mColor = color;
+    }
+
     public int getSecondaryColor() {
         return mColorSecondary;
+    }
+
+    public void setSecondaryColor(int color) {
+        mColorSecondary = color;
     }
 
     public float getLineWidth() {
@@ -187,6 +196,17 @@ public class SeriesItem {
         return mEdgeDetail;
     }
 
+    public void addEdgeDetail(@Nullable EdgeDetail edgeDetail) {
+        if (edgeDetail == null) {
+            mEdgeDetail = null;
+            return;
+        }
+        if (mEdgeDetail == null) {
+            mEdgeDetail = new ArrayList<>();
+        }
+        mEdgeDetail.add(new EdgeDetail(edgeDetail));
+    }
+
     public SeriesLabel getSeriesLabel() {
         return mSeriesLabel;
     }
@@ -224,13 +244,11 @@ public class SeriesItem {
             mColorSecondary = colorSecondary;
         }
 
-        @SuppressWarnings("unused")
         public Builder setLineWidth(final float lineWidth) {
             mLineWidth = lineWidth;
             return this;
         }
 
-        @SuppressWarnings("unused")
         public Builder setSpinDuration(final long spinDuration) {
             if (spinDuration <= 100) {
                 throw new IllegalArgumentException("SpinDuration must be > 100 (value is in ms)");
@@ -239,37 +257,31 @@ public class SeriesItem {
             return this;
         }
 
-        @SuppressWarnings("unused")
         public Builder setInitialVisibility(final boolean visibility) {
             mInitialVisibility = visibility;
             return this;
         }
 
-        @SuppressWarnings("unused")
         public Builder setSpinClockwise(final boolean spinClockwise) {
             mSpinClockwise = spinClockwise;
             return this;
         }
 
-        @SuppressWarnings("unused")
         public Builder setCapRounded(final boolean roundCap) {
             mRoundCap = roundCap;
             return this;
         }
 
-        @SuppressWarnings("unused")
         public Builder setDrawAsPoint(final boolean drawAsPoint) {
             mDrawAsPoint = drawAsPoint;
             return this;
         }
 
-        @SuppressWarnings("unused")
         public Builder setChartStyle(@NonNull final ChartStyle chartStyle) {
             mChartStyle = chartStyle;
             return this;
         }
 
-        @SuppressWarnings("unused")
         public Builder setRange(final float minValue, final float maxValue, final float initialValue) {
             if (minValue >= maxValue) {
                 throw new IllegalArgumentException("minimum value must be less that maximum value");
@@ -357,12 +369,11 @@ public class SeriesItem {
      * @param listener OrbSeriesItemListener to be used for callbacks
      */
     public void addArcSeriesItemListener(@NonNull SeriesItemListener listener) {
-        if (listener != null) {
-            if (mListeners == null) {
-                mListeners = new ArrayList<>();
-            }
-            mListeners.add(listener);
+
+        if (mListeners == null) {
+            mListeners = new ArrayList<>();
         }
+        mListeners.add(listener);
     }
 
     ArrayList<SeriesItemListener> getListeners() {

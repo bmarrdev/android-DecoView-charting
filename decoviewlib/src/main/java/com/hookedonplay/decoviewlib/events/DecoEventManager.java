@@ -27,7 +27,7 @@ public class DecoEventManager {
     /**
      * Handler to manage firing events at given delays
      */
-    private Handler mHandler = new Handler();
+    private final Handler mHandler = new Handler();
 
     private ArcEventManagerListener mListener;
 
@@ -76,7 +76,7 @@ public class DecoEventManager {
     }
 
     /**
-     * Callback interface for n..otification of event to be processed
+     * Callback interface for notification of event to be processed
      */
     public interface ArcEventManagerListener {
         void onExecuteEventStart(@NonNull DecoEvent event);

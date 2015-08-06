@@ -22,12 +22,14 @@ import android.view.animation.Interpolator;
 
 import com.hookedonplay.decoviewlib.charts.DecoDrawEffect;
 
+@SuppressWarnings("unused")
 public class DecoEvent {
+    @SuppressWarnings("FieldCanBeLocal")
     private final String TAG = getClass().getSimpleName();
 
     public enum EventType {
         EVENT_MOVE, /* Move the current position of the chart series*/
-        EVENT_MOVE_START,
+        // --Commented out by Inspection (5/08/2015 7:49 AM):EVENT_MOVE_START,
         EVENT_SHOW, /* Show the chart series using reveal animation */
         EVENT_HIDE, /* hide the series */
         EVENT_EFFECT /* Apply effect animation on the series*/
@@ -43,8 +45,10 @@ public class DecoEvent {
     private View[] mLinkedViews;
     private long mEffectDuration;
     private int mIndexPosition;
+    private int mEffectRotations;
     private String mDisplayText;
     private float mEndPosition;
+
     private Interpolator mInterpolator;
     private ExecuteEventListener mListener;
 
@@ -58,7 +62,7 @@ public class DecoEvent {
      * ID is specified by the client when building Event. If an ID is not specified it will be set to
      * {@link #EVENT_ID_UNSPECIFIED}.
      *
-     * @return event indentifier
+     * @return event identifier
      */
     public long getEventID() {
         return mEventID;
@@ -88,6 +92,10 @@ public class DecoEvent {
         return mIndexPosition;
     }
 
+    public int getEffectRotations() {
+        return mEffectRotations;
+    }
+
     public String getDisplayText() {
         return mDisplayText;
     }
@@ -109,6 +117,7 @@ public class DecoEvent {
         private View[] mLinkedViews = null;
         private long mEffectDuration = 2000;
         private int mIndex = -1;
+        private int mEffectRotations = 2;
         private String mDisplayText = null;
         private float mEndPosition = 0;
         private Interpolator mInterpolator = null;
@@ -136,69 +145,70 @@ public class DecoEvent {
         }
 
         /**
-         * Construct an {@link DecoEvent} of EventType.EVENT_SHOW or EventType.EVENT_HIDE
+         * Construct an {@link DecoEvent} of EventType.EVENT_SHOW or EventType.EVENT_HIDE. Note the
+         * eventType is ignored and only passed to make it explicit as to what to use this
+         * constructor for
          *
+         * @param eventType Type of event (HIDE/SHOW)
          * @param showView true to animate showing of view
          */
-        public Builder(boolean showView) {
+        public Builder(EventType eventType, boolean showView) {
+            if (EventType.EVENT_HIDE != eventType && EventType.EVENT_SHOW != eventType) {
+                throw new IllegalArgumentException("Invalid arguments for EventType. Use Alternative constructor");
+            }
             mType = showView ? EventType.EVENT_SHOW : EventType.EVENT_HIDE;
         }
 
-        @SuppressWarnings("unused")
         public Builder setEventID(long eventID) {
             mEventID = eventID;
             return this;
         }
 
-        @SuppressWarnings("unused")
         public Builder setIndex(int indexPosition) {
             mIndex = indexPosition;
             return this;
         }
 
-        @SuppressWarnings("unused")
         public Builder setDelay(long delay) {
             mDelay = delay;
             return this;
         }
 
-        @SuppressWarnings("unused")
         public Builder setDuration(long effectDuration) {
             mEffectDuration = effectDuration;
             return this;
         }
 
-        @SuppressWarnings("unused")
         public Builder setFadeDuration(long fadeDuration) {
             mFadeDuration = fadeDuration;
             return this;
         }
 
-        @SuppressWarnings("unused")
+        public Builder setEffectRotations(int effectRotations) {
+            mEffectRotations = effectRotations;
+            return this;
+        }
+
         public Builder setDisplayText(String displayText) {
             mDisplayText = displayText;
             return this;
         }
 
-        @SuppressWarnings("unused")
         public Builder setLinkedViews(View[] linkedViews) {
             mLinkedViews = linkedViews;
             return this;
         }
 
-        @SuppressWarnings("unused")
         public Builder setInterpolator(Interpolator interpolator) {
             mInterpolator = interpolator;
             return this;
         }
 
-        @SuppressWarnings("unused")
         public Builder setListener(ExecuteEventListener listener) {
             mListener = listener;
             return this;
         }
 
-        @SuppressWarnings("unused")
         public DecoEvent build() {
             return new DecoEvent(this);
         }
@@ -213,13 +223,14 @@ public class DecoEvent {
         mLinkedViews = builder.mLinkedViews;
         mEffectDuration = builder.mEffectDuration;
         mIndexPosition = builder.mIndex;
+        mEffectRotations = builder.mEffectRotations;
         mDisplayText = builder.mDisplayText;
         mEndPosition = builder.mEndPosition;
         mInterpolator = builder.mInterpolator;
         mListener = builder.mListener;
 
         if (mEventID != EVENT_ID_UNSPECIFIED && mListener == null) {
-            Log.w(TAG, "WARNING: EventID redundant without specifying an event listener");
+            Log.w(TAG, "EventID redundant without specifying an event listener");
         }
     }
 

@@ -41,6 +41,7 @@ import com.hookedonplay.decoviewlib.util.GenericFunctions;
  * label text includes %% then the percentage will be substituted. eg: "Goal %.0f%%" or
  * if you want the actual current value of the series "%.0f min to goal"
  */
+@SuppressWarnings("unused")
 public class SeriesLabel {
     static private Typeface mDefaultTypeFace;
     private String mLabel;
@@ -55,6 +56,9 @@ public class SeriesLabel {
     private int mColorText;
     private int mColorBack;
 
+    private final float mBufferX = 15f;
+    private final float mBufferY = 15f;
+
     private SeriesLabel(Builder builder) {
         mLabel = builder.mLabel;
         mVisible = builder.mVisible;
@@ -65,12 +69,10 @@ public class SeriesLabel {
         recalcLayout();
     }
 
-    @SuppressWarnings("unused")
     static public SeriesLabel createLabel(String label) {
         return new Builder(label).build();
     }
 
-    @SuppressWarnings("unused")
     static public void setDefaultFont(Context context, String fontName) {
         mDefaultTypeFace = Typeface.createFromAsset(context.getAssets(), fontName);
     }
@@ -114,7 +116,6 @@ public class SeriesLabel {
         return mLabel;
     }
 
-    @SuppressWarnings("unused")
     public void setLabel(@NonNull String label) {
         mLabel = label;
         mTextBounds = null;
@@ -133,8 +134,8 @@ public class SeriesLabel {
         float xVal = (float) Math.cos(radians) * radius + rect.centerX();
         float yVal = (float) Math.sin(radians) * radius + rect.centerY();
 
-        final float halfWidth = (mTextBounds.width() / 2) + 10f;
-        final float halfHeight = (mTextBounds.height() / 2) + 5f;
+        final float halfWidth = (mTextBounds.width() / 2) + mBufferX;
+        final float halfHeight = (mTextBounds.height() / 2) + mBufferY;
         if (0 > xVal - halfWidth) {
             xVal = halfWidth;
         }
@@ -176,37 +177,32 @@ public class SeriesLabel {
             mLabel = labelText;
         }
 
-        @SuppressWarnings("unused")
         public Builder setTypeface(@Nullable Typeface typeface) {
             mTypeface = typeface;
             return this;
         }
 
-        @SuppressWarnings("unused")
+
         public Builder setFontSize(float fontSize) {
             mFontSize = fontSize;
             return this;
         }
 
-        @SuppressWarnings("unused")
         public Builder setVisible(boolean visible) {
             mVisible = visible;
             return this;
         }
 
-        @SuppressWarnings("unused")
         public Builder setColorText(int colorText) {
             mColorText = colorText;
             return this;
         }
 
-        @SuppressWarnings("unused")
         public Builder setColorBack(int colorBack) {
             mColorBack = colorBack;
             return this;
         }
 
-        @SuppressWarnings("unused")
         public SeriesLabel build() {
             return new SeriesLabel(this);
         }

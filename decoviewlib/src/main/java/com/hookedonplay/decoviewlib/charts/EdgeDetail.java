@@ -45,7 +45,7 @@ public class EdgeDetail {
      */
     private EdgeType mEdgeType;
     /**
-     * Ibternal clippath used to apply the effect to only {@link #mRatio} of the line
+     * Internal clip path used to apply the effect to only {@link #mRatio} of the line
      */
     private Path mClipPath;
 
@@ -116,6 +116,7 @@ public class EdgeDetail {
     /**
      * Edge to apply the effect to.
      */
+    @SuppressWarnings("unused")
     public enum EdgeType {
         EDGE_INNER,
         EDGE_OUTER

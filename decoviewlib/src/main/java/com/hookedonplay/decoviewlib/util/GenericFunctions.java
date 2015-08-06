@@ -18,6 +18,7 @@ package com.hookedonplay.decoviewlib.util;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+@SuppressWarnings("unused")
 public class GenericFunctions {
 
     static private boolean mInitialized = false;
