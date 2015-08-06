@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Hooked On Play
+ * Copyright (C) 2015 Brent Marriott
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,16 +32,8 @@ import com.hookedonplay.decoviewlib.DecoView;
 import com.hookedonplay.decoviewlib.charts.SeriesItem;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
 
-/**
- * Sample fragment showing example use of DynamicArcView
- */
 public class SampleInterpolatorsFragment extends SampleFragment {
 
-    /**
-     * DynamicArcView allows you to add any number of arcs to the view. These are the index for
-     * each arc so we can control each arc individually
-     */
-    private int mBackIndex;
     private int mSeries1Index;
 
     public SampleInterpolatorsFragment() {
@@ -57,12 +49,12 @@ public class SampleInterpolatorsFragment extends SampleFragment {
     @Override
     protected void createTracks(){
         if (getView() != null) {
-            createTracks(R.id.dynamicArcView1, new LinearInterpolator());
-            createTracks(R.id.dynamicArcView2, new AnticipateInterpolator());
-            createTracks(R.id.dynamicArcView3, new AccelerateInterpolator());
-            createTracks(R.id.dynamicArcView4, new DecelerateInterpolator());
-            createTracks(R.id.dynamicArcView5, new BounceInterpolator());
-            createTracks(R.id.dynamicArcView6, new OvershootInterpolator());
+            createTracks(R.id.dynamicArcView1, new LinearInterpolator(), Color.parseColor("#FF0000"));
+            createTracks(R.id.dynamicArcView2, new AnticipateInterpolator(), Color.parseColor("#00FF00"));
+            createTracks(R.id.dynamicArcView3, new AccelerateInterpolator(), Color.parseColor("#0000FF"));
+            createTracks(R.id.dynamicArcView4, new DecelerateInterpolator(), Color.parseColor("#00FFFF"));
+            createTracks(R.id.dynamicArcView5, new BounceInterpolator(), Color.parseColor("#FFFF00"));
+            createTracks(R.id.dynamicArcView6, new OvershootInterpolator(), Color.parseColor("#FF00FF"));
         }
     }
 
@@ -78,7 +70,7 @@ public class SampleInterpolatorsFragment extends SampleFragment {
         }
     }
 
-    private void createTracks(int arcViewId, Interpolator interpolator) {
+    private void createTracks(int arcViewId, Interpolator interpolator, int color) {
         final float mSeriesMax = 50f;
         final DecoView arcView = (DecoView) getView().findViewById(arcViewId);
         arcView.deleteAll();
@@ -87,9 +79,9 @@ public class SampleInterpolatorsFragment extends SampleFragment {
                 .setRange(0, mSeriesMax, mSeriesMax)
                 .build();
 
-        mBackIndex = arcView.addSeries(arcBackTrack);
+        arcView.addSeries(arcBackTrack);
 
-        SeriesItem seriesItem1 = new SeriesItem.Builder(Color.argb(255,255,165,0))
+        SeriesItem seriesItem1 = new SeriesItem.Builder(color)
                 .setRange(0, mSeriesMax, 0)
                 .setInterpolator(interpolator)
                 .setSpinDuration(5000)
@@ -101,12 +93,12 @@ public class SampleInterpolatorsFragment extends SampleFragment {
 
     /**
      * Create a series of events that build a demonstration of moving and positioning
-     * the arcs in the DynamicArcView
+     * the arcs in the DecoView
      */
-    private void setupEvents(int arcId) {
+    private void setupEvents(final int arcId) {
         final DecoView arcView = (DecoView) getView().findViewById(arcId);
         if (arcView == null || arcView.isEmpty()) {
-            throw new IllegalStateException("Unable to add events to empty DynamicArcView");
+            throw new IllegalStateException("Unable to add events to empty View");
         }
 
         arcView.executeReset();
@@ -115,7 +107,7 @@ public class SampleInterpolatorsFragment extends SampleFragment {
         arcView.addEvent(new DecoEvent.Builder(40).setIndex(mSeries1Index).setDelay(5000).build());
         arcView.addEvent(new DecoEvent.Builder(50).setIndex(mSeries1Index).setDelay(8000).build());
         arcView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries1Index).setDelay(13000).build());
-        arcView.addEvent(new DecoEvent.Builder(25).setIndex(mSeries1Index).setDelay(16000).build());
+        arcView.addEvent(new DecoEvent.Builder(20).setIndex(mSeries1Index).setDelay(16000).build());
         arcView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries1Index).setDelay(19000)
                 .setListener(new DecoEvent.ExecuteEventListener() {
                     @Override

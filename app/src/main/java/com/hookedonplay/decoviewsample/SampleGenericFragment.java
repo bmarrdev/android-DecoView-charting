@@ -21,35 +21,37 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.TextView;
 
 import com.hookedonplay.decoviewlib.DecoView;
-import com.hookedonplay.decoviewlib.charts.DecoDrawEffect;
+import com.hookedonplay.decoviewlib.charts.EdgeDetail;
 import com.hookedonplay.decoviewlib.charts.SeriesItem;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
+import com.hookedonplay.decoviewlib.events.DecoEvent.EventType;
 
-public class SampleFitFragment extends SampleFragment {
+public class SampleGenericFragment extends SampleFragment {
     private int mBackIndex;
     private int mSeries1Index;
     private int mSeries2Index;
     private int mStyleIndex;
 
-    final private float[] mTrackBackWidth = {30f, 60f, 30f, 40f, 30f};
-    final private float[] mTrackWidth = {30f, 30f, 30f, 30f, 30f};
+    final private float[] mTrackBackWidth = {30f, 60f, 30f, 40f, 20f};
+    final private float[] mTrackWidth = {30f, 60f, 30f, 40f, 20f};
+    final private float[] mDetailEdge = {0.3f, 0.2f, 0.4f, 0.21f, 0.25f};
     final private boolean[] mClockwise = {true, true, true, false, true};
     final private boolean[] mRounded = {true, true, true, true, true};
     final private boolean[] mPie = {false, false, false, false, true};
+
     final private int[] mTotalAngle = {360, 360, 320, 260, 360};
     final private int[] mRotateAngle = {0, 180, 180, 0, 270};
 
-    public SampleFitFragment() {
+    public SampleGenericFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_sample_fit, container, false);
+        return inflater.inflate(R.layout.fragment_sample_generic, container, false);
     }
 
     @Override
@@ -86,6 +88,10 @@ public class SampleFitFragment extends SampleFragment {
                 .setChartStyle(mPie[mStyleIndex] ? SeriesItem.ChartStyle.STYLE_PIE : SeriesItem.ChartStyle.STYLE_DONUT)
                 .build();
 
+        if (mDetailEdge[mStyleIndex] > 0) {
+            seriesItem1.addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_OUTER, Color.parseColor("#33000000"), mDetailEdge[mStyleIndex]));
+        }
+
         mSeries1Index = arcView.addSeries(seriesItem1);
 
         SeriesItem seriesItem2 = new SeriesItem.Builder(Color.argb(255, 255, 51, 51))
@@ -97,29 +103,16 @@ public class SampleFitFragment extends SampleFragment {
                 .setCapRounded(mRounded[mStyleIndex])
                 .build();
 
+        if (mDetailEdge[mStyleIndex] > 0) {
+            seriesItem2.addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_INNER, Color.parseColor("#20000000"), mDetailEdge[mStyleIndex]));
+        }
+
         mSeries2Index = arcView.addSeries(seriesItem2);
 
         final TextView textPercent = (TextView) getView().findViewById(R.id.textPercentage);
         textPercent.setVisibility(View.INVISIBLE);
         textPercent.setText("");
         addProgressListener(seriesItem1, textPercent, "%.0f%%");
-
-
-        final TextView textToGo = (TextView) getView().findViewById(R.id.textRemaining);
-        textToGo.setVisibility(View.INVISIBLE);
-        textToGo.setText("");
-        addProgressRemainingListener(seriesItem1, textToGo, "%.0f min to goal", seriesMax);
-
-        View layout = getView().findViewById(R.id.layoutActivities);
-        layout.setVisibility(View.INVISIBLE);
-
-        final TextView textActivity1 = (TextView) getView().findViewById(R.id.textActivity1);
-        addProgressListener(seriesItem1, textActivity1, "%.0f Km");
-        textActivity1.setText("");
-
-        final TextView textActivity2 = (TextView) getView().findViewById(R.id.textActivity2);
-        textActivity2.setText("");
-        addProgressListener(seriesItem2, textActivity2, "%.0f Km");
     }
 
     @Override
@@ -139,31 +132,9 @@ public class SampleFitFragment extends SampleFragment {
             throw new IllegalStateException("Unable to add events to empty DecoView");
         }
 
-        final int fadeDuration = 2000;
-        if (mPie[mStyleIndex]) {
-            arcView.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
-                    .setIndex(mBackIndex)
-                    .setDuration(2000)
-                    .build());
-        } else {
-            arcView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT_FILL)
-                    .setIndex(mBackIndex)
-                    .setDuration(3000)
-                    .build());
-
-            arcView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
-                    .setIndex(mSeries1Index)
-                    .setFadeDuration(fadeDuration)
-                    .setDuration(2000)
-                    .setDelay(1000)
-                    .build());
-        }
-
-        arcView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
-                .setIndex(mSeries2Index)
-                .setLinkedViews(linkedViews)
+        arcView.addEvent(new DecoEvent.Builder(EventType.EVENT_SHOW, true)
+                .setDelay(1000)
                 .setDuration(2000)
-                .setDelay(1100)
                 .build());
 
         arcView.addEvent(new DecoEvent.Builder(10).setIndex(mSeries2Index).setDelay(3900).build());
@@ -171,26 +142,10 @@ public class SampleFitFragment extends SampleFragment {
 
         arcView.addEvent(new DecoEvent.Builder(25).setIndex(mSeries1Index).setDelay(3300).build());
         arcView.addEvent(new DecoEvent.Builder(50).setIndex(mSeries1Index).setDuration(1500).setDelay(9000).build());
-        arcView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries1Index).setDuration(500).setDelay(10500)
-                .setListener(new DecoEvent.ExecuteEventListener() {
-                    @Override
-                    public void onEventStart(DecoEvent event) {
-                        mUpdateListeners = false;
-                    }
 
-                    @Override
-                    public void onEventEnd(DecoEvent event) {
-
-                    }
-                })
-                .setInterpolator(new AccelerateInterpolator()).build());
-
-        arcView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_EXPLODE)
-                .setLinkedViews(linkedViews)
-                .setIndex(mSeries1Index)
+        arcView.addEvent(new DecoEvent.Builder(EventType.EVENT_HIDE, false)
                 .setDelay(11000)
-                .setDuration(3000)
-                .setDisplayText("GOAL!")
+                .setDuration(2000)
                 .setListener(new DecoEvent.ExecuteEventListener() {
                     @Override
                     public void onEventStart(DecoEvent event) {
@@ -211,5 +166,6 @@ public class SampleFitFragment extends SampleFragment {
                     }
                 })
                 .build());
+
     }
 }

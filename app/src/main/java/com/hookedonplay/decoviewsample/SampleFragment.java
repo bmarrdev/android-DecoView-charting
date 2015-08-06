@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Hooked On Play
+ * Copyright (C) 2015 Brent Marriott
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -201,12 +201,12 @@ abstract public class SampleFragment extends Fragment {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, base, getResources().getDisplayMetrics());
     }
 
-    protected DecoView getArcView() {
+    protected DecoView getDecoView() {
         try {
             return (DecoView) getView().findViewById(R.id.dynamicArcView);
         }
         catch (NullPointerException npe) {
-            Log.e("DecoViewSample", "Unable to get view");
+            Log.e(TAG, "Unable to resolve view " + npe.getMessage());
         }
         return null;
     }

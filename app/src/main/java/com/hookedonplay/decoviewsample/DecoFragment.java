@@ -31,10 +31,9 @@ import com.hookedonplay.decoviewlib.DecoView;
 import com.hookedonplay.decoviewlib.charts.SeriesItem;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
 
-
 public class DecoFragment extends SampleFragment {
 
-    final private int[] mPallete = {Color.parseColor("#f57c00"), Color.parseColor("#212121"),Color.parseColor("#4caf50"),Color.parseColor("#727272"),Color.parseColor("#b6b6b6")};
+    final private int[] mPalette = {Color.parseColor("#f57c00"), Color.parseColor("#212121"),Color.parseColor("#4caf50"),Color.parseColor("#727272"),Color.parseColor("#b6b6b6")};
     private int mSeries1Index;
 
     public DecoFragment() {
@@ -46,32 +45,26 @@ public class DecoFragment extends SampleFragment {
         return inflater.inflate(R.layout.fragment_deco, container, false);
     }
 
-
     @Override
     protected  void createTracks() {
         setDemoFinished(false);
-        final DecoView arcView = getArcView();
+        final DecoView arcView = getDecoView();
         if (arcView == null) {
             return;
         }
         arcView.deleteAll();
         arcView.configureAngles(270, 90);
 
-        final int count = mPallete.length;
-        final float width = 28;//getDimension(12);
-        //final float halfwidth = width / 2;
-        //final float totalwidth = count * width;
+        final int count = mPalette.length;
+        final float width = 28;
 
         for (int i = 0; i < count; i++) {
             float inset = i * getDimension(width-5);
-            SeriesItem seriesItem1 = new SeriesItem.Builder(mPallete[i])
+            SeriesItem seriesItem1 = new SeriesItem.Builder(mPalette[i])
                     .setRange(0, 100, 0)
-                    //.setInitialVisibility(true)
                     .setLineWidth(getDimension(width))
                     .setInset(new PointF(inset, inset))
-                    //.setCapRounded(true)
                     .setShowPointWhenEmpty(false)
-                    //.setChartStyle(SeriesItem.ChartStyle.STYLE_DONUT)
                     .build();
 
             mSeries1Index = arcView.addSeries(seriesItem1);
@@ -80,7 +73,7 @@ public class DecoFragment extends SampleFragment {
 
     @Override
     protected  void setupEvents() {
-        final DecoView arcView = getArcView();
+        final DecoView arcView = getDecoView();
         if (arcView == null) {
             return;
         }
@@ -88,29 +81,32 @@ public class DecoFragment extends SampleFragment {
         View finished = getView().findViewById(R.id.imageSwipeRight);
         finished.setVisibility(View.INVISIBLE);
 
-        int count = 5;
+        int count = mPalette.length;
         for (int i = 0; i < count; i ++) {
-            final int index = i;
             final boolean last = i == count - 1;
-            arcView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
-                    .setIndex(mSeries1Index - index)
+
+            DecoEvent revealEvent = new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
+                    .setIndex(mSeries1Index - i)
                     .setDelay(200 * i)
                     .setDuration(1500)
-                    .build());
+                    .build();
 
-            arcView.addEvent(new DecoEvent.Builder(100).setIndex(mSeries1Index - index).setDelay(1500 + (200 * i))
+            arcView.addEvent(revealEvent);
+
+            arcView.addEvent(new DecoEvent.Builder(100).setIndex(mSeries1Index - i).setDelay(1500 + (200 * i))
                     .setInterpolator(new OvershootInterpolator())
                     .setDuration(4000).build());
 
-            arcView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries1Index - index).setDelay(5750 + (200 * i))
+            arcView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries1Index - i).setDelay(5750 + (200 * i))
                     .setInterpolator(new AccelerateInterpolator())
                     .setDuration(1500).build());
 
 
             arcView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_IN)
-                    .setIndex(mSeries1Index - index)
+                    .setIndex(mSeries1Index - i)
+                    .setEffectRotations(3)
                     .setDelay(7250 + (200 * i))
-                    .setDuration(2000)
+                    .setDuration(1500)
                     .setInterpolator(new LinearInterpolator())
                     .setListener(new DecoEvent.ExecuteEventListener() {
                         @Override
@@ -127,12 +123,10 @@ public class DecoFragment extends SampleFragment {
                                 } catch (NullPointerException npe) {
                                     Log.e(TAG, "Unable to access finished view");
                                 }
-                                return;
                             }
                         }
                     })
                     .build());
         }
     }
-
 }

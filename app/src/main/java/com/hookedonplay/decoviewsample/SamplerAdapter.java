@@ -1,6 +1,20 @@
+/*
+ * Copyright (C) 2015 Brent Marriott
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.hookedonplay.decoviewsample;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -11,49 +25,29 @@ public class SamplerAdapter extends FragmentStatePagerAdapter {
         super(fm);
     }
 
+    private int mCount = 8;
+
     @Override
     public int getCount() {
-        return 8;
+        return mCount;
     }
 
     @Override
     public Fragment getItem(int position) {
-        Bundle bundle = new Bundle();
-        Fragment fragment;
         switch(position) {
-//            case 6:
-//                return new Sample20Fragment();// SampleFitFragment();
-//            case 2:
-//                return new SampleInterpolatorsFragment();
-//
-//            case 1:
-//                return new SampleTest4Fragment();
-//            //return new SampleFitFragment();
-//
-//            case 4:
-//                return new SampleReverseFragment();
-//            case 5:
-//                return new Sample20Fragment();
-//            case 7:
-//                fragment = new SampleGenericFragment();
-//                return fragment;
-//            case 3:
-////                    bundle.putInt(SampleGenericFragment.STYLE_KEY, SampleGenericFragment.STYLE_C);
-////                    fragment = new SampleGenericFragment();
-////                    fragment.setArguments(bundle);
-////                    return fragment;
-//                return new SampleTest3Fragment();
+            case 0:
+                return new DecoFragment();
+            case 1:
+                return new SampleFitFragment();
             case 2:
                 return new SampleInterpolatorsFragment();
-            case 1:
-//                    bundle.putInt(SampleGenericFragment.STYLE_KEY, SampleGenericFragment.STYLE_D);
-//                    fragment = new SampleGenericFragment();
-//                    fragment.setArguments(bundle);
-//                    return fragment;
-                return new DecoFragment();
-            // return new SampleHealthFragment();
+            case 3:
+                return new SampleGenericFragment();
+            case 4:
+                return new Sample2Fragment();
+
         }
-        return new SampleFitFragment();
+        return new Sample1Fragment();
     }
 
     @Override
