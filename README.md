@@ -2,8 +2,10 @@
 
 Animated arc based graphing library for Android.
 
+![Sample App Image](https://github.com/bmarrdev/android-DecoView-charting/blob/master/art/sample_acmefit.png)
 
-Add it in your build.gradle at the end of repositories:
+
+Step 1. Add the repositories into your build.gradle
 
 	repositories {
 	    // ...
