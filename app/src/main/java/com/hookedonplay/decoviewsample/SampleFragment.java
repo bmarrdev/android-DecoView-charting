@@ -120,6 +120,9 @@ abstract public class SampleFragment extends Fragment {
                 createAnimation();
             }
         }
+        else {
+            stopFragment();
+        }
     }
 
     @Override
@@ -170,6 +173,25 @@ abstract public class SampleFragment extends Fragment {
      * Override to create all the tracks (arcs) required for current page
      */
     abstract protected void createTracks();
+
+    /**
+     * Override to stop all once it is no longer displayed
+     */
+    protected void stopFragment() {
+        final DecoView arcView = getDecoView();
+
+        if (arcView == null || arcView.isEmpty()) {
+            return;
+        }
+        arcView.executeReset();
+        arcView.deleteAll();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopFragment();
+    }
 
     protected void setDemoFinished(boolean finished) {
         if (getView() != null) {

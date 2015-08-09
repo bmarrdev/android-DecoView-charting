@@ -17,6 +17,7 @@ package com.hookedonplay.decoviewsample;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,19 +54,19 @@ public class Sample1Fragment extends SampleFragment {
         arcView.addSeries(new SeriesItem.Builder(Color.argb(255, 0, 0, 0), Color.argb(255, 196, 0, 0))
                 .setRange(0, seriesMax, seriesMax)
                 .setInitialVisibility(false)
-                .setLineWidth(getDimension(32f))
+                .setLineWidth(getDimension(50f))
                 .build());
 
         arcView.addSeries(new SeriesItem.Builder(Color.argb(255, 255, 255, 255))
                 .setRange(0, seriesMax, seriesMax)
                 .setInitialVisibility(false)
-                .setLineWidth(getDimension(18f))
+                .setLineWidth(getDimension(24f))
                 .build());
 
         SeriesItem seriesItem1 = new SeriesItem.Builder(Color.argb(255, 0, 0, 0), Color.argb(255, 196, 0, 0))
                 .setRange(0, seriesMax, 0)
                 .setInitialVisibility(false)
-                .setLineWidth(getDimension(32f))
+                .setLineWidth(getDimension(50f))
                 .setCapRounded(false)
                 .setShowPointWhenEmpty(false)
                 .build();
@@ -76,6 +77,17 @@ public class Sample1Fragment extends SampleFragment {
         textPercent.setVisibility(View.INVISIBLE);
         textPercent.setText("");
         addProgressListener(seriesItem1, textPercent, "%.0f%%");
+    }
+
+    @Override
+    protected void stopFragment() {
+        super.stopFragment();
+        try {
+            getView().findViewById(R.id.textPercentage).setVisibility(View.INVISIBLE);
+        }
+        catch (NullPointerException npe) {
+            Log.d(TAG, "Unable to hide percentage view");
+        }
     }
 
     @Override

@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.TextView;
 
 import com.hookedonplay.decoviewlib.DecoView;
@@ -63,8 +64,10 @@ public class Sample2Fragment extends SampleFragment {
                 .setRange(0, seriesMax, 0)
                 .setInitialVisibility(false)
                 .setLineWidth(getDimension(32f))
-                .addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_OUTER, Color.parseColor("#22000000"), 0.4f))
-                .setSeriesLabel(new SeriesLabel.Builder("Percent %.0f%%").build())
+                .setSeriesLabel(new SeriesLabel.Builder("Percent %.0f%%")
+                        .setColorBack(Color.argb(218, 0, 0, 0))
+                        .setColorText(Color.argb(255, 255, 255, 255))
+                        .build())
                 .build();
 
         mSeries1Index = arcView.addSeries(seriesItem1);
@@ -73,7 +76,7 @@ public class Sample2Fragment extends SampleFragment {
                 .setRange(0, seriesMax, 0)
                 .setInitialVisibility(false)
                 .setLineWidth(getDimension(24f))
-                .addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_OUTER, Color.parseColor("#22000000"), 0.4f))
+                .setSpinDuration(3000)
                 .setSeriesLabel(new SeriesLabel.Builder("Value %.0f").build())
                 .build();
 
@@ -81,8 +84,6 @@ public class Sample2Fragment extends SampleFragment {
 
         final TextView textPercent = (TextView) getView().findViewById(R.id.textPercentage);
         textPercent.setVisibility(View.INVISIBLE);
-        textPercent.setText("");
-        addProgressListener(seriesItem1, textPercent, "%.0f%%");
     }
 
     @Override
@@ -104,12 +105,14 @@ public class Sample2Fragment extends SampleFragment {
                 .build());
 
         arcView.addEvent(new DecoEvent.Builder(25).setIndex(mSeries1Index).setDelay(3300).build());
-        arcView.addEvent(new DecoEvent.Builder(50).setIndex(mSeries1Index).setDelay(8000).build());
+        arcView.addEvent(new DecoEvent.Builder(50).setIndex(mSeries1Index).setDelay(8000).setDuration(1000).build());
         arcView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries1Index).setDelay(13000).setDuration(6000).build());
-
         arcView.addEvent(new DecoEvent.Builder(5).setIndex(mSeries2Index).setDelay(3600).build());
         arcView.addEvent(new DecoEvent.Builder(30).setIndex(mSeries2Index).setDelay(9000).build());
-        arcView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries2Index).setDelay(13000).build());
+        arcView.addEvent(new DecoEvent.Builder(0)
+                .setIndex(mSeries2Index)
+                .setDelay(13000)
+                .build());
 
         arcView.addEvent(new DecoEvent.Builder(EventType.EVENT_HIDE, false)
                 .setDelay(19500)

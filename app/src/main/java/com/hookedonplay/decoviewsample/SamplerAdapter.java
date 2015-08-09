@@ -25,7 +25,7 @@ public class SamplerAdapter extends FragmentStatePagerAdapter {
         super(fm);
     }
 
-    private int mCount = 8;
+    private int mCount = 7;
 
     @Override
     public int getCount() {
@@ -42,12 +42,17 @@ public class SamplerAdapter extends FragmentStatePagerAdapter {
             case 2:
                 return new SampleInterpolatorsFragment();
             case 3:
-                return new SampleGenericFragment();
+                return new Sample3Fragment();
             case 4:
                 return new Sample2Fragment();
+            case 5:
+                return new Sample1Fragment();
+            case 6:
+                return new Sample4Fragment();
+            default:
+                return new SampleFitFragment();
 
         }
-        return new Sample1Fragment();
     }
 
     @Override
