@@ -26,6 +26,9 @@ import com.hookedonplay.decoviewlib.DecoView;
 
 import java.util.ArrayList;
 
+/**
+ * Concrete class to use for Arc based line chart type drawing
+ */
 public class LineArcSeries extends ArcSeries {
 
     public LineArcSeries(@NonNull SeriesItem seriesItem, int totalAngle, int rotateAngle) {
