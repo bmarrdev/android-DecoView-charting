@@ -10,7 +10,6 @@
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_margin="8dp">
-
     </com.hookedonplay.decoviewlib.DecoView>
 
     <ImageView
@@ -22,28 +21,28 @@
         android:src="@drawable/ic_logo"/>
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/textViewDesc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/dynamicArcView"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
         android:gravity="center_horizontal"
         android:text="Dynamic graphical charting for Android"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_alignBottom="@+id/dynamicArcView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:textAlignment="gravity"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         />
 
     <ImageView
         android:id="@+id/imageSwipeRight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_swipe_right"
-        android:visibility="invisible"
-        android:layout_above="@+id/textView3"
+        android:layout_above="@+id/textViewDesc"
+        android:layout_below="@+id/imageView"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/imageView"/>
+        android:src="@drawable/ic_swipe_left"
+        android:visibility="invisible"/>
 
 </RelativeLayout>
