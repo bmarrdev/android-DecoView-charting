@@ -4,7 +4,6 @@ Animated arc based graphing library for Android.
 
 ![Sample App Image](https://github.com/bmarrdev/android-DecoView-charting/blob/master/art/sample_acmefit.png)
 
-
 Step 1. Add the repositories into your build.gradle
 
 	repositories {
@@ -309,6 +308,53 @@ SeriesItem seriesItem = new SeriesItem.Builder(Color.argb(255, 64, 196, 0))
 ```
 
 It is possible to use a custom font for the text used on the data labels. Load the font from your Android assets folder and use the SeriesLabel.Builder().setTyoeface(...) to set the font.
+
+Insetting arc radius
+===
+
+By default each arc in a series will be located at the center of the widest series of data. The result of this is that two arcs with the same line width will at the same radius from the center of the view.
+
+It is possible to adjust the radius from the center each series by setting an inset when creating the data series. The image below demonstrates what is possible when changing the inset for each series.
+
+![Inset arcs](https://github.com/bmarrdev/android-DecoView-charting/blob/master/art/sample_inset.png)
+
+To set an inset during series creation use SeriesItem.Builder#setInset(PointF)
+
+```java
+SeriesItem seriesItem = new SeriesItem.Builder(Color.parseColor("#FF00FF00")
+        .setRange(0, 100, 0)
+        .setInset(new PointF(20f, 20f))
+        .build();
+```
+
+It is also possible to move a data series in an outward direction by using a negative inset. To do this you need to ensure that you don't move the data series outside the viewable area of the View.
+
+Animating color change
+===
+
+Solid color change can be animated from one color to another. This can be done as a stand alone event or during a move event.
+
+To animate color change during a move event
+
+```java
+decoView.addEvent(new DecoEvent.Builder(10)
+        .setIndex(mSeries1Index)
+        .setDelay(3000)
+        .setColor(Color.parseColor("#FF555555"))
+        .build());
+```
+
+To animate color change as a stand alone event. Note that calling setDuration(...) is mandatory when creating a EVENT_COLOR_CHANGE event.
+
+```java
+decoView.addEvent(new DecoEvent.Builder(EventType.EVENT_COLOR_CHANGE, Color.parseColor("#FF555555"))
+        .setIndex(index)
+        .setDelay(10000)
+        .setDuration(2000)
+        .build());
+```
+
+Note: It is not possible to animate color change on series with a color gradient.
 
 Adding an EdgeDetail to a data series
 ===
