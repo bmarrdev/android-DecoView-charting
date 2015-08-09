@@ -22,6 +22,11 @@ import android.view.animation.AlphaAnimation;
 
 import com.hookedonplay.decoviewlib.charts.DecoDrawEffect;
 
+/**
+ * Event manager for processing {@link DecoEvent} at the scheduled time (or immediately if no
+ * delay is set). This class is also responsible for processing the hide/show fade effects of linked
+ * views.
+ */
 public class DecoEventManager {
 
     /**
@@ -35,6 +40,10 @@ public class DecoEventManager {
         mListener = listener;
     }
 
+    /**
+     * Add a {@link DecoEvent} to the schedule to be processed at the required time
+     * @param event
+     */
     public void add(@NonNull final DecoEvent event) {
         final boolean show = (event.getEventType() == DecoEvent.EventType.EVENT_SHOW) ||
                 (event.getEffectType() == DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT) ||
