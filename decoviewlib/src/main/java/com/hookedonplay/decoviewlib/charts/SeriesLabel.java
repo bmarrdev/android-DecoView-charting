@@ -44,6 +44,8 @@ import com.hookedonplay.decoviewlib.util.GenericFunctions;
 @SuppressWarnings("unused")
 public class SeriesLabel {
     static private Typeface mDefaultTypeFace;
+    private final float mBufferX = 15f;
+    private final float mBufferY = 15f;
     private String mLabel;
     private Paint mPaintBack;
     private Paint mPaintText;
@@ -55,9 +57,6 @@ public class SeriesLabel {
     private boolean mVisible;
     private int mColorText;
     private int mColorBack;
-
-    private final float mBufferX = 15f;
-    private final float mBufferY = 15f;
 
     private SeriesLabel(Builder builder) {
         mLabel = builder.mLabel;

@@ -28,11 +28,9 @@ import com.hookedonplay.decoviewlib.DecoView;
 
 public class LineSeries extends ChartSeries {
     private final String TAG = getClass().getSimpleName();
-
+    private final Path mDrawPath = new Path();
     private DecoView.HorizGravity mHorizGravity = DecoView.HorizGravity.GRAVITY_HORIZONTAL_CENTER;
     private DecoView.VertGravity mVertGravity = DecoView.VertGravity.GRAVITY_VERTICAL_CENTER;
-
-    private final Path mDrawPath = new Path();
 
     public LineSeries(@NonNull SeriesItem seriesItem, int totalAngle, int rotateAngle) {
         super(seriesItem, totalAngle, rotateAngle);

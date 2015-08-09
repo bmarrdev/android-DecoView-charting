@@ -37,13 +37,6 @@ import java.util.ArrayList;
  */
 @SuppressWarnings("unused")
 public class SeriesItem {
-    public enum ChartStyle {
-        STYLE_DONUT, /* Default: Hole in middle */
-        STYLE_PIE, /* Drawn from center point to outer limit */
-        STYLE_LINE_HORIZONTAL, /* Drawn as a horizontal straight line */
-        STYLE_LINE_VERTICAL /* Drawn as a horizontal straight line */
-    }
-
     /**
      * Main color of the arc
      */
@@ -109,13 +102,35 @@ public class SeriesItem {
      * Draw the arc at an amount inset from the outside of the view
      */
     private PointF mInset;
-
     /**
      * Draw shadow on edge for effect. Any number of edge effects can be applied
      */
     private ArrayList<EdgeDetail> mEdgeDetail;
-
     private SeriesLabel mSeriesLabel;
+    /**
+     * Provides optional callback functionality on progress update of animation
+     */
+    private ArrayList<SeriesItemListener> mListeners;
+
+    private SeriesItem(Builder builder) {
+        mColor = builder.mColor;
+        mColorSecondary = builder.mColorSecondary;
+        mLineWidth = builder.mLineWidth;
+        mSpinDuration = builder.mSpinDuration;
+        mMinValue = builder.mMinValue;
+        mMaxValue = builder.mMaxValue;
+        mInitialValue = builder.mInitialValue;
+        mInitialVisibility = builder.mInitialVisibility;
+        mSpinClockwise = builder.mSpinClockwise;
+        mRoundCap = builder.mRoundCap;
+        mDrawAsPoint = builder.mDrawAsPoint;
+        mChartStyle = builder.mChartStyle;
+        mInterpolator = builder.mInterpolator;
+        mShowPointWhenEmpty = builder.mShowPointWhenEmpty;
+        mInset = builder.mInset;
+        mEdgeDetail = builder.mEdgeDetail;
+        mSeriesLabel = builder.mSeriesLabel;
+    }
 
     public int getColor() {
         return mColor;
@@ -212,9 +227,37 @@ public class SeriesItem {
     }
 
     /**
-     * Provides optional callback functionality on progress update of animation
+     * Set a listener to get notification of completion of animation
+     *
+     * @param listener OrbSeriesItemListener to be used for callbacks
      */
-    private ArrayList<SeriesItemListener> mListeners;
+    public void addArcSeriesItemListener(@NonNull SeriesItemListener listener) {
+
+        if (mListeners == null) {
+            mListeners = new ArrayList<>();
+        }
+        mListeners.add(listener);
+    }
+
+    ArrayList<SeriesItemListener> getListeners() {
+        return mListeners;
+    }
+
+    public enum ChartStyle {
+        STYLE_DONUT, /* Default: Hole in middle */
+        STYLE_PIE, /* Drawn from center point to outer limit */
+        STYLE_LINE_HORIZONTAL, /* Drawn as a horizontal straight line */
+        STYLE_LINE_VERTICAL /* Drawn as a horizontal straight line */
+    }
+
+    /**
+     * Callback interface for notification of animation end
+     */
+    public interface SeriesItemListener {
+        void onSeriesItemAnimationProgress(float percentComplete, float currentPosition);
+
+        void onSeriesItemDisplayProgress(float percentComplete);
+    }
 
     public static class Builder {
         private int mColor = Color.argb(255, 32, 32, 32);
@@ -341,51 +384,5 @@ public class SeriesItem {
             return new SeriesItem(this);
         }
 
-    }
-
-    private SeriesItem(Builder builder) {
-        mColor = builder.mColor;
-        mColorSecondary = builder.mColorSecondary;
-        mLineWidth = builder.mLineWidth;
-        mSpinDuration = builder.mSpinDuration;
-        mMinValue = builder.mMinValue;
-        mMaxValue = builder.mMaxValue;
-        mInitialValue = builder.mInitialValue;
-        mInitialVisibility = builder.mInitialVisibility;
-        mSpinClockwise = builder.mSpinClockwise;
-        mRoundCap = builder.mRoundCap;
-        mDrawAsPoint = builder.mDrawAsPoint;
-        mChartStyle = builder.mChartStyle;
-        mInterpolator = builder.mInterpolator;
-        mShowPointWhenEmpty = builder.mShowPointWhenEmpty;
-        mInset = builder.mInset;
-        mEdgeDetail = builder.mEdgeDetail;
-        mSeriesLabel = builder.mSeriesLabel;
-    }
-
-    /**
-     * Set a listener to get notification of completion of animation
-     *
-     * @param listener OrbSeriesItemListener to be used for callbacks
-     */
-    public void addArcSeriesItemListener(@NonNull SeriesItemListener listener) {
-
-        if (mListeners == null) {
-            mListeners = new ArrayList<>();
-        }
-        mListeners.add(listener);
-    }
-
-    ArrayList<SeriesItemListener> getListeners() {
-        return mListeners;
-    }
-
-    /**
-     * Callback interface for notification of animation end
-     */
-    public interface SeriesItemListener {
-        void onSeriesItemAnimationProgress(float percentComplete, float currentPosition);
-
-        void onSeriesItemDisplayProgress(float percentComplete);
     }
 }

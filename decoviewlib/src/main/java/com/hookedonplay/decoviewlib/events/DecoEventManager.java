@@ -42,6 +42,7 @@ public class DecoEventManager {
 
     /**
      * Add a {@link DecoEvent} to the schedule to be processed at the required time
+     *
      * @param event
      */
     public void add(@NonNull final DecoEvent event) {
