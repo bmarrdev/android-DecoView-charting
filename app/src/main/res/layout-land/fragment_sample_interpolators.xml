@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent" >
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/textView">
+        android:layout_below="@+id/textView"
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="8dp">
+                android:layout_margin="8dp"
+                android:layout_weight="1">
 
                 <com.hookedonplay.decoviewlib.DecoView
+                    android:id="@+id/dynamicArcView1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/dynamicArcView1"
-/>
+                    />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:gravity="center"
                     android:text="Linear"
-                    android:gravity="center" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -40,110 +41,109 @@
                 android:layout_weight="1">
 
                 <com.hookedonplay.decoviewlib.DecoView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
                     android:id="@+id/dynamicArcView2"
-                    android:layout_margin="8dp" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="8dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:gravity="center"
                     android:text="Anticipate"
-                    android:gravity="center" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
             </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:orientation="vertical">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="8dp">
+                android:layout_margin="8dp"
+                android:layout_weight="1">
 
                 <com.hookedonplay.decoviewlib.DecoView
+                    android:id="@+id/dynamicArcView3"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/dynamicArcView3"                   />
+                    android:layout_height="match_parent"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:gravity="center"
                     android:text="Accelerate"
-                    android:gravity="center" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="8dp">
+                android:layout_margin="8dp"
+                android:layout_weight="1">
 
                 <com.hookedonplay.decoviewlib.DecoView
-                    xmlns:custom="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/dynamicArcView4"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/dynamicArcView4"/>
+                    android:layout_height="match_parent"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:gravity="center"
                     android:text="Decelerate"
-                    android:gravity="center" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
             </RelativeLayout>
 
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="8dp">
+                android:layout_margin="8dp"
+                android:layout_weight="1">
 
                 <com.hookedonplay.decoviewlib.DecoView
-                    xmlns:custom="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/dynamicArcView5"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/dynamicArcView5"/>
+                    android:layout_height="match_parent"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:gravity="center"
                     android:text="Bounce"
-                    android:gravity="center" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="8dp">
+                android:layout_margin="8dp"
+                android:layout_weight="1">
 
                 <com.hookedonplay.decoviewlib.DecoView
-                    xmlns:custom="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/dynamicArcView6"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/dynamicArcView6"
                     />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:gravity="center"
                     android:text="Overshoot"
-                    android:gravity="center" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
             </RelativeLayout>
 
         </LinearLayout>
@@ -153,11 +153,11 @@
     <include layout="@layout/layout_replay"/>
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Displays effect of changing Interpolator on animation"
         android:padding="4dp"
-        android:id="@+id/textView" />
+        android:text="Interpolator movement demonstration"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 </RelativeLayout>

@@ -160,7 +160,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="4dp"
-        android:text="Displays effect of changing Interpolator on animation"
+        android:text="Interpolator movement demonstration"
         android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 </RelativeLayout>
