@@ -31,6 +31,7 @@ abstract public class ArcSeries extends ChartSeries {
      * Sweep angle starts at {@link #mArcAngleStart}
      */
     protected float mArcAngleSweep;
+
     ArcSeries(@NonNull SeriesItem seriesItem, int totalAngle, int rotateAngle) {
         super(seriesItem, totalAngle, rotateAngle);
     }
@@ -60,9 +61,8 @@ abstract public class ArcSeries extends ChartSeries {
         mArcAngleStart = mAngleStart;
 
         if (mSeriesItem.getDrawAsPoint()) {
-            mArcAngleStart = adjustDrawPointAngle(mArcAngleStart);
+            mArcAngleStart = adjustDrawPointAngle(mArcAngleSweep);
             mArcAngleSweep = adjustSweepDirection(getMinSweepAngle());
-
         }
 
         return false;
