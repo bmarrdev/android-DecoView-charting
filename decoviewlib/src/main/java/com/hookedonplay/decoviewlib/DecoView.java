@@ -44,49 +44,29 @@ import java.util.ArrayList;
  */
 public class DecoView extends View implements DecoEventManager.ArcEventManagerListener {
     private final String TAG = getClass().getSimpleName();
-
-    public enum VertGravity {
-        GRAVITY_VERTICAL_TOP,
-        GRAVITY_VERTICAL_CENTER,
-        GRAVITY_VERTICAL_BOTTOM,
-        GRAVITY_VERTICAL_FILL
-    }
-
-    public enum HorizGravity {
-        GRAVITY_HORIZONTAL_LEFT,
-        GRAVITY_HORIZONTAL_CENTER,
-        GRAVITY_HORIZONTAL_RIGHT,
-        GRAVITY_HORIZONTAL_FILL
-    }
-
     /**
-     *
+     * Gravity settings
      */
     private VertGravity mVertGravity = VertGravity.GRAVITY_VERTICAL_CENTER;
     private HorizGravity mHorizGravity = HorizGravity.GRAVITY_HORIZONTAL_CENTER;
-
     /**
      * List of arcs to draw for this view. Generally this will be 1 series for the background arc
      * and then 1 or more for the data being presented
      */
     private ArrayList<ChartSeries> mChartSeries;
-
     /**
      * Width/Height of the view
      */
     private int mCanvasWidth = -1;
     private int mCanvasHeight = -1;
-
     /**
      * Bounds for drawing the arcs
      */
     private RectF mArcBounds;
-
     /**
      * The default line width used for the arcs
      */
     private float mDefaultLineWidth = 30;
-
     /**
      * RotateAngle adjusts the angle of the start point for drawing. It should be noted that the
      * behavior is different based on if the arc is a full circle or a part circle. If it is a
@@ -95,18 +75,15 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
      * as the defaults
      */
     private int mRotateAngle = 0;
-
     /**
      * Total angle of the orb. 360 = full circle, < 360 horseshoe/arc shape
      */
     private int mTotalAngle = 360;
-
     /**
      * Event manager that controls the timing of events to be executed on the
      * {@link DecoView}
      */
     private DecoEventManager mDecoEventManager;
-
     private float mMeasureViewableArea[];
 
     public DecoView(Context context) {
@@ -237,6 +214,7 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
                 break;
             case STYLE_LINE_HORIZONTAL:
             case STYLE_LINE_VERTICAL:
+                Log.w(TAG, "STYLE_LINE_* is currently experimental");
                 LineSeries lineSeries = new LineSeries(seriesItem, mTotalAngle, mRotateAngle);
                 lineSeries.setHorizGravity(mHorizGravity);
                 lineSeries.setVertGravity(mVertGravity);
@@ -427,19 +405,24 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
      * @param event Event to execute
      */
     private void executeMove(@NonNull DecoEvent event) {
-        if (event.getEventType() != DecoEvent.EventType.EVENT_MOVE) {
+        if ((event.getEventType() != DecoEvent.EventType.EVENT_MOVE) &&
+                (event.getEventType() != DecoEvent.EventType.EVENT_COLOR_CHANGE)) {
             return;
         }
 
         if (mChartSeries != null) {
             if (mChartSeries.size() <= event.getIndexPosition()) {
-                throw new IllegalArgumentException("Invalid index: Position out of range (Index: " + event.getIndexPosition() + " Arc Count: " + mChartSeries.size() + ")");
+                throw new IllegalArgumentException("Invalid index: Position out of range (Index: " + event.getIndexPosition() + " Series Count: " + mChartSeries.size() + ")");
             }
 
             final int index = event.getIndexPosition();
             if (index >= 0 && index < mChartSeries.size()) {
                 ChartSeries item = mChartSeries.get(event.getIndexPosition());
-                item.startAnimateMove(event);
+                if (event.getEventType() == DecoEvent.EventType.EVENT_COLOR_CHANGE) {
+                    item.startAnimateColorChange(event);
+                } else {
+                    item.startAnimateMove(event);
+                }
             } else {
                 Log.e(TAG, "Ignoring move request: Invalid array index. Index: " + index + " Size: " + mChartSeries.size());
             }
@@ -589,6 +572,7 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
         executeMove(event);
         executeReveal(event);
         executeEffect(event);
+
     }
 
     @SuppressWarnings("unused")
@@ -626,5 +610,25 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
                 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             setLayerType(LAYER_TYPE_SOFTWARE, null);
         }
+    }
+
+    /**
+     * Vertical positioning values
+     */
+    public enum VertGravity {
+        GRAVITY_VERTICAL_TOP,
+        GRAVITY_VERTICAL_CENTER,
+        GRAVITY_VERTICAL_BOTTOM,
+        GRAVITY_VERTICAL_FILL
+    }
+
+    /**
+     * Horizontal positioning values
+     */
+    public enum HorizGravity {
+        GRAVITY_HORIZONTAL_LEFT,
+        GRAVITY_HORIZONTAL_CENTER,
+        GRAVITY_HORIZONTAL_RIGHT,
+        GRAVITY_HORIZONTAL_FILL
     }
 }

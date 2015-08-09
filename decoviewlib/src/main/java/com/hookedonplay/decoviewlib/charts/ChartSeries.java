@@ -20,6 +20,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
@@ -32,8 +33,6 @@ import com.nineoldandroids.animation.ValueAnimator;
 /**
  * ChartSeries is the implementation of one series of data.
  * A {@link DecoView} can have one or more DataSeries
- *
- * @author BrentM
  */
 abstract public class ChartSeries {
     /**
@@ -44,20 +43,21 @@ abstract public class ChartSeries {
     static final private float MIN_SWEEP_ANGLE_FLAT = 0.1f;
     static final private float MIN_SWEEP_ANGLE_NONE = 0f;
     static final private float MIN_SWEEP_ANGLE_PIE = MIN_SWEEP_ANGLE_NONE;
+
     @SuppressWarnings("unused")
     protected final String TAG = getClass().getSimpleName();
-    /**
-     * Current Mode of drawing
-     */
-    protected DrawMode mDrawMode;
-    /**
-     * Current Effect being executed (if any)
-     */
-    protected DecoDrawEffect mEffect;
     /**
      * ArcItem attributes to be drawn
      */
     protected final SeriesItem mSeriesItem;
+    /**
+     * Current Mode of drawing
+     */
+    protected DecoEvent.EventType mDrawMode;
+    /**
+     * Current Effect being executed (if any)
+     */
+    protected DecoDrawEffect mEffect;
     /**
      * Positions for current animation
      */
@@ -96,6 +96,9 @@ abstract public class ChartSeries {
      * ValueAnimator to calculate arc drawing position during animation
      */
     private ValueAnimator mValueAnimator;
+
+    private ColorAnimate mColorAnimate;
+
     /**
      * Construct an ArcSeries based on the ArcItem attributes and the angle and shape
      * of the arc
@@ -152,16 +155,22 @@ abstract public class ChartSeries {
      * Create the animation of filling the chart by using a valueAnimator to adjust values
      */
     public void startAnimateMove(@NonNull final DecoEvent event) {
-        mDrawMode = DrawMode.DRAW_MOVE;
+        mDrawMode = event.getEventType();
         mVisible = true;
 
+        cancelAnimation();
+
+        final boolean changeColors = event.isColorSet();
+        if (changeColors) {
+            mColorAnimate = new ColorAnimate(mSeriesItem.getColor(), event.getColor());
+            mSeriesItem.setColor(event.getColor());
+        }
         float position = event.getEndPosition();
 
         if (Math.abs(mPositionEnd - position) < 0.01) {
+            Log.e(TAG, "Aborting move request, no position change");
             return;
         }
-
-        cancelAnimation();
 
         event.notifyStartListener();
 
@@ -226,6 +235,10 @@ abstract public class ChartSeries {
         mValueAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
+                if (changeColors) {
+                    mColorAnimate = null;
+                }
+
                 event.notifyEndListener();
             }
         });
@@ -240,6 +253,11 @@ abstract public class ChartSeries {
     public void cancelAnimation() {
         if (mValueAnimator != null) {
             mValueAnimator.cancel();
+        }
+
+        if (mColorAnimate != null) {
+            mPaint.setColor(mSeriesItem.getColor());
+            mColorAnimate = null;
         }
     }
 
@@ -256,7 +274,7 @@ abstract public class ChartSeries {
         event.notifyStartListener();
         mVisible = true;
 
-        mDrawMode = DrawMode.DRAW_REVEAL;
+        mDrawMode = event.getEventType();
         mPercentComplete = 0f;
 
         final float maxValue = 1.0f;
@@ -290,6 +308,59 @@ abstract public class ChartSeries {
     }
 
     /**
+     * Animate change of color
+     *
+     * @param event Event to process
+     */
+    public void startAnimateColorChange(@NonNull final DecoEvent event) {
+        cancelAnimation();
+        event.notifyStartListener();
+        mVisible = true;
+
+        mDrawMode = event.getEventType();
+        mPercentComplete = 0f;
+
+        final boolean changeColors = event.isColorSet();
+        if (changeColors) {
+            mColorAnimate = new ColorAnimate(mSeriesItem.getColor(), event.getColor());
+            mSeriesItem.setColor(event.getColor());
+        } else {
+            Log.w(TAG, "Must set new color to start CHANGE_COLOR event");
+            return;
+        }
+
+        final float maxValue = 1.0f;
+        mValueAnimator = ValueAnimator.ofFloat(0, maxValue);
+
+        mValueAnimator.setDuration(event.getEffectDuration());
+        if (event.getInterpolator() != null) {
+            mValueAnimator.setInterpolator(event.getInterpolator());
+        } else {
+            mValueAnimator.setInterpolator(new LinearInterpolator());
+        }
+
+        mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                mPercentComplete = Float.valueOf(valueAnimator.getAnimatedValue().toString());
+
+                for (SeriesItem.SeriesItemListener seriesItemListener : mSeriesItem.getListeners()) {
+                    seriesItemListener.onSeriesItemDisplayProgress(mPercentComplete);
+                }
+            }
+        });
+
+        mValueAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                event.notifyEndListener();
+            }
+        });
+
+        mValueAnimator.start();
+    }
+
+    /**
      * Execute an Animation effect by starting the Value Animator
      *
      * @param event Event to process effect
@@ -308,7 +379,7 @@ abstract public class ChartSeries {
         event.notifyStartListener();
 
         mVisible = true;
-        mDrawMode = DrawMode.DRAW_EFFECT;
+        mDrawMode = event.getEventType();
         mEffect = new DecoDrawEffect(event.getEffectType(), mPaint, event.getDisplayText());
         mEffect.setRotationCount(event.getEffectRotations());
 
@@ -333,7 +404,7 @@ abstract public class ChartSeries {
             @Override
             public void onAnimationEnd(Animator animation) {
                 event.notifyEndListener();
-                mDrawMode = DrawMode.DRAW_MOVE;
+                mDrawMode = DecoEvent.EventType.EVENT_MOVE;
                 mVisible = mEffect.postExecuteVisibility();
                 mEffect = null;
             }
@@ -346,7 +417,7 @@ abstract public class ChartSeries {
      * Reset the arc back to the initial values and cancel any current animations
      */
     public void reset() {
-        mDrawMode = DrawMode.DRAW_MOVE;
+        mDrawMode = DecoEvent.EventType.EVENT_MOVE;
         mVisible = mSeriesItem.getInitialVisibility();
 
         cancelAnimation();
@@ -396,7 +467,6 @@ abstract public class ChartSeries {
      * @return true if drawing has already been handled
      */
     public boolean draw(Canvas canvas, RectF bounds) {
-
         if (!mVisible) {
             return true;
         }
@@ -407,8 +477,8 @@ abstract public class ChartSeries {
 
         processBoundsChange(bounds);
 
-        if (mDrawMode == DrawMode.DRAW_EFFECT) {
-            // Delegate the drawing to the ArcEffect when required
+        if (mDrawMode == DecoEvent.EventType.EVENT_EFFECT) {
+            // Delegate the drawing to the ArcEffect as required
             if (mEffect != null) {
                 mEffect.draw(canvas, mBoundsInset, mPercentComplete, mAngleStart, mAngleSweep);
             }
@@ -417,26 +487,11 @@ abstract public class ChartSeries {
 
         processRevealEffect();
 
+        if (mColorAnimate != null) {
+            mPaint.setColor(mColorAnimate.getColorCurrent(mPercentComplete));
+        }
         return false;
     }
-
-//    /**
-//     * Determine if the bounds are square, ie. same width and height
-//     *
-//     * @return true if width and height are equal
-//     */
-//    protected boolean areBoundsSquare() {
-//        return Math.abs(mBoundsInset.width() - mBoundsInset.height()) < 0.01;
-//    }
-
-//    /**
-//     * Determine if the arc should be drawn as a wedge from the center of the bounds
-//     *
-//     * @return true for wedge, false for line arc
-//     */
-//    protected boolean drawAsWedge() {
-//        return mSeriesItem.getChartStyle() == SeriesItem.ChartStyle.STYLE_PIE;
-//    }
 
     /**
      * Adjust the sweep value if the direction of the arc is not being drawn in a
@@ -457,6 +512,7 @@ abstract public class ChartSeries {
      */
     protected float adjustDrawPointAngle(float sweep) {
         return (mAngleStart + (sweep - getMinSweepAngle())) % 360;
+
     }
 
     /**
@@ -465,7 +521,8 @@ abstract public class ChartSeries {
      * line will be reduced to nothing
      */
     protected void processRevealEffect() {
-        if (mDrawMode != DrawMode.DRAW_REVEAL) {
+        if ((mDrawMode != DecoEvent.EventType.EVENT_HIDE) &&
+                (mDrawMode != DecoEvent.EventType.EVENT_SHOW)) {
             return;
         }
 
@@ -489,7 +546,6 @@ abstract public class ChartSeries {
      * @param bounds The bounds used to draw the chart
      */
     protected void processBoundsChange(final RectF bounds) {
-
         if (mBounds == null || !mBounds.equals(bounds)) {
             mBounds = new RectF(bounds);
             mBoundsInset = new RectF(bounds);
@@ -533,7 +589,9 @@ abstract public class ChartSeries {
             return start;
         }
 
-        if (mDrawMode == DrawMode.DRAW_REVEAL) {
+        if ((mDrawMode == DecoEvent.EventType.EVENT_HIDE) ||
+                (mDrawMode == DecoEvent.EventType.EVENT_SHOW) ||
+                (mDrawMode == DecoEvent.EventType.EVENT_COLOR_CHANGE)) {
             // When revealing we are not animating the movement, but animating the size and
             // transparency, so treat this as if it is 100% complete already
             percent = 1.0f;
@@ -590,11 +648,5 @@ abstract public class ChartSeries {
      */
     public boolean isVisible() {
         return mVisible;
-    }
-
-    protected enum DrawMode {
-        DRAW_REVEAL, /* animated reveal of series */
-        DRAW_MOVE, /* animated move of series */
-        DRAW_EFFECT /* animated effect on series */
     }
 }
