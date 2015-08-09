@@ -52,7 +52,7 @@ public class DecoDrawEffect {
      * Number of lines created during explode animation
      */
     static private final int EXPLODE_LINE_COUNT = 9;
-    static private final float MIN_LINE_WIDTH = 22f;
+    static private final float MIN_LINE_WIDTH = 10f;
     static private final float MAX_LINE_WIDTH = 100f;
     /**
      * Effect type to draw
@@ -81,6 +81,7 @@ public class DecoDrawEffect {
     private RectF mSpinBounds = new RectF();
 
     private int mCircuits = 6;
+
     /**
      * Construct the delegate for painting the special effects for the arc
      *
@@ -220,8 +221,8 @@ public class DecoDrawEffect {
         final float buffer = 10f;
         final float halfWidth = (bounds.width() / 2) - buffer;
         final float halfHeight = (bounds.height() / 2) - buffer;
+        final float baseRotateAngle = mCircuits * 360f;
 
-        final float baseRotateAngle = mCircuits * 360f;//720f;
         float rotateAmount = (mEffectType == EffectType.EFFECT_SPIRAL_OUT_FILL) ? baseRotateAngle + 360f : baseRotateAngle;
         float rotateOffset = (rotateAmount * percentComplete);
         float newAngle = (startAngle + (spinClockwise ? rotateOffset : -rotateOffset)) % 360;
