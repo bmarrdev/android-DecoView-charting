@@ -2,7 +2,9 @@
 
 Animated arc based graphing library for Android.
 
-![Sample App Image](https://github.com/bmarrdev/android-DecoView-charting/blob/master/art/sample_acmefit.png)
+[![Build Status](https://travis-ci.org/bmarrdev/android-DecoView-charting.svg?branch=master)](https://travis-ci.org/bmarrdev/android-DecoView-charting) [![Release](https://img.shields.io/github/release/bmarrdev/android-DecoView-charting.svg?label=JitPack)](https://jitpack.io/#bmarrdev/android-DecoView-charting)
+
+![DecoView Library Image](https://github.com/bmarrdev/android-DecoView-charting/blob/master/art/decoview_header.png)
 
 Step 1. Add the repositories into your build.gradle
 
@@ -384,9 +386,11 @@ Requirements
 
 Android 2.3+
 
-With Thanks
+Credits
 ===
 - Jake Wharton for <a href="https://github.com/JakeWharton/NineOldAndroids/">NineOldAndroids</a> allowing support for Android 2.3 devices.
+- [Infographic vector designed by Freepik](http://www.freepik.com/free-photos-vectors/infographic)
+- [Avatars designed by Freepik](http://www.freepik.com/free-vector/family-avatars_796722.htm)
 
 License
 ===
