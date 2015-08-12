@@ -106,6 +106,9 @@ public class SeriesItem {
      * Draw shadow on edge for effect. Any number of edge effects can be applied
      */
     private ArrayList<EdgeDetail> mEdgeDetail;
+    /**
+     * Label for the data series
+     */
     private SeriesLabel mSeriesLabel;
     /**
      * Provides optional callback functionality on progress update of animation
@@ -220,6 +223,10 @@ public class SeriesItem {
             mEdgeDetail = new ArrayList<>();
         }
         mEdgeDetail.add(new EdgeDetail(edgeDetail));
+    }
+
+    public void setSeriesLabel(SeriesLabel label) {
+        mSeriesLabel = label;
     }
 
     public SeriesLabel getSeriesLabel() {
