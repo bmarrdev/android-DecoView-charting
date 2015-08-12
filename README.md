@@ -1,10 +1,21 @@
 # DecoView
 
-Animated arc based graphing library for Android.
+[![Build Status](https://travis-ci.org/bmarrdev/android-DecoView-charting.svg?branch=master)](https://travis-ci.org/bmarrdev/android-DecoView-charting) [![Release](https://img.shields.io/github/release/bmarrdev/android-DecoView-charting.svg?label=JitPack)](https://jitpack.io/#bmarrdev/android-DecoView-charting)[![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![Platform](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html)
 
-[![Build Status](https://travis-ci.org/bmarrdev/android-DecoView-charting.svg?branch=master)](https://travis-ci.org/bmarrdev/android-DecoView-charting) [![Release](https://img.shields.io/github/release/bmarrdev/android-DecoView-charting.svg?label=JitPack)](https://jitpack.io/#bmarrdev/android-DecoView-charting)
+Animated arc based charting library for Android.
 
 ![DecoView Library Image](https://github.com/bmarrdev/android-DecoView-charting/blob/master/art/decoview_header.png)
+
+To see DecoView in action take a look at the promo video.
+
+[![Sample Video](https://github.com/bmarrdev/android-DecoView-charting/blob/master/art/decoview_sample_add_video.png)](https://www.youtube.com/watch?v=nycmNd7FQDM)
+
+Sample app available from the play store.
+
+[![Sample Video](https://github.com/bmarrdev/android-DecoView-charting/blob/master/art/en_app_rgb_wo_60.png)](https://play.google.com/store/apps/details?id=com.hookedonplay.decoviewsample)
+
+Including DecoView in your project
+===
 
 Step 1. Add the repositories into your build.gradle
 
@@ -22,6 +33,8 @@ Step 2. Add the dependency in the form
 
 Usage
 ===
+
+DecoView is subclassed from the Android View class. Just like other View subclasses, such as TextView and ImageView, it can be added and configured from your layout XML then controlled in your Activity code.
 
 Add DecoView to your xml layout
 
@@ -84,9 +97,9 @@ decoView.configureAngles(360, 0);
 
 To set the DecoView to be a complete circle pass 360 as the totalAngle. Alternatively 300 degrees will produce a horseshoe shape and 180 will produce a semi-circle.
 
-By default a full circle will start at the top of the screen. By passing 90 as the rotate angle the initial point of the chart will be the rightmost point of the circle.
+By default when using a full circle the data series will originate at the top of the screen. By passing 90 as the rotate angle the initial point of the chart will shift 90 degrees clockwise to start at the rightmost point of the circle.
 
-When the view is not a complete circle the default start point is the bottom of the view. Passing 90 will set the initial point to the leftmost point and 180 the topmost.
+When the view is not a complete circle the default initial point is the bottom of the view. Passing 90 will set the initial point to the leftmost point and 180 the topmost.
 
 Chart Gravity
 ===
@@ -126,15 +139,14 @@ The minimum required to construct a new series is done as follows:
 decoView.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218)).build());
 ```
 
-The Builder class has allows you to configure all the options to customize the view to look and behave as you require. Here is a more detailed construction of a SeriesItem that overrides the defaults:
+The Builder class has allows you to configure all the options to customize the view to look and behave as you require. Below is a more detailed construction of a SeriesItem that overrides more of the defaults settings
 
 ```java
 SeriesItem seriesItem1 = new SeriesItem.Builder(Color.argb(255, 64, 196, 0))
         .setRange(0, seriesMax, 0)
         .setInitialVisibility(false)
-        .setLineWidth(getDimension(32f))
+        .setLineWidth(32f)
         .addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_OUTER, Color.parseColor("#22000000"), 0.4f))
-        .addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_INNER, Color.parseColor("#22000000"), 0.4f))
         .setSeriesLabel(new SeriesLabel.Builder("Percent %.0f%%").build())
         .setInterpolator(new OvershootInterpolator())
         .setShowPointWhenEmpty(false)
@@ -150,9 +162,9 @@ SeriesItem seriesItem1 = new SeriesItem.Builder(Color.argb(255, 64, 196, 0))
 Adding a listener to a data series
 ===
 
-Once you have a SeriesItem created you can optionally add a SeriesItem.SeriesItemListener() that will allow you to get a callback as the progress of an animation for the data series.
+Once you have a SeriesItem created you can optionally add a SeriesItem.SeriesItemListener() that will allow you to use a callback to monitor the progress of an animation for the data series.
 
-The most common reason to add a listener to a data series will be to display the percentage or value of the data series.
+The most common reason to add a listener to a data series will be to display the current percentage or value of the data series.
 
 ```java
 String format = "%.0f%%";
@@ -175,7 +187,7 @@ seriesItem.addArcSeriesItemListener(new SeriesItem.SeriesItemListener() {
 });
 ```
 
-Note that the progress callback includes a percentComplete parameter. This is the percent complete of the current animation, you can calculate the percent filled using the current position.
+Note that the progress callback includes a percentComplete parameter. This is the percent complete of the current animation being executed, you can calculate the percent filled using the current position.
 
 Animating the data series
 ===
@@ -199,15 +211,15 @@ To move the current position of a data series create a new DecoEvent and pass it
 decoView.addEvent(new DecoEvent.Builder(50).setIndex(mSeriesIndex).build());
 ```
 
-If you want to execute the event at a future time add the delay to the DecoEvent through the DecoEvent.Builder.setDelay(long ms) function:
+If you want to execute the event at a future time you can add the delay to the DecoEvent through the DecoEvent.Builder.setDelay(long ms) function.
 
 ```java
 decoView.addEvent(new DecoEvent.Builder(50).setIndex(mSeriesIndex).setDelay(8000).build());
 ```
 
 In the above example some important points to note are:
-- The argument 50 passed to the builder function is the position in relation to the range of data initialized with the SeriesItem.Builder().setRange(min, max, initial) function call
-- The Index that is passed is returned from the DecoView.addSeries(...) function call
+- The argument '50' passed to the builder function is the position in relation to the range of data initialized with the SeriesItem.Builder().setRange(min, max, initial) function call
+- The Index that is passed was returned from the DecoView.addSeries(...) function call
 - All durations are specified in milliseconds
 
 Adding a listener to an DecoEvent
@@ -252,7 +264,7 @@ decoView.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218))
 
 If no Interpolator is set when creating the data series all animations will use the default AccelerateDecelerateInterpolator().
 
-It is also possible to override the Interpolator for each event that is applied to a data series:
+It is also possible to override the Interpolator for each event that is applied to a data series.
 
 ```java
 decoView.addEvent(new DecoEvent.Builder(10)
@@ -265,7 +277,7 @@ decoView.addEvent(new DecoEvent.Builder(10)
 Configuring the animation duration
 ===
 
-Much like configuring the Interpolator used to configure that rate of change of the animation, the total duration taken to complete an animation can be set when creating the data series, or overridden for each event.
+Much like configuring the Interpolator, the total duration taken to complete an animation can be set when creating the data series, or overridden for each event.
 
 ```java
 decoView.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218))
@@ -276,9 +288,9 @@ decoView.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218))
 
 The SpinDuration is the duration that a complete revolution will take. That is moving from the start to the end of the series. Based on this duration when a DecoEvent moves the current position the duration is automatically calculated based on the amount of rotation required.
 
-To illustrate this with an example if you set the spin duration to 3 seconds (3000 ms) then move the current position to 50% of the total arc range, then the animation will take 1.5 seconds to complete.
+To illustrate this with an example, if you set the spin duration to 3 seconds (3000 ms) then move the current position to 50% of the total arc range, then the animation will take 1.5 seconds to complete.
 
-It is also possible to override the duration for each event that is applied to the data series:
+It is also possible to override the duration for each event that is applied to the data series.
 
 ```java
 decoView.addEvent(new DecoEvent.Builder(10)
@@ -292,8 +304,6 @@ Adding labels to a data series
 ===
 
 Labels can be added to one or more data series. The labels will only be shown when the data series is visible.
-
-Labels are not supported on DecoViews which have a data series that move in an anti-clockwise direction.
 
 ![Sample App Image](https://github.com/bmarrdev/android-DecoView-charting/blob/master/art/sample_labels.png)
 
@@ -312,10 +322,12 @@ SeriesItem seriesItem = new SeriesItem.Builder(Color.argb(255, 64, 196, 0))
 
 It is possible to use a custom font for the text used on the data labels. Load the font from your Android assets folder and use the SeriesLabel.Builder().setTypeface(...) to set the font.
 
+Note: Labels are currently not supported on DecoViews which have a data series that move in an anti-clockwise direction.
+
 Insetting arc radius
 ===
 
-By default each arc in a series will be located at the center of the widest series of data. The result of this is that two arcs with the same line width will at the same radius from the center of the view.
+By default each arc in a series will be located at the center of the widest series of data. The result of this is that two arcs with the same line width will be drawn at the same radius from the center of the view.
 
 It is possible to adjust the radius from the center each series by setting an inset when creating the data series. The image below demonstrates what is possible when changing the inset for each series.
 
@@ -366,7 +378,7 @@ The EdgeDetail class allows you to apply an effect to the edge of a data series.
 
 ![Sample App Image](https://github.com/bmarrdev/android-DecoView-charting/blob/master/art/sample_labels.png)
 
-Construct an EdgeDetail object by passing the side of the arc to apply the detail and the color and size of the edge detail. The size of the edge detail is specified as a float ranging from 0f to 1.0f where 1.0f will cover the complete arc.
+Construct an EdgeDetail object by passing which edge of the arc to apply the detail and the color and size of the edge detail. The size of the edge detail is specified as a float ranging from 0f to 1.0f where 1.0f will cover the complete arc.
 
 Adding a Edge to a series is done using the SeriesItem.Builder.addEdgeDetail(EdgeDetail) function.
 
@@ -377,7 +389,7 @@ SeriesItem seriesItem = new SeriesItem.Builder(Color.argb(255, 64, 196, 0))
         .build();
 ```
 
-Note in the example above the color uses transparency to give the edge of the arc a darker tint to the existing arc.
+Note that in the example above the color uses transparency to give the edge of the arc a darker tint of the existing arc color.
 
 NOTE: On Android 4.0 to 4.3 Adding an EdgeDetail to a data series will result in Hardware acceleration being turned off for that DecoView. This is due to these platforms not supporting the clipPath() functions with hardware acceleration. It would be unusual for this cause any noticeable difference to the performance of the View.
 
@@ -389,7 +401,7 @@ Android 2.2+
 
 Credits
 ===
-- Jake Wharton for <a href="https://github.com/JakeWharton/NineOldAndroids/">NineOldAndroids</a> allowing support for Android 2.3 devices.
+- Jake Wharton for <a href="https://github.com/JakeWharton/NineOldAndroids/">NineOldAndroids</a> allowing support for Android 2.2+ devices.
 - [Infographic vector designed by Freepik](http://www.freepik.com/free-photos-vectors/infographic)
 - [Avatars designed by Freepik](http://www.freepik.com/free-vector/family-avatars_796722.htm)
 
