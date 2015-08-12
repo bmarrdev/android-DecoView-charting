@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <include layout="@layout/layout_replay"/>
+    android:orientation="vertical"
+    android:background="@android:color/black">
 
     <com.hookedonplay.decoviewlib.DecoView
         android:layout_width="match_parent"
@@ -18,10 +17,13 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text=""
+        android:textColor="@android:color/white"
         android:textSize="40sp"
         android:id="@+id/textPercentage"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         />
+
+    <include layout="@layout/layout_replay"/>
 
 </RelativeLayout>

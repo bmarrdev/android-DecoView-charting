@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/layout_replay"/>
+
+    <com.hookedonplay.decoviewlib.DecoView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/dynamicArcView"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp">
+
+    </com.hookedonplay.decoviewlib.DecoView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/darker_gray"
+        android:text="Avatars Designed by Freepik.com"
+        android:id="@+id/textView2"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/dynamicArcView"
+        android:layout_alignStart="@+id/dynamicArcView"/>
+
+    <ImageView
+        android:layout_width="175dp"
+        android:layout_height="175dp"
+        android:id="@+id/imageViewAvatar"
+        android:src="@drawable/ic_avatar_group"
+        android:visibility="invisible"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Fit Tracker"
+        android:id="@+id/textProgress"
+        android:layout_above="@+id/textView2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView4"
+        android:src="@drawable/ic_fit_logo"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"/>
+
+</RelativeLayout>
