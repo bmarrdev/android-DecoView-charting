@@ -74,14 +74,15 @@ Add events to animate the data series
 Chart Shape and orientation
 ===
 
-The chart can be a full circle (360 degrees) or part of a circle. To set the number of degrees and the orientation use the function:
+The chart can be a full circle (360 degrees) or part of a circle. The number of degrees and the orientation can be set in the DecoView.
 
 ```java
-void configureAngles(int totalAngle, int rotateAngle);
+void DecoView.configureAngles(int totalAngle, int rotateAngle);
+
 decoView.configureAngles(360, 0);
 ```
 
-To set the DecoView to be a complete circle pass 360 as the totalAngle. 300 degrees will produce a horseshoe shape and 180 will produce a semi-circle.
+To set the DecoView to be a complete circle pass 360 as the totalAngle. Alternatively 300 degrees will produce a horseshoe shape and 180 will produce a semi-circle.
 
 By default a full circle will start at the top of the screen. By passing 90 as the rotate angle the initial point of the chart will be the rightmost point of the circle.
 
@@ -205,7 +206,7 @@ decoView.addEvent(new DecoEvent.Builder(50).setIndex(mSeriesIndex).setDelay(8000
 ```
 
 In the above example some important points to note are:
-- The argument 50 passed to the builder function is the position in relation to the range of data initilized with the SeriesItem.Builder().setRange(min, max, initial) function call
+- The argument 50 passed to the builder function is the position in relation to the range of data initialized with the SeriesItem.Builder().setRange(min, max, initial) function call
 - The Index that is passed is returned from the DecoView.addSeries(...) function call
 - All durations are specified in milliseconds
 
@@ -275,7 +276,7 @@ decoView.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218))
 
 The SpinDuration is the duration that a complete revolution will take. That is moving from the start to the end of the series. Based on this duration when a DecoEvent moves the current position the duration is automatically calculated based on the amount of rotation required.
 
-To illustrate this with an example if you set the Spin Duation to 3 seconds then move the current position to 50% of the total arc range, then the animation will take 1.5 seconds to complete.
+To illustrate this with an example if you set the spin duration to 3 seconds (3000 ms) then move the current position to 50% of the total arc range, then the animation will take 1.5 seconds to complete.
 
 It is also possible to override the duration for each event that is applied to the data series:
 
@@ -309,7 +310,7 @@ SeriesItem seriesItem = new SeriesItem.Builder(Color.argb(255, 64, 196, 0))
         .build();
 ```
 
-It is possible to use a custom font for the text used on the data labels. Load the font from your Android assets folder and use the SeriesLabel.Builder().setTyoeface(...) to set the font.
+It is possible to use a custom font for the text used on the data labels. Load the font from your Android assets folder and use the SeriesLabel.Builder().setTypeface(...) to set the font.
 
 Insetting arc radius
 ===
@@ -378,13 +379,13 @@ SeriesItem seriesItem = new SeriesItem.Builder(Color.argb(255, 64, 196, 0))
 
 Note in the example above the color uses transparency to give the edge of the arc a darker tint to the existing arc.
 
-NOTE: On Android 4.0 to 4.3 Adding an EdgeDetail to a data series will result in Hardware acceleration being turned off for that DecoView. This is due to these platforms not supporting the clipPath() functions with hardware acceleration. It would be unusual for this cause any noticable different to the performance of the View.
+NOTE: On Android 4.0 to 4.3 Adding an EdgeDetail to a data series will result in Hardware acceleration being turned off for that DecoView. This is due to these platforms not supporting the clipPath() functions with hardware acceleration. It would be unusual for this cause any noticeable difference to the performance of the View.
 
 
 Requirements
 ===
 
-Android 2.3+
+Android 2.2+
 
 Credits
 ===
