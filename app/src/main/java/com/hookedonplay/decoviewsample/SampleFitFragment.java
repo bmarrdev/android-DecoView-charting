@@ -62,7 +62,6 @@ public class SampleFitFragment extends SampleFragment {
         }
         decoView.deleteAll();
         decoView.configureAngles(mTotalAngle[mStyleIndex], mRotateAngle[mStyleIndex]);
-        mStyleIndex = 0;
 
         SeriesItem arcBackTrack = new SeriesItem.Builder(Color.argb(255, 228, 228, 228))
                 .setRange(0, seriesMax, seriesMax)
