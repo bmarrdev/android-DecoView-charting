@@ -267,7 +267,6 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
      */
     private void recalcLayout() {
         if (mCanvasWidth <= 0 || mCanvasHeight <= 0) {
-            Log.w(TAG, "Unable to recalculate layout: Canvas size invalid w: " + mCanvasWidth + " h: " + mCanvasHeight);
             return;
         }
 
@@ -353,7 +352,7 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
             for (int i = 0; i < mChartSeries.size(); i++) {
                 ChartSeries chartSeries = mChartSeries.get(i);
                 chartSeries.draw(canvas, mArcBounds);
-                // labels Unsupported when some series run anticlockwise
+                // labels Unsupported if one or more series run anticlockwise
                 labelsSupported &= (!chartSeries.isVisible() || chartSeries.getSeriesItem().getSpinClockwise());
                 mMeasureViewableArea[i] = getVisibleArea(chartSeries, i);
             }
@@ -572,18 +571,22 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
         executeMove(event);
         executeReveal(event);
         executeEffect(event);
-
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Set the Vertical gravity of the DecoView
+     * @param vertGravity Vertical Gravity
+     */
     public void setVertGravity(VertGravity vertGravity) {
         mVertGravity = vertGravity;
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Set the Horizontal Gravity of the DecoView
+     * @param horizGravity Horizontal Gravity
+     */
     public void setHorizGravity(HorizGravity horizGravity) {
         mHorizGravity = horizGravity;
-
     }
 
     /**
@@ -610,6 +613,18 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
                 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             setLayerType(LAYER_TYPE_SOFTWARE, null);
         }
+    }
+
+    /**
+     * Retrieve the {@link SeriesItem} based on the index
+     * @param index index of the series item
+     * @return SeriesItem
+     */
+    public SeriesItem getSeriesItem(int index) {
+        if (index >= 0 && index < mChartSeries.size()) {
+            return mChartSeries.get(index).getSeriesItem();
+        }
+        return null;
     }
 
     /**
