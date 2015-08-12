@@ -15,10 +15,12 @@
  */
 package com.hookedonplay.decoviewlib.events;
 
+import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
+import android.widget.TextView;
 
 import com.hookedonplay.decoviewlib.charts.DecoDrawEffect;
 
@@ -43,7 +45,7 @@ public class DecoEventManager {
     /**
      * Add a {@link DecoEvent} to the schedule to be processed at the required time
      *
-     * @param event
+     * @param event DecoEvent to add
      */
     public void add(@NonNull final DecoEvent event) {
         final boolean show = (event.getEventType() == DecoEvent.EventType.EVENT_SHOW) ||
@@ -58,6 +60,17 @@ public class DecoEventManager {
                 if (show) {
                     if (event.getLinkedViews() != null) {
                         for (View view : event.getLinkedViews()) {
+
+                            // Issue with ICS where View is not displayed after the setVisibility() call if it has no text
+                            // This results in subsequent calls to setText also not being visible
+                            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                                if (view instanceof TextView) {
+                                    TextView textView = (TextView) view;
+                                    if (textView.getText().length() <= 0) {
+                                        textView.setText(" ");
+                                    }
+                                }
+                            }
                             view.setVisibility(View.VISIBLE);
                         }
                     }
