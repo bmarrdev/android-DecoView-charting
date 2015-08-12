@@ -168,7 +168,7 @@ abstract public class ChartSeries {
         float position = event.getEndPosition();
 
         if (Math.abs(mPositionEnd - position) < 0.01) {
-            Log.e(TAG, "Aborting move request, no position change");
+            Log.v(TAG, "Aborting move request, no position change");
             return;
         }
 
