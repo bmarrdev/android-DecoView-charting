@@ -30,20 +30,18 @@ import com.hookedonplay.decoviewlib.events.DecoEvent;
 import com.hookedonplay.decoviewlib.events.DecoEvent.EventType;
 
 public class SampleGenericFragment extends SampleFragment {
-    private int mBackIndex;
-    private int mSeries1Index;
-    private int mSeries2Index;
-    private int mStyleIndex;
-
     final private float[] mTrackBackWidth = {30f, 60f, 30f, 40f, 20f};
     final private float[] mTrackWidth = {30f, 60f, 30f, 40f, 20f};
     final private float[] mDetailEdge = {0.3f, 0.2f, 0.4f, 0.21f, 0.25f};
     final private boolean[] mClockwise = {true, true, true, false, true};
     final private boolean[] mRounded = {true, true, true, true, true};
     final private boolean[] mPie = {false, false, false, false, true};
-
     final private int[] mTotalAngle = {360, 360, 320, 260, 360};
     final private int[] mRotateAngle = {0, 180, 180, 0, 270};
+    private int mBackIndex;
+    private int mSeries1Index;
+    private int mSeries2Index;
+    private int mStyleIndex;
 
     public SampleGenericFragment() {
     }
@@ -59,7 +57,8 @@ public class SampleGenericFragment extends SampleFragment {
         setDemoFinished(false);
         final float seriesMax = 50f;
         final DecoView arcView = getDecoView();
-        if (arcView == null) {
+        final View view = getView();
+        if (arcView == null || view == null) {
             return;
         }
         arcView.deleteAll();
@@ -109,7 +108,7 @@ public class SampleGenericFragment extends SampleFragment {
 
         mSeries2Index = arcView.addSeries(seriesItem2);
 
-        final TextView textPercent = (TextView) getView().findViewById(R.id.textPercentage);
+        final TextView textPercent = (TextView) view.findViewById(R.id.textPercentage);
         textPercent.setVisibility(View.INVISIBLE);
         textPercent.setText("");
         addProgressListener(seriesItem1, textPercent, "%.0f%%");
@@ -118,20 +117,11 @@ public class SampleGenericFragment extends SampleFragment {
     @Override
     protected void setupEvents() {
         final DecoView arcView = getDecoView();
-        if (arcView == null) {
+        if (arcView == null || arcView.isEmpty()) {
             return;
         }
 
         mUpdateListeners = true;
-        final TextView textPercent = (TextView) getView().findViewById(R.id.textPercentage);
-        final TextView textToGo = (TextView) getView().findViewById(R.id.textRemaining);
-        final View layout = getView().findViewById(R.id.layoutActivities);
-        final View[] linkedViews = {textPercent, textToGo, layout};
-
-        if (arcView == null || arcView.isEmpty()) {
-            throw new IllegalStateException("Unable to add events to empty DecoView");
-        }
-
         arcView.addEvent(new DecoEvent.Builder(EventType.EVENT_SHOW, true)
                 .setDelay(1000)
                 .setDuration(2000)

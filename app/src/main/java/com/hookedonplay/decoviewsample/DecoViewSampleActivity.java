@@ -16,9 +16,9 @@
 
 package com.hookedonplay.decoviewsample;
 
+import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 public class DecoViewSampleActivity extends AppCompatActivity {
 
@@ -27,7 +27,7 @@ public class DecoViewSampleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deco_view_sample);
         SamplerAdapter samplesAdapter = new SamplerAdapter(getSupportFragmentManager());
-        ViewPager samplesPager = (ViewPager)findViewById(R.id.samplesPager);
+        ViewPager samplesPager = (ViewPager) findViewById(R.id.samplesPager);
         samplesPager.setAdapter(samplesAdapter);
     }
 }

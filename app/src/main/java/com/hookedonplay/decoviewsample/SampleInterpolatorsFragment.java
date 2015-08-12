@@ -47,14 +47,14 @@ public class SampleInterpolatorsFragment extends SampleFragment {
     }
 
     @Override
-    protected void createTracks(){
+    protected void createTracks() {
         if (getView() != null) {
-            createTracks(R.id.dynamicArcView1, new LinearInterpolator(), Color.parseColor("#FF0000"));
-            createTracks(R.id.dynamicArcView2, new AnticipateInterpolator(), Color.parseColor("#00FF00"));
-            createTracks(R.id.dynamicArcView3, new AccelerateInterpolator(), Color.parseColor("#0000FF"));
-            createTracks(R.id.dynamicArcView4, new DecelerateInterpolator(), Color.parseColor("#00FFFF"));
-            createTracks(R.id.dynamicArcView5, new BounceInterpolator(), Color.parseColor("#FFFF00"));
-            createTracks(R.id.dynamicArcView6, new OvershootInterpolator(), Color.parseColor("#FF00FF"));
+            createTracks(R.id.dynamicArcView1, new LinearInterpolator(), Color.parseColor("#CC0000"));
+            createTracks(R.id.dynamicArcView2, new AnticipateInterpolator(), Color.parseColor("#048482"));
+            createTracks(R.id.dynamicArcView3, new AccelerateInterpolator(), Color.parseColor("#003366"));
+            createTracks(R.id.dynamicArcView4, new DecelerateInterpolator(), Color.parseColor("#66A7C5"));
+            createTracks(R.id.dynamicArcView5, new BounceInterpolator(), Color.parseColor("#FF6000"));
+            createTracks(R.id.dynamicArcView6, new OvershootInterpolator(), Color.parseColor("#6F0564"));
         }
     }
 
@@ -72,22 +72,35 @@ public class SampleInterpolatorsFragment extends SampleFragment {
 
     private void createTracks(int arcViewId, Interpolator interpolator, int color) {
         final float mSeriesMax = 50f;
-        final DecoView arcView = (DecoView) getView().findViewById(arcViewId);
-        arcView.deleteAll();
+        final View view = getView();
+        if (view == null) {
+            return;
+        }
 
-        SeriesItem arcBackTrack = new SeriesItem.Builder(Color.argb(255,228,228,228))
+        final DecoView decoView = (DecoView) view.findViewById(arcViewId);
+        if (decoView == null) {
+            return;
+        }
+
+        decoView.deleteAll();
+        decoView.configureAngles(320, 180);
+
+        SeriesItem arcBackTrack = new SeriesItem.Builder(Color.argb(255, 228, 228, 228))
                 .setRange(0, mSeriesMax, mSeriesMax)
+                .setLineWidth(getDimension(12f))
                 .build();
 
-        arcView.addSeries(arcBackTrack);
+        decoView.addSeries(arcBackTrack);
 
         SeriesItem seriesItem1 = new SeriesItem.Builder(color)
                 .setRange(0, mSeriesMax, 0)
                 .setInterpolator(interpolator)
+                .setLineWidth(getDimension(12f))
                 .setSpinDuration(5000)
+                .setSpinClockwise(false)
                 .build();
 
-        mSeries1Index = arcView.addSeries(seriesItem1);
+        mSeries1Index = decoView.addSeries(seriesItem1);
 
     }
 
@@ -96,19 +109,24 @@ public class SampleInterpolatorsFragment extends SampleFragment {
      * the arcs in the DecoView
      */
     private void setupEvents(final int arcId) {
-        final DecoView arcView = (DecoView) getView().findViewById(arcId);
-        if (arcView == null || arcView.isEmpty()) {
+        final View view = getView();
+        if (view == null) {
+            return;
+        }
+        final DecoView decoView = (DecoView) view.findViewById(arcId);
+        if (decoView == null || decoView.isEmpty()) {
             throw new IllegalStateException("Unable to add events to empty View");
         }
 
-        arcView.executeReset();
+        decoView.executeReset();
 
-        arcView.addEvent(new DecoEvent.Builder(15).setIndex(mSeries1Index).setDelay(1000).build());
-        arcView.addEvent(new DecoEvent.Builder(40).setIndex(mSeries1Index).setDelay(5000).build());
-        arcView.addEvent(new DecoEvent.Builder(50).setIndex(mSeries1Index).setDelay(8000).build());
-        arcView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries1Index).setDelay(13000).build());
-        arcView.addEvent(new DecoEvent.Builder(20).setIndex(mSeries1Index).setDelay(16000).build());
-        arcView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries1Index).setDelay(19000)
+        decoView.addEvent(new DecoEvent.Builder(15).setIndex(mSeries1Index).setDelay(1000).build());
+        decoView.addEvent(new DecoEvent.Builder(40).setIndex(mSeries1Index).setDelay(5000).build());
+        decoView.addEvent(new DecoEvent.Builder(50).setIndex(mSeries1Index).setDelay(8000).build());
+        decoView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries1Index).setDelay(13000).build());
+        decoView.addEvent(new DecoEvent.Builder(20).setIndex(mSeries1Index).setDelay(16000).build());
+        decoView.addEvent(new DecoEvent.Builder(25).setIndex(mSeries1Index).setDelay(19000).build());
+        decoView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries1Index).setDelay(22000)
                 .setListener(new DecoEvent.ExecuteEventListener() {
                     @Override
                     public void onEventStart(DecoEvent event) {

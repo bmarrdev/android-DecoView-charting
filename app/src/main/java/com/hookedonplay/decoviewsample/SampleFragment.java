@@ -15,6 +15,7 @@
  */
 package com.hookedonplay.decoviewsample;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -31,25 +32,32 @@ import com.hookedonplay.decoviewlib.charts.SeriesItem;
 abstract public class SampleFragment extends Fragment {
     protected final String TAG = getClass().getSimpleName();
 
-    protected boolean mInitialized = false;
-
+    final protected int COLOR_BLUE = Color.parseColor("#AA1D76D2");
+    final protected int COLOR_PINK = Color.parseColor("#AAFF4081");
+    final protected int COLOR_YELLOW = Color.parseColor("#AAFFC107");
+    final protected int COLOR_GREEN = Color.parseColor("#AA07CC07");
+    final protected int COLOR_EDGE = Color.parseColor("#22000000");
+    final protected int COLOR_BACK = Color.parseColor("#22888888");
+    final protected int COLOR_NEUTRAL = Color.parseColor("#FF999999");
     protected boolean mUpdateListeners = true;
+    private boolean mInitialized = false;
+
     /**
      * Add a listener to update the progress on a TextView
      *
      * @param seriesItem ArcItem to listen for update changes
-     * @param view View to update
-     * @param format String.format to display the progress
-     *
-     * If the string format includes a percentage character we assume that we should set
-     * a percentage into the string, otherwise the current position is added into the string
-     * For example if the arc has a min of 0 and a max of 50 and the current position is 20
-     *      Format -> "%.0f%% Complete" -> "40% Complete"
-     *      Format -> "%.1f Km" -> "20.0 Km"
-     *      Format -> "%.0f/40 Levels Complete" -> "20/40 Levels Complete"
+     * @param view       View to update
+     * @param format     String.format to display the progress
+     *                   <p/>
+     *                   If the string format includes a percentage character we assume that we should set
+     *                   a percentage into the string, otherwise the current position is added into the string
+     *                   For example if the arc has a min of 0 and a max of 50 and the current position is 20
+     *                   Format -> "%.0f%% Complete" -> "40% Complete"
+     *                   Format -> "%.1f Km" -> "20.0 Km"
+     *                   Format -> "%.0f/40 Levels Complete" -> "20/40 Levels Complete"
      */
     protected void addProgressListener(@NonNull final SeriesItem seriesItem, @NonNull final TextView view, @NonNull final String format) {
-        if (format == null || format.isEmpty()) {
+        if (format.length() <= 0) {
             throw new IllegalArgumentException("String formatter can not be empty");
         }
 
@@ -75,7 +83,7 @@ abstract public class SampleFragment extends Fragment {
     }
 
     protected void addProgressRemainingListener(@NonNull final SeriesItem seriesItem, @NonNull final TextView view, @NonNull final String format, final float maxValue) {
-        if (format == null || format.isEmpty()) {
+        if (format.length() <= 0) {
             throw new IllegalArgumentException("String formatter can not be empty");
         }
 
@@ -100,7 +108,7 @@ abstract public class SampleFragment extends Fragment {
         });
     }
 
-    protected boolean createAnimation() {
+    private boolean createAnimation() {
         if (mInitialized) {
             createTracks();
             if (super.getUserVisibleHint()) {
@@ -119,8 +127,7 @@ abstract public class SampleFragment extends Fragment {
                 setDemoFinished(false);
                 createAnimation();
             }
-        }
-        else {
+        } else {
             stopFragment();
         }
     }
@@ -128,6 +135,11 @@ abstract public class SampleFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        if (getView() == null) {
+            return;
+        }
+
         mInitialized = true;
         final View replay = getView().findViewById(R.id.imageReplay);
         final View swipe = getView().findViewById(R.id.imageSwipe);
@@ -193,6 +205,12 @@ abstract public class SampleFragment extends Fragment {
         stopFragment();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        createAnimation();
+    }
+
     protected void setDemoFinished(boolean finished) {
         if (getView() != null) {
             final View continueLayout = getView().findViewById(R.id.layoutContinue);
@@ -204,8 +222,7 @@ abstract public class SampleFragment extends Fragment {
                 if (swipe != null) {
                     swipe.setVisibility(View.VISIBLE);
                 }
-            }
-            else {
+            } else {
                 if (continueLayout != null) {
                     continueLayout.setVisibility(View.INVISIBLE);
                 }
@@ -224,10 +241,13 @@ abstract public class SampleFragment extends Fragment {
     }
 
     protected DecoView getDecoView() {
+        if (getView() == null) {
+            return null;
+        }
+
         try {
             return (DecoView) getView().findViewById(R.id.dynamicArcView);
-        }
-        catch (NullPointerException npe) {
+        } catch (NullPointerException npe) {
             Log.e(TAG, "Unable to resolve view " + npe.getMessage());
         }
         return null;

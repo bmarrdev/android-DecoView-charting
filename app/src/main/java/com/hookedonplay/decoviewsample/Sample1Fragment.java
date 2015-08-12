@@ -17,7 +17,6 @@ package com.hookedonplay.decoviewsample;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,82 +36,67 @@ public class Sample1Fragment extends SampleFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_sample_generic, container, false);
+        return inflater.inflate(R.layout.fragment_sample1, container, false);
     }
 
     @Override
     protected void createTracks() {
         setDemoFinished(false);
         final float seriesMax = 50f;
-        final DecoView arcView = getDecoView();
-        if (arcView == null) {
+        final DecoView decoView = getDecoView();
+        final View view = getView();
+        if (decoView == null || view == null) {
             return;
         }
-        arcView.deleteAll();
-        arcView.configureAngles(360, 270);
+        decoView.deleteAll();
+        decoView.configureAngles(280, 0);
 
-        arcView.addSeries(new SeriesItem.Builder(Color.argb(255, 0, 0, 0), Color.argb(255, 196, 0, 0))
+        decoView.addSeries(new SeriesItem.Builder(Color.argb(255, 64, 255, 64), Color.argb(255, 255, 0, 0))
                 .setRange(0, seriesMax, seriesMax)
                 .setInitialVisibility(false)
                 .setLineWidth(getDimension(50f))
                 .build());
 
-        arcView.addSeries(new SeriesItem.Builder(Color.argb(255, 255, 255, 255))
+        decoView.addSeries(new SeriesItem.Builder(Color.argb(255, 0, 0, 0))
                 .setRange(0, seriesMax, seriesMax)
                 .setInitialVisibility(false)
                 .setLineWidth(getDimension(24f))
                 .build());
 
-        SeriesItem seriesItem1 = new SeriesItem.Builder(Color.argb(255, 0, 0, 0), Color.argb(255, 196, 0, 0))
+        SeriesItem seriesItem1 = new SeriesItem.Builder(Color.argb(255, 64, 255, 64), Color.argb(255, 255, 0, 0))
                 .setRange(0, seriesMax, 0)
                 .setInitialVisibility(false)
                 .setLineWidth(getDimension(50f))
-                .setCapRounded(false)
-                .setShowPointWhenEmpty(false)
+                .setCapRounded(true)
+                .setShowPointWhenEmpty(true)
                 .build();
 
-        mSeries1Index = arcView.addSeries(seriesItem1);
+        mSeries1Index = decoView.addSeries(seriesItem1);
 
-        final TextView textPercent = (TextView) getView().findViewById(R.id.textPercentage);
-        textPercent.setVisibility(View.INVISIBLE);
+        final TextView textPercent = (TextView) view.findViewById(R.id.textPercentage);
         textPercent.setText("");
         addProgressListener(seriesItem1, textPercent, "%.0f%%");
     }
 
     @Override
-    protected void stopFragment() {
-        super.stopFragment();
-        try {
-            getView().findViewById(R.id.textPercentage).setVisibility(View.INVISIBLE);
-        }
-        catch (NullPointerException npe) {
-            Log.d(TAG, "Unable to hide percentage view");
-        }
-    }
-
-    @Override
     protected void setupEvents() {
-        final DecoView arcView = getDecoView();
-        if (arcView == null || arcView.isEmpty()) {
+        final DecoView decoView = getDecoView();
+        if (decoView == null || decoView.isEmpty()) {
             throw new IllegalStateException("Unable to add events to empty DecoView");
         }
 
-        final TextView textPercent = (TextView) getView().findViewById(R.id.textPercentage);
-        final View[] linkedViews = {textPercent};
-        arcView.executeReset();
-        arcView.addEvent(new DecoEvent.Builder(EventType.EVENT_SHOW, true)
+        decoView.executeReset();
+        decoView.addEvent(new DecoEvent.Builder(EventType.EVENT_SHOW, true)
                 .setDelay(1000)
                 .setDuration(2000)
-                .setLinkedViews(linkedViews)
                 .build());
 
-        arcView.addEvent(new DecoEvent.Builder(25).setIndex(mSeries1Index).setDelay(3300).build());
-        arcView.addEvent(new DecoEvent.Builder(50).setIndex(mSeries1Index).setDelay(9000).build());
-        arcView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries1Index).setDelay(13000).setDuration(6000).build());
-        arcView.addEvent(new DecoEvent.Builder(EventType.EVENT_HIDE, false)
+        decoView.addEvent(new DecoEvent.Builder(25).setIndex(mSeries1Index).setDelay(3300).build());
+        decoView.addEvent(new DecoEvent.Builder(50).setIndex(mSeries1Index).setDelay(9000).build());
+        decoView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries1Index).setDelay(13000).setDuration(6000).build());
+        decoView.addEvent(new DecoEvent.Builder(EventType.EVENT_HIDE, false)
                 .setDelay(19000)
                 .setDuration(2000)
-                .setLinkedViews(linkedViews)
                 .setListener(new DecoEvent.ExecuteEventListener() {
                     @Override
                     public void onEventStart(DecoEvent event) {

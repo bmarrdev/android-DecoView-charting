@@ -30,11 +30,6 @@ import com.hookedonplay.decoviewlib.charts.SeriesItem;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
 
 public class SampleFitFragment extends SampleFragment {
-    private int mBackIndex;
-    private int mSeries1Index;
-    private int mSeries2Index;
-    private int mStyleIndex;
-
     final private float[] mTrackBackWidth = {30f, 60f, 30f, 40f, 30f};
     final private float[] mTrackWidth = {30f, 30f, 30f, 30f, 30f};
     final private boolean[] mClockwise = {true, true, true, false, true};
@@ -42,6 +37,10 @@ public class SampleFitFragment extends SampleFragment {
     final private boolean[] mPie = {false, false, false, false, true};
     final private int[] mTotalAngle = {360, 360, 320, 260, 360};
     final private int[] mRotateAngle = {0, 180, 180, 0, 270};
+    private int mBackIndex;
+    private int mSeries1Index;
+    private int mSeries2Index;
+    private int mStyleIndex;
 
     public SampleFitFragment() {
     }
@@ -56,12 +55,14 @@ public class SampleFitFragment extends SampleFragment {
     protected void createTracks() {
         setDemoFinished(false);
         final float seriesMax = 50f;
-        final DecoView arcView = getDecoView();
-        if (arcView == null) {
+        final DecoView decoView = getDecoView();
+        final View view = getView();
+        if (decoView == null || view == null) {
             return;
         }
-        arcView.deleteAll();
-        arcView.configureAngles(mTotalAngle[mStyleIndex], mRotateAngle[mStyleIndex]);
+        decoView.deleteAll();
+        decoView.configureAngles(mTotalAngle[mStyleIndex], mRotateAngle[mStyleIndex]);
+        mStyleIndex = 0;
 
         SeriesItem arcBackTrack = new SeriesItem.Builder(Color.argb(255, 228, 228, 228))
                 .setRange(0, seriesMax, seriesMax)
@@ -70,7 +71,7 @@ public class SampleFitFragment extends SampleFragment {
                 .setChartStyle(mPie[mStyleIndex] ? SeriesItem.ChartStyle.STYLE_PIE : SeriesItem.ChartStyle.STYLE_DONUT)
                 .build();
 
-        mBackIndex = arcView.addSeries(arcBackTrack);
+        mBackIndex = decoView.addSeries(arcBackTrack);
 
         float inset = 0;
         if (mTrackBackWidth[mStyleIndex] != mTrackWidth[mStyleIndex]) {
@@ -86,7 +87,7 @@ public class SampleFitFragment extends SampleFragment {
                 .setChartStyle(mPie[mStyleIndex] ? SeriesItem.ChartStyle.STYLE_PIE : SeriesItem.ChartStyle.STYLE_DONUT)
                 .build();
 
-        mSeries1Index = arcView.addSeries(seriesItem1);
+        mSeries1Index = decoView.addSeries(seriesItem1);
 
         SeriesItem seriesItem2 = new SeriesItem.Builder(Color.argb(255, 255, 51, 51))
                 .setRange(0, seriesMax, 0)
@@ -97,16 +98,15 @@ public class SampleFitFragment extends SampleFragment {
                 .setCapRounded(mRounded[mStyleIndex])
                 .build();
 
-        mSeries2Index = arcView.addSeries(seriesItem2);
+        mSeries2Index = decoView.addSeries(seriesItem2);
 
-        final TextView textPercent = (TextView) getView().findViewById(R.id.textPercentage);
-        textPercent.setVisibility(View.INVISIBLE);
-        textPercent.setText("");
-        addProgressListener(seriesItem1, textPercent, "%.0f%%");
+        final TextView textPercent = (TextView) view.findViewById(R.id.textPercentage);
+        if (textPercent != null) {
+            textPercent.setText("");
+            addProgressListener(seriesItem1, textPercent, "%.0f%%");
+        }
 
-
-        final TextView textToGo = (TextView) getView().findViewById(R.id.textRemaining);
-        textToGo.setVisibility(View.INVISIBLE);
+        final TextView textToGo = (TextView) view.findViewById(R.id.textRemaining);
         textToGo.setText("");
         addProgressRemainingListener(seriesItem1, textToGo, "%.0f min to goal", seriesMax);
 
@@ -124,34 +124,31 @@ public class SampleFitFragment extends SampleFragment {
 
     @Override
     protected void setupEvents() {
-        final DecoView arcView = getDecoView();
-        if (arcView == null) {
+        final DecoView decoView = getDecoView();
+        final View view = getView();
+        if (decoView == null || decoView.isEmpty() || view == null) {
             return;
         }
 
         mUpdateListeners = true;
-        final TextView textPercent = (TextView) getView().findViewById(R.id.textPercentage);
-        final TextView textToGo = (TextView) getView().findViewById(R.id.textRemaining);
-        final View layout = getView().findViewById(R.id.layoutActivities);
+        final TextView textPercent = (TextView) view.findViewById(R.id.textPercentage);
+        final TextView textToGo = (TextView) view.findViewById(R.id.textRemaining);
+        final View layout = view.findViewById(R.id.layoutActivities);
         final View[] linkedViews = {textPercent, textToGo, layout};
-
-        if (arcView == null || arcView.isEmpty()) {
-            throw new IllegalStateException("Unable to add events to empty DecoView");
-        }
-
         final int fadeDuration = 2000;
+
         if (mPie[mStyleIndex]) {
-            arcView.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
+            decoView.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
                     .setIndex(mBackIndex)
                     .setDuration(2000)
                     .build());
         } else {
-            arcView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT_FILL)
+            decoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT_FILL)
                     .setIndex(mBackIndex)
                     .setDuration(3000)
                     .build());
 
-            arcView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
+            decoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
                     .setIndex(mSeries1Index)
                     .setFadeDuration(fadeDuration)
                     .setDuration(2000)
@@ -159,19 +156,19 @@ public class SampleFitFragment extends SampleFragment {
                     .build());
         }
 
-        arcView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
+        decoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
                 .setIndex(mSeries2Index)
                 .setLinkedViews(linkedViews)
                 .setDuration(2000)
                 .setDelay(1100)
                 .build());
 
-        arcView.addEvent(new DecoEvent.Builder(10).setIndex(mSeries2Index).setDelay(3900).build());
-        arcView.addEvent(new DecoEvent.Builder(22).setIndex(mSeries2Index).setDelay(7000).build());
+        decoView.addEvent(new DecoEvent.Builder(10).setIndex(mSeries2Index).setDelay(3900).build());
+        decoView.addEvent(new DecoEvent.Builder(22).setIndex(mSeries2Index).setDelay(7000).build());
 
-        arcView.addEvent(new DecoEvent.Builder(25).setIndex(mSeries1Index).setDelay(3300).build());
-        arcView.addEvent(new DecoEvent.Builder(50).setIndex(mSeries1Index).setDuration(1500).setDelay(9000).build());
-        arcView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries1Index).setDuration(500).setDelay(10500)
+        decoView.addEvent(new DecoEvent.Builder(25).setIndex(mSeries1Index).setDelay(3300).build());
+        decoView.addEvent(new DecoEvent.Builder(50).setIndex(mSeries1Index).setDuration(1500).setDelay(9000).build());
+        decoView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries1Index).setDuration(500).setDelay(10500)
                 .setListener(new DecoEvent.ExecuteEventListener() {
                     @Override
                     public void onEventStart(DecoEvent event) {
@@ -185,7 +182,7 @@ public class SampleFitFragment extends SampleFragment {
                 })
                 .setInterpolator(new AccelerateInterpolator()).build());
 
-        arcView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_EXPLODE)
+        decoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_EXPLODE)
                 .setLinkedViews(linkedViews)
                 .setIndex(mSeries1Index)
                 .setDelay(11000)

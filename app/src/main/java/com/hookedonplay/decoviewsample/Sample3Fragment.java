@@ -34,11 +34,7 @@ import com.hookedonplay.decoviewlib.events.DecoEvent.EventType;
 import java.util.Random;
 
 public class Sample3Fragment extends SampleFragment {
-    private int mSeriesIndex[] = new int[7];
-    private int mBackIndex;
-    private boolean mFullCircle = true;
-    private boolean mFlip = true;
-
+    final float mSeriesMax = 50f;
     final private int[] mColor = {
             Color.parseColor("#7B1FA2"),
             Color.parseColor("#FBC02D"),
@@ -48,8 +44,10 @@ public class Sample3Fragment extends SampleFragment {
             Color.parseColor("#F44366"),
             Color.parseColor("#FFF9C4")
     };
-
-    final float mSeriesMax = 50f;
+    private int mSeriesIndex[] = new int[7];
+    private int mBackIndex;
+    private boolean mFullCircle = true;
+    private boolean mFlip = true;
 
     public Sample3Fragment() {
     }
@@ -63,8 +61,9 @@ public class Sample3Fragment extends SampleFragment {
     @Override
     protected void createTracks() {
         setDemoFinished(false);
-        final DecoView arcView = getDecoView();
-        if (arcView == null) {
+        final DecoView decoView = getDecoView();
+        final View view = getView();
+        if (decoView == null || view == null) {
             return;
         }
         mFullCircle = !mFullCircle;
@@ -72,8 +71,8 @@ public class Sample3Fragment extends SampleFragment {
 
         getView().setBackgroundColor(Color.argb(255, 32, 32, 32));
 
-        arcView.deleteAll();
-        arcView.configureAngles(mFullCircle ? 360 : 180, mFlip ? 180 : 0);
+        decoView.deleteAll();
+        decoView.configureAngles(mFullCircle ? 360 : 180, mFlip ? 180 : 0);
 
 
         float widthLine = getDimension(14f);
@@ -85,7 +84,7 @@ public class Sample3Fragment extends SampleFragment {
                 .setCapRounded(false)
                 .build();
 
-        mBackIndex = arcView.addSeries(seriesBackItem);
+        mBackIndex = decoView.addSeries(seriesBackItem);
 
         float inset = -((widthLine * (mSeriesIndex.length - 1)) / 2);
         for (int i = 0; i < mSeriesIndex.length; i++) {
@@ -96,31 +95,31 @@ public class Sample3Fragment extends SampleFragment {
                     .setInitialVisibility(false)
                     .build();
 
-            mSeriesIndex[i] = arcView.addSeries(seriesItem);
+            mSeriesIndex[i] = decoView.addSeries(seriesItem);
 
             inset += widthLine;
         }
 
-        final TextView textPercent = (TextView) getView().findViewById(R.id.textPercentage);
+        final TextView textPercent = (TextView) view.findViewById(R.id.textPercentage);
         textPercent.setVisibility(View.INVISIBLE);
     }
 
     @Override
     protected void setupEvents() {
-        final DecoView arcView = getDecoView();
+        final DecoView decoView = getDecoView();
 
-        if (arcView == null || arcView.isEmpty()) {
+        if (decoView == null || decoView.isEmpty()) {
             throw new IllegalStateException("Unable to add events to empty DecoView");
         }
-        arcView.executeReset();
+        decoView.executeReset();
 
-        arcView.addEvent(new DecoEvent.Builder(EventType.EVENT_SHOW, true)
+        decoView.addEvent(new DecoEvent.Builder(EventType.EVENT_SHOW, true)
                 .setIndex(mBackIndex)
                 .setDelay(100)
                 .setDuration(3000)
                 .build());
 
-        arcView.addEvent(new DecoEvent.Builder(EventType.EVENT_HIDE, false)
+        decoView.addEvent(new DecoEvent.Builder(EventType.EVENT_HIDE, false)
                 .setIndex(mBackIndex)
                 .setDelay(18000)
                 .setDuration(4000)
@@ -142,25 +141,25 @@ public class Sample3Fragment extends SampleFragment {
         for (int i = 0; i < mSeriesIndex.length; i++) {
             int index = mSeriesIndex[i];
 
-            arcView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT_FILL)
+            decoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT_FILL)
                     .setIndex(mSeriesIndex[i])
                     .setDelay(500 + i * 250)
                     .setDuration(2500)
                     .build());
 
-            arcView.addEvent(new DecoEvent.Builder(rand.nextInt((int) mSeriesMax))
+            decoView.addEvent(new DecoEvent.Builder(rand.nextInt((int) mSeriesMax))
                     .setIndex(index)
                     .setDelay(5000 + i * 750)
                     .build());
 
-            arcView.addEvent(new DecoEvent.Builder(rand.nextInt((int) mSeriesMax / 2))
+            decoView.addEvent(new DecoEvent.Builder(rand.nextInt((int) mSeriesMax / 2))
                     .setIndex(index)
                     .setDelay(10000 + i * 500)
                     .setColor(Color.parseColor("#FF555555"))
                     .setDuration(2000)
                     .build());
 
-            arcView.addEvent(new DecoEvent.Builder(mSeriesMax)
+            decoView.addEvent(new DecoEvent.Builder(mSeriesMax)
                     .setIndex(index)
                     .setDelay(15000)
                     .setDuration(2000)
@@ -168,13 +167,13 @@ public class Sample3Fragment extends SampleFragment {
                     .setColor(mColor[i])
                     .build());
 
-            arcView.addEvent(new DecoEvent.Builder(0)
+            decoView.addEvent(new DecoEvent.Builder(0)
                     .setIndex(index)
                     .setDelay(17500 + i * 200)
                     .setDuration(1000)
                     .setInterpolator(new AccelerateInterpolator()).build());
 
-            arcView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_IN)
+            decoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_IN)
                     .setIndex(mSeriesIndex[i])
                     .setDelay(18500 + i * 200)
                     .setDuration(2000)

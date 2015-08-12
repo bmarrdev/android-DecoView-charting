@@ -26,14 +26,14 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 
-import com.hookedonplay.decoviewlib.charts.DecoDrawEffect;
 import com.hookedonplay.decoviewlib.DecoView;
+import com.hookedonplay.decoviewlib.charts.DecoDrawEffect;
 import com.hookedonplay.decoviewlib.charts.SeriesItem;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
 
 public class DecoFragment extends SampleFragment {
 
-    final private int[] mPalette = {Color.parseColor("#f57c00"), Color.parseColor("#212121"),Color.parseColor("#4caf50"),Color.parseColor("#727272"),Color.parseColor("#b6b6b6")};
+    final private int[] mPalette = {Color.parseColor("#f57c00"), Color.parseColor("#212121"), Color.parseColor("#4caf50"), Color.parseColor("#727272"), Color.parseColor("#b6b6b6")};
     private int mSeries1Index;
 
     public DecoFragment() {
@@ -46,7 +46,7 @@ public class DecoFragment extends SampleFragment {
     }
 
     @Override
-    protected  void createTracks() {
+    protected void createTracks() {
         setDemoFinished(false);
         final DecoView arcView = getDecoView();
         if (arcView == null) {
@@ -59,7 +59,7 @@ public class DecoFragment extends SampleFragment {
         final float width = 28;
 
         for (int i = 0; i < count; i++) {
-            float inset = i * getDimension(width-5);
+            float inset = i * getDimension(width - 5);
             SeriesItem seriesItem1 = new SeriesItem.Builder(mPalette[i])
                     .setRange(0, 100, 0)
                     .setLineWidth(getDimension(width))
@@ -72,17 +72,22 @@ public class DecoFragment extends SampleFragment {
     }
 
     @Override
-    protected  void setupEvents() {
+    protected void setupEvents() {
         final DecoView arcView = getDecoView();
-        if (arcView == null) {
+        final View view = getView();
+        if (arcView == null || view == null) {
             return;
         }
 
-        View finished = getView().findViewById(R.id.imageSwipeRight);
-        finished.setVisibility(View.INVISIBLE);
+        try {
+            View finished = view.findViewById(R.id.imageSwipeRight);
+            finished.setVisibility(View.INVISIBLE);
+        } catch (NullPointerException npe) {
+            Log.e(TAG, "Unable to find swipe hint image");
+        }
 
         int count = mPalette.length;
-        for (int i = 0; i < count; i ++) {
+        for (int i = 0; i < count; i++) {
             final boolean last = i == count - 1;
 
             DecoEvent revealEvent = new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)

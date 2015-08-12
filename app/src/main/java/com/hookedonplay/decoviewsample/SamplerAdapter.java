@@ -21,11 +21,11 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
 public class SamplerAdapter extends FragmentStatePagerAdapter {
+    private int mCount = 9;
+
     public SamplerAdapter(FragmentManager fm) {
         super(fm);
     }
-
-    private int mCount = 7;
 
     @Override
     public int getCount() {
@@ -34,20 +34,24 @@ public class SamplerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        switch(position) {
+        switch (position) {
             case 0:
                 return new DecoFragment();
             case 1:
                 return new SampleFitFragment();
             case 2:
-                return new SampleInterpolatorsFragment();
+                return new SampleFit2Fragment();
             case 3:
-                return new Sample3Fragment();
+                return new SampleInterpolatorsFragment();
             case 4:
-                return new Sample2Fragment();
+                return new Sample3Fragment();
             case 5:
-                return new Sample1Fragment();
+                return new SamplePeopleFragment();
             case 6:
+                return new Sample2Fragment();
+            case 7:
+                return new Sample1Fragment();
+            case 8:
                 return new Sample4Fragment();
             default:
                 return new SampleFitFragment();

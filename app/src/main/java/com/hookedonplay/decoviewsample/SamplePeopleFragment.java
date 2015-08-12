@@ -16,31 +16,33 @@
 package com.hookedonplay.decoviewsample;
 
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AnticipateOvershootInterpolator;
+import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.hookedonplay.decoviewlib.DecoView;
-import com.hookedonplay.decoviewlib.charts.DecoDrawEffect;
+import com.hookedonplay.decoviewlib.charts.EdgeDetail;
 import com.hookedonplay.decoviewlib.charts.SeriesItem;
+import com.hookedonplay.decoviewlib.charts.SeriesLabel;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
 import com.hookedonplay.decoviewlib.events.DecoEvent.EventType;
 
-import java.util.Random;
-
 public class SamplePeopleFragment extends SampleFragment {
+    final private int COLOR_BLUE = Color.parseColor("#1D76D2");
+    final private int COLOR_PINK = Color.parseColor("#FF4081");
+    final private int COLOR_YELLOW = Color.parseColor("#FFC107");
+    final private int COLOR_EDGE = Color.parseColor("#22000000");
+    final private int COLOR_BACK = Color.parseColor("#0166BB66");
+    final float mSeriesMax = 100f;
     private int mSeries1Index;
     private int mSeries2Index;
     private int mSeries3Index;
     private int mBack1Index;
-    private int mBack2Index;
-
-    final float mSeriesMax = 100f;
 
     public SamplePeopleFragment() {
     }
@@ -54,190 +56,190 @@ public class SamplePeopleFragment extends SampleFragment {
     @Override
     protected void createTracks() {
         setDemoFinished(false);
-        final DecoView arcView = getDecoView();
-        if (arcView == null) {
+        final DecoView decoView = getDecoView();
+        final View view = getView();
+        if (decoView == null || view == null) {
             return;
         }
 
-        arcView.executeReset();
-        arcView.deleteAll();
+        view.setBackgroundColor(Color.argb(255, 128, 218, 128));
 
-        SeriesItem seriesBack1Item = new SeriesItem.Builder(Color.argb(255, 32, 196, 32))
+        decoView.executeReset();
+        decoView.deleteAll();
+
+        float circleInset = getDimension(23) - (getDimension(46) * 0.3f);
+        SeriesItem seriesBack1Item = new SeriesItem.Builder(COLOR_BACK)
                 .setRange(0, mSeriesMax, mSeriesMax)
                 .setChartStyle(SeriesItem.ChartStyle.STYLE_PIE)
+                .setInset(new PointF(circleInset, circleInset))
                 .build();
 
-        mBack1Index = arcView.addSeries(seriesBack1Item);
-
-        SeriesItem seriesBack2Item = new SeriesItem.Builder(Color.argb(255, 196, 196, 196))
-                .setRange(0, mSeriesMax, mSeriesMax)
-                .setLineWidth(getDimension(36))
-                .build();
-
-        mBack2Index = arcView.addSeries(seriesBack2Item);
+        mBack1Index = decoView.addSeries(seriesBack1Item);
 
 
-            SeriesItem series1Item = new SeriesItem.Builder(Color.parseColor("#FF0000"))
-                    .setRange(0, mSeriesMax, 0)
-                    .setInitialVisibility(false)
-                    .setLineWidth(getDimension(36))
-                    .build();
-
-        mSeries1Index = arcView.addSeries(series1Item);
-
-        SeriesItem series2Item = new SeriesItem.Builder(Color.parseColor("#00FF00"))
+        SeriesItem series1Item = new SeriesItem.Builder(COLOR_BLUE)
                 .setRange(0, mSeriesMax, 0)
                 .setInitialVisibility(false)
-                .setLineWidth(getDimension(36))
+                .setLineWidth(getDimension(46))
+                .setSeriesLabel(new SeriesLabel.Builder("Men").build())
+                .setCapRounded(false)
+                        //.setChartStyle(SeriesItem.ChartStyle.STYLE_PIE)
+                .addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_INNER, COLOR_EDGE, 0.3f))
+                .setShowPointWhenEmpty(false)
                 .build();
 
-        mSeries2Index = arcView.addSeries(series2Item);
+        mSeries1Index = decoView.addSeries(series1Item);
 
-        SeriesItem series3Item = new SeriesItem.Builder(Color.parseColor("#0000FF"))
+        SeriesItem series2Item = new SeriesItem.Builder(COLOR_PINK)
                 .setRange(0, mSeriesMax, 0)
                 .setInitialVisibility(false)
-                .setLineWidth(getDimension(36))
+                .setLineWidth(getDimension(46))
+                .setSeriesLabel(new SeriesLabel.Builder("Women").build())
+                .setCapRounded(false)
+                        //.setChartStyle(SeriesItem.ChartStyle.STYLE_PIE)
+                .addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_INNER, COLOR_EDGE, 0.3f))
+                .setShowPointWhenEmpty(false)
                 .build();
 
-        mSeries3Index = arcView.addSeries(series3Item);
+        mSeries2Index = decoView.addSeries(series2Item);
 
-        //final TextView textPercent = (TextView) getView().findViewById(R.id.textPercentage);
-        //textPercent.setVisibility(View.INVISIBLE);
+        SeriesItem series3Item = new SeriesItem.Builder(COLOR_YELLOW)
+                .setRange(0, mSeriesMax, 0)
+                .setInitialVisibility(false)
+                .setLineWidth(getDimension(46))
+                .setSeriesLabel(new SeriesLabel.Builder("Children").build())
+                .setCapRounded(false)
+                        //.setChartStyle(SeriesItem.ChartStyle.STYLE_PIE)
+                .addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_INNER, COLOR_EDGE, 0.3f))
+                .setShowPointWhenEmpty(false)
+                .build();
+
+        mSeries3Index = decoView.addSeries(series3Item);
+
     }
 
     @Override
     protected void setupEvents() {
         final DecoView arcView = getDecoView();
-
-        if (arcView == null || arcView.isEmpty()) {
+        final View view = getView();
+        if (arcView == null || arcView.isEmpty() || view == null) {
             return;
         }
         arcView.executeReset();
 
-        final ImageView imgView = (ImageView)getView().findViewById(R.id.imageViewAvatar);
+        final ImageView imgView = (ImageView) view.findViewById(R.id.imageViewAvatar);
+        imgView.setImageDrawable(null);
+        imgView.setVisibility(View.INVISIBLE);
 
-        DecoEvent.ExecuteEventListener listener = new DecoEvent.ExecuteEventListener() {
-            @Override
-            public void onEventStart(DecoEvent event) {
-                imgView.setVisibility(View.VISIBLE);
-            }
+        addAnimation(arcView, mSeries1Index, 19, 3000, imgView, R.drawable.ic_avatar_man, COLOR_BLUE);
+        addAnimation(arcView, mSeries2Index, 45, 11000, imgView, R.drawable.ic_avatar_woman, COLOR_PINK);
 
-            @Override
-            public void onEventEnd(DecoEvent event) {
-                imgView.setVisibility(View.INVISIBLE);
-            }
-        };
-        arcView.addEvent(new DecoEvent.Builder(20)
+        arcView.addEvent(new DecoEvent.Builder(64)
                 .setIndex(mSeries1Index)
-                .setDelay(1000)
-                .setDuration(3000)
-                .setListener(listener)
+                .setDelay(11000)
+                .setDuration(5000)
                 .build());
 
-        arcView.addEvent(new DecoEvent.Builder(70)
-                .setIndex(mSeries1Index)
-                .setDelay(6000)
-                .setDuration(3000)
-                .setColor(Color.parseColor("#FF999999"))
+        addAnimation(arcView, mSeries3Index, 36, 19000, imgView, R.drawable.ic_avatar_child, COLOR_YELLOW);
+
+        arcView.addEvent(new DecoEvent.Builder(79)
+                .setIndex(mSeries2Index)
+                .setDelay(19000)
+                .setDuration(5000)
                 .build());
 
         arcView.addEvent(new DecoEvent.Builder(100)
                 .setIndex(mSeries1Index)
-                .setDelay(11000)
-                .setDuration(3000)
+                .setDelay(19000)
+                .setDuration(5000)
                 .build());
 
-        arcView.addEvent(new DecoEvent.Builder(EventType.EVENT_COLOR_CHANGE, Color.parseColor("#FF0000"))
-                .setIndex(mSeries1Index)
-                .setDelay(16000)
-                .setDuration(3000)
+        arcView.addEvent(new DecoEvent.Builder(EventType.EVENT_COLOR_CHANGE, COLOR_BACK)
+                .setIndex(mBack1Index)
+                .setDelay(27000)
+                .setDuration(2000)
+                .setListener(new DecoEvent.ExecuteEventListener() {
+                    @Override
+                    public void onEventStart(DecoEvent event) {
+                        imgView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_avatar_group));
+                        showAvatar(true, imgView);
+                    }
+
+                    @Override
+                    public void onEventEnd(DecoEvent event) {
+
+                    }
+                })
                 .build());
 
-        arcView.addEvent(new DecoEvent.Builder(50)
-                .setIndex(mSeries2Index)
-                .setDelay(6000)
-                .setDuration(3000)
+        addFinishAnimation(arcView, mSeries3Index, 1250, 30000, imgView);
+        addFinishAnimation(arcView, mSeries2Index, 1500, 30000, null);
+        addFinishAnimation(arcView, mSeries1Index, 1750, 30000, null);
+    }
+
+    private void addFinishAnimation(final DecoView arcView, final int series, final int duration, int delay, final View view) {
+        arcView.addEvent(new DecoEvent.Builder(0)
+                .setIndex(series)
+                .setDelay(delay)
+                .setDuration(duration)
+                .setListener(new DecoEvent.ExecuteEventListener() {
+                    @Override
+                    public void onEventStart(DecoEvent event) {
+                        arcView.getSeriesItem(series).setSeriesLabel(null);
+                    }
+
+                    @Override
+                    public void onEventEnd(DecoEvent event) {
+                        if (view != null) {
+                            showAvatar(false, view);
+                            setDemoFinished(true);
+                        }
+                    }
+                })
+                .build());
+    }
+
+    private void addAnimation(final DecoView arcView,
+                              int series, float moveTo, int delay,
+                              final ImageView imageView, final int imageId,
+                              final int color) {
+        DecoEvent.ExecuteEventListener listener = new DecoEvent.ExecuteEventListener() {
+            @Override
+            public void onEventStart(DecoEvent event) {
+                imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), imageId));
+
+                showAvatar(true, imageView);
+
+                arcView.addEvent(new DecoEvent.Builder(EventType.EVENT_COLOR_CHANGE, color)
+                        .setIndex(mBack1Index)
+                        .setDuration(2000)
+                        .build());
+            }
+
+            @Override
+            public void onEventEnd(DecoEvent event) {
+                showAvatar(false, imageView);
+
+                arcView.addEvent(new DecoEvent.Builder(EventType.EVENT_COLOR_CHANGE, COLOR_BACK)
+                        .setIndex(mBack1Index)
+                        .setDuration(2000)
+                        .build());
+            }
+
+        };
+
+        arcView.addEvent(new DecoEvent.Builder(moveTo)
+                .setIndex(series)
+                .setDelay(delay)
+                .setDuration(5000)
                 .setListener(listener)
                 .build());
+    }
 
-        arcView.addEvent(new DecoEvent.Builder(80)
-                .setIndex(mSeries2Index)
-                .setDelay(11000)
-                .setDuration(3000)
-                .setColor(Color.parseColor("#FF666666"))
-                .build());
-
-        arcView.addEvent(new DecoEvent.Builder(EventType.EVENT_COLOR_CHANGE, Color.parseColor("#00FF00"))
-                .setIndex(mSeries2Index)
-                .setDelay(16000)
-                .setDuration(3000)
-                .build());
-
-        arcView.addEvent(new DecoEvent.Builder(30)
-                .setIndex(mSeries3Index)
-                .setDelay(11000)
-                .setDuration(3000)
-                .setListener(listener)
-                .build());
-
-//
-//        arcView.addEvent(new DecoEvent.Builder(EventType.EVENT_HIDE, false)
-//                .setIndex(mBackIndex)
-//                .setDelay(18000)
-//                .setDuration(4000)
-//                .setListener(new DecoEvent.ExecuteEventListener() {
-//                    @Override
-//                    public void onEventStart(DecoEvent event) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onEventEnd(DecoEvent event) {
-//                        createTracks();
-//                        setupEvents();
-//                    }
-//                })
-//                .build());
-//
-//        Random rand = new Random();
-//        for (int i = 0; i < mSeriesIndex.length; i++) {
-//            int index = mSeriesIndex[i];
-//
-//            arcView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
-//                    .setIndex(mSeriesIndex[i])
-//                    .setDelay(i * 250)
-//                    .setDuration(2500)
-//                    .build());
-//
-//            arcView.addEvent(new DecoEvent.Builder(rand.nextInt((int) mSeriesMax))
-//                    .setIndex(index)
-//                    .setDelay(5000 + (mSeriesIndex.length - 1 - i) * 750)
-//                            .build());
-//
-//            arcView.addEvent(new DecoEvent.Builder(rand.nextInt((int) mSeriesMax / 2))
-//                    .setIndex(index)
-//                    .setDelay(9500 + (mSeriesIndex.length - 1 - i) * 500)
-//                    .build());
-//
-//            arcView.addEvent(new DecoEvent.Builder(mSeriesMax)
-//                    .setIndex(index)
-//                    .setDelay(14000)
-//                    .setDuration(3000)
-//                    .setInterpolator(new AnticipateOvershootInterpolator())
-//                    .build());
-//
-//            arcView.addEvent(new DecoEvent.Builder(0)
-//                    .setIndex(index)
-//                    .setDelay(17500 + (mSeriesIndex.length - 1 - i) * 200)
-//                    .setDuration(1000)
-//                    .setInterpolator(new AccelerateInterpolator()).build());
-//
-//            arcView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_IN)
-//                    .setIndex(mSeriesIndex[i])
-//                    .setDelay(18500 + (mSeriesIndex.length - 1 - i) * 200)
-//                    .setDuration(2000)
-//                    .setEffectRotations(3)
-//                    .build());
-//        }
+    private void showAvatar(boolean show, View view) {
+        AlphaAnimation animation = new AlphaAnimation(show ? 0.0f : 1.0f, show ? 1.0f : 0.0f);
+        animation.setDuration(1000);
+        animation.setFillAfter(true);
+        view.startAnimation(animation);
     }
 }
