@@ -76,12 +76,12 @@ abstract public class ArcSeries extends ChartSeries {
             SweepGradient gradient;
             if (mAngleSweep < 360) {
                 /**
-                 * When we have left than a full circle we change the style of gradient so that
+                 * When we have less than a full circle we change the style of gradient so that
                  * the two colors start at the same point. The two provided colors meet rather than
                  * a fade the complete circumference. A matrix is rotated so the meeting of the
                  * two colors occurs in the middle of the gap when the part circle is not drawn
                  */
-                final int[] colors = {mSeriesItem.getSecondaryColor(), mSeriesItem.getColor()};
+                final int[] colors = {mSeriesItem.getColor(), mSeriesItem.getSecondaryColor()};
                 final float[] positions = {0, 1};
                 gradient = new SweepGradient(mBounds.centerX(), mBounds.centerY(), colors, positions);
                 Matrix gradientRotationMatrix = new Matrix();
