@@ -287,7 +287,7 @@ public class DecoDrawEffect {
      * @param percentComplete percent of the animation complete (0..1)
      */
     public void drawText(@NonNull Canvas canvas, RectF bounds, float percentComplete) {
-        if (mText != null && !mText.isEmpty()) {
+        if (mText != null && mText.length() > 0) {
             mPaintText.setTextSize(100 * percentComplete);
             mPaintText.setAlpha(MAX_ALPHA);
 
