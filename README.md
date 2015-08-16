@@ -1,6 +1,6 @@
 # DecoView
 
-[![Build Status](https://travis-ci.org/bmarrdev/android-DecoView-charting.svg?branch=master)](https://travis-ci.org/bmarrdev/android-DecoView-charting) [![Release](https://img.shields.io/github/release/bmarrdev/android-DecoView-charting.svg?label=JitPack)](https://jitpack.io/#bmarrdev/android-DecoView-charting)[![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![Platform](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html)
+[![Build Status](https://travis-ci.org/bmarrdev/android-DecoView-charting.svg?branch=master)](https://travis-ci.org/bmarrdev/android-DecoView-charting) [![Release](https://img.shields.io/github/release/bmarrdev/android-DecoView-charting.svg?label=JitPack)](https://jitpack.io/#bmarrdev/android-DecoView-charting) [![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![Platform](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html)
 
 Animated arc based charting library for Android.
 
@@ -12,7 +12,7 @@ To see DecoView in action take a look at the promo video.
 
 Sample app available from the play store.
 
-[![Sample Video](https://github.com/bmarrdev/android-DecoView-charting/blob/master/art/en_app_rgb_wo_60.png)](https://play.google.com/store/apps/details?id=com.hookedonplay.decoviewsample)
+[![Google Play Store](https://github.com/bmarrdev/android-DecoView-charting/blob/master/art/en_app_rgb_wo_60.png)](https://play.google.com/store/apps/details?id=com.hookedonplay.decoviewsample)
 
 Including DecoView in your project
 ===
