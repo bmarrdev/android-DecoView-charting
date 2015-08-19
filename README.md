@@ -2,9 +2,9 @@
 
 [![Build Status](https://travis-ci.org/bmarrdev/android-DecoView-charting.svg?branch=master)](https://travis-ci.org/bmarrdev/android-DecoView-charting) [![Release](https://img.shields.io/github/release/bmarrdev/android-DecoView-charting.svg?label=JitPack)](https://jitpack.io/#bmarrdev/android-DecoView-charting) [![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-DecoView-green.svg?style=flat)](https://android-arsenal.com/details/1/2329)
 
-Animated arc based charting library for Android.
+Powerful animated circular chart library for Android developers.
 
-DecoView was designed as a fully configurable library for animating circular charts. It makes it simple to reproduce a user experience like the Google Fit view within your app. With an extensive customization options it is simple and quick to change the look and feel of the charts to match your UI.
+DecoView is a powerful library that enables creation of highly configurable animated circular charts in your Android apps. It makes it simple to reproduce a user experience like the Google Fit circular view within your app. With extensive customization options it is simple and quick to change the look and feel of the charts to match your UI.
 
 ![DecoView Library Image](https://github.com/bmarrdev/android-DecoView-charting/blob/master/art/decoview_header.png)
 
