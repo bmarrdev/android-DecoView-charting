@@ -1,8 +1,10 @@
 # DecoView
 
-[![Build Status](https://travis-ci.org/bmarrdev/android-DecoView-charting.svg?branch=master)](https://travis-ci.org/bmarrdev/android-DecoView-charting) [![Release](https://img.shields.io/github/release/bmarrdev/android-DecoView-charting.svg?label=JitPack)](https://jitpack.io/#bmarrdev/android-DecoView-charting) [![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![Platform](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html)
+[![Build Status](https://travis-ci.org/bmarrdev/android-DecoView-charting.svg?branch=master)](https://travis-ci.org/bmarrdev/android-DecoView-charting) [![Release](https://img.shields.io/github/release/bmarrdev/android-DecoView-charting.svg?label=JitPack)](https://jitpack.io/#bmarrdev/android-DecoView-charting) [![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-DecoView-green.svg?style=flat)](https://android-arsenal.com/details/1/2329)
 
 Animated arc based charting library for Android.
+
+DecoView was designed as a fully configurable library for animating circular charts. It makes it simple to reproduce a user experience like the Google Fit view within your app. With an extensive customization options it is simple and quick to change the look and feel of the charts to match your UI.
 
 ![DecoView Library Image](https://github.com/bmarrdev/android-DecoView-charting/blob/master/art/decoview_header.png)
 
@@ -36,7 +38,15 @@ Usage
 
 DecoView is subclassed from the Android View class. Just like other View subclasses, such as TextView and ImageView, it can be added and configured from your layout XML then controlled in your Activity code.
 
-Add DecoView to your xml layout
+This repository includes a number of samples for constructing and animating a DecoView. You will find the code for the samples in the [app project](https://github.com/bmarrdev/android-DecoView-charting/tree/master/app/src/main/java/com/hookedonplay/decoviewsample).
+
+The main concepts you need to understand are:
+- DecoView is a View, it subclasses android.view.View
+- Use [SeriesItem.Builder](https://github.com/bmarrdev/android-DecoView-charting/blob/master/decoviewlib/src/main/java/com/hookedonplay/decoviewlib/charts/SeriesItem.java) to build one or more data series or your DecoView will not be visible
+- Use [DecoEvent.Builder](https://github.com/bmarrdev/android-DecoView-charting/blob/master/decoviewlib/src/main/java/com/hookedonplay/decoviewlib/events/DecoEvent.java) to schedule animating events for each data series
+
+
+**Add DecoView to your xml layout**
 
 ```xml
 <com.hookedonplay.decoviewlib.DecoView
@@ -47,7 +57,7 @@ Add DecoView to your xml layout
     android:layout_margin="8dp">
 ```
 
-Configure DecoView data series in your Java code
+**Configure DecoView data series in your Java code**
 
 ```java
   
@@ -70,7 +80,7 @@ int series1Index = arcView.addSeries(seriesItem1);
 
 ```
 
-Add events to animate the data series
+**Add events to animate the data series**
 
 ```java
 arcView.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
@@ -199,7 +209,8 @@ public enum EventType {
     EVENT_MOVE, /* Move the current position of the chart series */
     EVENT_SHOW, /* Show the chart series using reveal animation */
     EVENT_HIDE, /* Hide the chart series using an animation */
-    EVENT_EFFECT /* Apply effect animation on the series */
+    EVENT_EFFECT, /* Apply effect animation on the series */
+    EVENT_COLOR_CHANGE /* Change the color of the series over time */
 }
 ```
 
@@ -219,7 +230,7 @@ decoView.addEvent(new DecoEvent.Builder(50).setIndex(mSeriesIndex).setDelay(8000
 
 In the above example some important points to note are:
 - The argument '50' passed to the builder function is the position in relation to the range of data initialized with the SeriesItem.Builder().setRange(min, max, initial) function call
-- The Index that is passed was returned from the DecoView.addSeries(...) function call
+- The index that is passed was returned from the DecoView.addSeries(...) function call
 - All durations are specified in milliseconds
 
 Adding a listener to an DecoEvent
@@ -249,11 +260,11 @@ decoView.addEvent(new DecoEvent.Builder(EventType.EVENT_HIDE, false)
 Configuring animation
 ===
 
-Animating the movement when moving the current position of a data series is done using the built in Android Interpolator class.
+Animating the movement when moving the current position of a data series is done using the built-in [Android Interpolator classes](http://developer.android.com/reference/android/view/animation/Interpolator.html).
 
 This allows you to set a range of different movements and even use your own algorithm to control the rate of change.
 
-It is possible to set the Interpolator class used at two points. The first opportunity is you can set the Interpolator when you add the data series.
+It is possible to configure the Interpolator class used at two different stages. The first opportunity is you can set the Interpolator when you initially add the data series. If you set the Interpolator at creation all animations for that data series will use the Interpolator you specify, unless you override the Interpolator when creating a DecoEvent.
 
 ```java
 decoView.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218))
@@ -262,9 +273,9 @@ decoView.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218))
         .build());
 ```
 
-If no Interpolator is set when creating the data series all animations will use the default AccelerateDecelerateInterpolator().
+If no Interpolator is set when creating the data series all animations will use the default [AccelerateDecelerateInterpolator()](http://developer.android.com/reference/android/view/animation/AccelerateDecelerateInterpolator.html).
 
-It is also possible to override the Interpolator for each event that is applied to a data series.
+It is also possible to override the Interpolator for each event that is applied to a data series. This will override the Interpolator (if any) set during the creation of the data series.
 
 ```java
 decoView.addEvent(new DecoEvent.Builder(10)
@@ -286,11 +297,11 @@ decoView.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218))
         .build());
 ```
 
-The SpinDuration is the duration that a complete revolution will take. That is moving from the start to the end of the series. Based on this duration when a DecoEvent moves the current position the duration is automatically calculated based on the amount of rotation required.
+The SpinDuration is the duration that a complete revolution will take. That is the time taken to animate the move from the start to the end of the series. Based on this duration when a DecoEvent moves the current position the duration is automatically calculated based on the amount of rotation required.
 
 To illustrate this with an example, if you set the spin duration to 3 seconds (3000 ms) then move the current position to 50% of the total arc range, then the animation will take 1.5 seconds to complete.
 
-It is also possible to override the duration for each event that is applied to the data series.
+It is also possible to override the duration for each DecoEvent that is applied to the data series.
 
 ```java
 decoView.addEvent(new DecoEvent.Builder(10)
@@ -349,7 +360,7 @@ Animating color change
 
 Solid color change can be animated from one color to another. This can be done as a stand alone event or during a move event.
 
-To animate color change during a move event
+To animate color change during a move event, construct the event using the builders setColor(int color) function:
 
 ```java
 decoView.addEvent(new DecoEvent.Builder(10)
@@ -359,7 +370,9 @@ decoView.addEvent(new DecoEvent.Builder(10)
         .build());
 ```
 
-To animate color change as a stand alone event. Note that calling setDuration(...) is mandatory when creating a EVENT_COLOR_CHANGE event.
+For another example, the [sample fit tracker](https://github.com/bmarrdev/android-DecoView-charting/blob/master/app/src/main/java/com/hookedonplay/decoviewsample/SampleFit2Fragment.java) demonstrates color change during a move event.
+
+The following code demonstrates how to animate color change as a stand alone event. Calling setDuration(...) is mandatory when creating a EVENT_COLOR_CHANGE event.
 
 ```java
 decoView.addEvent(new DecoEvent.Builder(EventType.EVENT_COLOR_CHANGE, Color.parseColor("#FF555555"))
@@ -394,6 +407,15 @@ Note that in the example above the color uses transparency to give the edge of t
 NOTE: On Android 4.0 to 4.3 Adding an EdgeDetail to a data series will result in Hardware acceleration being turned off for that DecoView. This is due to these platforms not supporting the clipPath() functions with hardware acceleration. It would be unusual for this cause any noticeable difference to the performance of the View.
 
 
+Fitness tracker Sample
+===
+
+In addition to the samples built in this repository a [Fitness tracker sample is available on GitHub](https://github.com/bmarrdev/fauxfit-decoview-sample).
+
+The steps required to build this sample are detailed in the following article:
+
+[https://androidbycode.wordpress.com/2015/08/16/creating-a-google-fit-style-circular-animated-view/](https://androidbycode.wordpress.com/2015/08/16/creating-a-google-fit-style-circular-animated-view/)
+
 Requirements
 ===
 
@@ -401,6 +423,7 @@ Android 2.2+
 
 Credits
 ===
+- Continuous integration is provided by [Travis CI](https://travis-ci.org/bmarrdev/android-DecoView-charting).
 - Jake Wharton for <a href="https://github.com/JakeWharton/NineOldAndroids/">NineOldAndroids</a> allowing support for Android 2.2+ devices.
 - [Infographic vector designed by Freepik](http://www.freepik.com/free-photos-vectors/infographic)
 - [Avatars designed by Freepik](http://www.freepik.com/free-vector/family-avatars_796722.htm)
