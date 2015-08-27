@@ -101,11 +101,11 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
 
         int rotateAngle = 0;
         try {
-            mDefaultLineWidth = a.getDimension(R.styleable.DecoView_lineWidth, 30f);
-            rotateAngle = a.getInt(R.styleable.DecoView_rotateAngle, 0);
-            mTotalAngle = a.getInt(R.styleable.DecoView_totalAngle, 360);
-            mVertGravity = VertGravity.values()[a.getInt(R.styleable.DecoView_arc_gravity_vertical, VertGravity.GRAVITY_VERTICAL_CENTER.ordinal())];
-            mHorizGravity = HorizGravity.values()[a.getInt(R.styleable.DecoView_arc_gravity_horizontal, HorizGravity.GRAVITY_HORIZONTAL_CENTER.ordinal())];
+            mDefaultLineWidth = a.getDimension(R.styleable.DecoView_dv_lineWidth, 30f);
+            rotateAngle = a.getInt(R.styleable.DecoView_dv_rotateAngle, 0);
+            mTotalAngle = a.getInt(R.styleable.DecoView_dv_totalAngle, 360);
+            mVertGravity = VertGravity.values()[a.getInt(R.styleable.DecoView_dv_arc_gravity_vertical, VertGravity.GRAVITY_VERTICAL_CENTER.ordinal())];
+            mHorizGravity = HorizGravity.values()[a.getInt(R.styleable.DecoView_dv_arc_gravity_horizontal, HorizGravity.GRAVITY_HORIZONTAL_CENTER.ordinal())];
         } finally {
             a.recycle();
         }
