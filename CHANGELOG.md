@@ -1,5 +1,10 @@
 # DecoView Changelog
 
+v0.9.3
+===
+
+- All xml attributes prefixed with 'dv_'
+
 v0.9.2
 ===
 

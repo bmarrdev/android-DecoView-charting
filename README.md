@@ -50,7 +50,6 @@ The main concepts you need to understand are:
 
 ```xml
 <com.hookedonplay.decoviewlib.DecoView
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/dynamicArcView"
@@ -126,8 +125,8 @@ Gravity can be defined in the layout XML:
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/dynamicArcView"
-    custom:arc_gravity_horizontal="Fill"
-    custom:arc_gravity_vertical="Bottom"
+    custom:dv_arc_gravity_horizontal="Fill"
+    custom:dv_arc_gravity_vertical="Bottom"
     android:layout_margin="8dp"/>
 ```
 
