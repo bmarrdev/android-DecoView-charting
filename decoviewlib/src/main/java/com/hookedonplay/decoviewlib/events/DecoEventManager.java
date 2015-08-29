@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.TextView;
 
 import com.hookedonplay.decoviewlib.charts.DecoDrawEffect;
@@ -28,6 +29,9 @@ import com.hookedonplay.decoviewlib.charts.DecoDrawEffect;
  * Event manager for processing {@link DecoEvent} at the scheduled time (or immediately if no
  * delay is set). This class is also responsible for processing the hide/show fade effects of linked
  * views.
+ *
+ * Each {@link com.hookedonplay.decoviewlib.DecoView} contains one DecoEventManager, which can
+ * handle any number of {@link DecoEvent}
  */
 public class DecoEventManager {
 
@@ -48,6 +52,12 @@ public class DecoEventManager {
      * @param event DecoEvent to add
      */
     public void add(@NonNull final DecoEvent event) {
+        /**
+         * Determine if we need to show and linked views attached to the event. This is useful
+         * when scheduling an event at a later time and have the linked view automatically
+         * faded in when the event is started. The user could do this themselves by setting
+         * a listener on the event start.
+         */
         final boolean show = (event.getEventType() == DecoEvent.EventType.EVENT_SHOW) ||
                 (event.getEffectType() == DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT) ||
                 (event.getEffectType() == DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT_FILL);
@@ -76,10 +86,26 @@ public class DecoEventManager {
                     }
                 }
                 if (!ignore && event.getLinkedViews() != null) {
-                    for (View view : event.getLinkedViews()) {
+                    for (final View view : event.getLinkedViews()) {
                         AlphaAnimation anim = new AlphaAnimation(show ? 0.0f : 1.0f, show ? 1.0f : 0.0f);
                         anim.setDuration(event.getFadeDuration());
                         anim.setFillAfter(true);
+                        anim.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                view.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
                         view.startAnimation(anim);
                     }
                 }
