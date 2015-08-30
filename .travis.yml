@@ -5,8 +5,8 @@ env:
    # install timeout in minutes (2 minutes by default)
     - ADB_INSTALL_TIMEOUT=12
 
-    - ANDROID_API_LEVEL=22
-    - ANDROID_BUILD_TOOLS_VERSION=22.0.1
+    - ANDROID_API_LEVEL=23
+    - ANDROID_BUILD_TOOLS_VERSION=23.0.0
     - ANDROID_ABI=armeabi-v7a
 
 android:
