@@ -76,14 +76,12 @@ public class SamplePeopleFragment extends SampleFragment {
 
         mBack1Index = decoView.addSeries(seriesBack1Item);
 
-
         SeriesItem series1Item = new SeriesItem.Builder(COLOR_BLUE)
                 .setRange(0, mSeriesMax, 0)
                 .setInitialVisibility(false)
                 .setLineWidth(getDimension(46))
                 .setSeriesLabel(new SeriesLabel.Builder("Men").build())
                 .setCapRounded(false)
-                        //.setChartStyle(SeriesItem.ChartStyle.STYLE_PIE)
                 .addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_INNER, COLOR_EDGE, 0.3f))
                 .setShowPointWhenEmpty(false)
                 .build();
@@ -185,7 +183,7 @@ public class SamplePeopleFragment extends SampleFragment {
                 .setListener(new DecoEvent.ExecuteEventListener() {
                     @Override
                     public void onEventStart(DecoEvent event) {
-                        arcView.getSeriesItem(series).setSeriesLabel(null);
+                        arcView.getChartSeries(series).getSeriesItem().setSeriesLabel(null);
                     }
 
                     @Override

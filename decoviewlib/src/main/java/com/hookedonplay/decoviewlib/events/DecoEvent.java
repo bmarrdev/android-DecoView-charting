@@ -200,7 +200,7 @@ public class DecoEvent {
         private DecoDrawEffect.EffectType mEffectType = null;
         private long mFadeDuration = 1000;
         private View[] mLinkedViews = null;
-        private long mEffectDuration = 2000;
+        private long mEffectDuration = -1;
         private int mIndex = -1;
         private int mEffectRotations = 2;
         private String mDisplayText = null;

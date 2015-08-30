@@ -1,5 +1,17 @@
 # DecoView Changelog
 
+v0.9.4
+===
+
+- Added pause() and resume() support for data series move animation
+- Added pause/resume sample fragment to sample app
+- Added support for 0 duration move events (no animation)
+- Changed default move effect animation duration from 2000ms to duration calculated by total series spin duration
+- Deprecated function DecoView.getSeriesItem(int index). Use DecoView.getChartSeries(index).getSeriesItem()
+- Updated compileSdkVersion 23
+- Updated buildToolsVersion "23.0.0"
+- Updated targetSdkVersion 23
+
 v0.9.3
 ===
 

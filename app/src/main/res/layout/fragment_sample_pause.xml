@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:id="@+id/buttonEmpty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/buttonFifty"
+            android:layout_toStartOf="@+id/buttonFifty"
+            android:text="0%"/>
+
+        <Button
+            android:id="@+id/buttonFifty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="50%"/>
+
+        <Button
+            android:id="@+id/buttonFull"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/buttonFifty"
+            android:layout_toRightOf="@+id/buttonFifty"
+            android:text="100%"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/relativeLayout">
+
+        <com.hookedonplay.decoviewlib.DecoView
+            android:id="@+id/dynamicArcView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp">
+
+        </com.hookedonplay.decoviewlib.DecoView>
+
+        <TextView
+            android:id="@+id/textViewPause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/dynamicArcView"
+            android:layout_alignLeft="@+id/dynamicArcView"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/dynamicArcView"
+            android:layout_alignStart="@+id/dynamicArcView"
+            android:layout_margin="40dp"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/white"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

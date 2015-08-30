@@ -4,7 +4,7 @@
 
 Powerful animated circular chart library for Android developers.
 
-DecoView is a powerful library that enables creation of highly configurable animated circular charts in your Android apps. It makes it simple to reproduce a user experience like the Google Fit circular view within your app. With extensive customization options it is simple and quick to change the look and feel of the charts to match your UI.
+DecoView is a powerful library that enables creation of highly configurable animated circular charts in your Android apps. It makes it simple to reproduce a user experience like the Google Fit circular wheel view within your own Android app. With extensive customization options it is simple and quick to change the look and feel of the charts to match your UI.
 
 ![DecoView Library Image](https://github.com/bmarrdev/android-DecoView-charting/blob/master/art/decoview_header.png)
 
@@ -29,7 +29,7 @@ Step 1. Add the repositories into your build.gradle
 Step 2. Add the dependency in the form
 
 	dependencies {
-	    compile 'com.github.bmarrdev:android-DecoView-charting:v0.9.3'
+	    compile 'com.github.bmarrdev:android-DecoView-charting:v0.9.4'
 	}
 
 

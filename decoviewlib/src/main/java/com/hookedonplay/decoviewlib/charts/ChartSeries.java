@@ -100,6 +100,16 @@ abstract public class ChartSeries {
     private ColorAnimate mColorAnimate;
 
     /**
+     * Current event being processed. Kept for the case where we pause and resume the event
+     */
+    private DecoEvent mEventCurrent;
+
+    /**
+     * Has the current move animation been paused
+     */
+    private boolean mIsPaused = false;
+
+    /**
      * Construct an ArcSeries based on the ArcItem attributes and the angle and shape
      * of the arc
      *
@@ -155,10 +165,12 @@ abstract public class ChartSeries {
      * Create the animation of filling the chart by using a valueAnimator to adjust values
      */
     public void startAnimateMove(@NonNull final DecoEvent event) {
+        mIsPaused = false;
         mDrawMode = event.getEventType();
         mVisible = true;
 
         cancelAnimation();
+        mEventCurrent = event;
 
         final boolean changeColors = event.isColorSet();
         if (changeColors) {
@@ -167,20 +179,27 @@ abstract public class ChartSeries {
         }
         float position = event.getEndPosition();
 
-        if (Math.abs(mPositionEnd - position) < 0.01) {
-            Log.v(TAG, "Aborting move request, no position change");
-            return;
-        }
 
         event.notifyStartListener();
 
         mPositionStart = mPositionCurrentEnd;
         mPositionEnd = position;
 
-        mValueAnimator = ValueAnimator.ofFloat(mPositionStart, position);
-
         long animationDuration = event.getEffectDuration();
-        if (animationDuration <= 0) {
+
+        if ((animationDuration == 0) || (Math.abs(mPositionEnd - mPositionStart) < 0.01)) {
+            cancelAnimation();
+            mPositionCurrentEnd = mPositionEnd;
+            mEventCurrent = null;
+            mPercentComplete = 1.0f;
+            for (SeriesItem.SeriesItemListener seriesItemListener : mSeriesItem.getListeners()) {
+                seriesItemListener.onSeriesItemAnimationProgress(1.0f, mPositionEnd);
+            }
+            event.notifyEndListener();
+            return;
+        }
+
+        if (animationDuration < 0) {
             /**
              * If an animation duration is not set we calculate it using a formula of the proportion
              * of a revolution multiplied by the default time for a full revolution. This ensures
@@ -188,7 +207,10 @@ abstract public class ChartSeries {
              */
             animationDuration = (Math.abs((int) (mSeriesItem.getSpinDuration() *
                     ((mPositionStart - mPositionEnd) / mSeriesItem.getMaxValue()))));
+
         }
+
+        mValueAnimator = ValueAnimator.ofFloat(mPositionStart, position);
         mValueAnimator.setDuration(animationDuration);
 
         /**
@@ -211,14 +233,6 @@ abstract public class ChartSeries {
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 float current = Float.valueOf(valueAnimator.getAnimatedValue().toString());
                 mPercentComplete = (current - mPositionStart) / (mPositionEnd - mPositionStart);
-
-                /**
-                 * This rounds the value to 1 decimal place which is the maximum precision supported
-                 * The reason for this is that with the BounceInterpolator when returning to 0 the
-                 * finishing value has a rounding issue and is like -0.002847 The issue this causes
-                 * is in the formatting of this value it results in -0 displayed.
-                 */
-                //mPositionCurrentEnd = Math.round(current * 10) / 10f;
                 mPositionCurrentEnd = current;
 
                 /**
@@ -254,6 +268,7 @@ abstract public class ChartSeries {
         if (mValueAnimator != null) {
             mValueAnimator.cancel();
         }
+        mEventCurrent = null;
 
         if (mColorAnimate != null) {
             mPaint.setColor(mSeriesItem.getColor());
@@ -272,10 +287,11 @@ abstract public class ChartSeries {
     public void startAnimateHideShow(@NonNull final DecoEvent event, final boolean showArc) {
         cancelAnimation();
         event.notifyStartListener();
-        mVisible = true;
+
 
         mDrawMode = event.getEventType();
-        mPercentComplete = 0f;
+        mPercentComplete = showArc ? 1.0f : 0f;
+        mVisible = true;
 
         final float maxValue = 1.0f;
         mValueAnimator = ValueAnimator.ofFloat(0, maxValue);
@@ -286,6 +302,7 @@ abstract public class ChartSeries {
         mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
+
                 float current = Float.valueOf(valueAnimator.getAnimatedValue().toString());
                 mPercentComplete = showArc ? (maxValue - current) : current;
 
@@ -489,7 +506,10 @@ abstract public class ChartSeries {
 
         if (mColorAnimate != null) {
             mPaint.setColor(mColorAnimate.getColorCurrent(mPercentComplete));
+        } else if (mPaint.getColor() != getSeriesItem().getColor()) {
+            mPaint.setColor(getSeriesItem().getColor());
         }
+
         return false;
     }
 
@@ -533,9 +553,7 @@ abstract public class ChartSeries {
         } else {
             mPaint.setAlpha(Color.alpha(mSeriesItem.getColor()));
         }
-        if (lineWidth < 1.0f) {
-            return;
-        }
+
         mPaint.setStrokeWidth(lineWidth);
     }
 
@@ -578,7 +596,7 @@ abstract public class ChartSeries {
      * Calculates the current position of an series based on the progress of the animation
      * being executed
      *
-     * @return The numerical value for the current percentage complete
+     * @return Current percentage to fill chart (0 .. 1.0f)
      */
     protected float calcCurrentPosition(float start, float end, float min, float max, float percent) {
         start -= min;
@@ -586,7 +604,7 @@ abstract public class ChartSeries {
         max -= min;
 
         if (Math.abs(start - end) < 0.01) {
-            return start;
+            return (start / max);
         }
 
         if ((mDrawMode == DecoEvent.EventType.EVENT_HIDE) ||
@@ -648,5 +666,51 @@ abstract public class ChartSeries {
      */
     public boolean isVisible() {
         return mVisible;
+    }
+
+    /**
+     * Pause any move animation currently in progress
+     */
+    public boolean pause() {
+        if (mValueAnimator != null && mValueAnimator.isRunning() && !mIsPaused) {
+            mValueAnimator.cancel();
+            mIsPaused = true;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Resume a previously paused move animation
+     *
+     * @return true if move resumed
+     */
+    public boolean resume() {
+        if (isPaused()) {
+            startAnimateMove(mEventCurrent);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Is the current animated move paused
+     *
+     * @return true if paused
+     */
+    public boolean isPaused() {
+        return mIsPaused;
+    }
+
+    /**
+     * Force move of current position without animation
+     *
+     * @param position value to move current position to
+     */
+    public void setPosition(float position) {
+        mPositionStart = position;
+        mPositionEnd = position;
+        mPositionCurrentEnd = position;
+        mPercentComplete = 1.0f;
     }
 }
