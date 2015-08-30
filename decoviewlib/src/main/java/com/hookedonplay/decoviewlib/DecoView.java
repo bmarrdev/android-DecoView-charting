@@ -42,6 +42,7 @@ import java.util.ArrayList;
 /**
  * Android Custom View for displaying animated Arc based charts
  */
+@SuppressWarnings("unused")
 public class DecoView extends View implements DecoEventManager.ArcEventManagerListener {
     private final String TAG = getClass().getSimpleName();
     /**
@@ -347,14 +348,13 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
         }
 
         if (mChartSeries != null) {
-
             boolean labelsSupported = true;
             for (int i = 0; i < mChartSeries.size(); i++) {
                 ChartSeries chartSeries = mChartSeries.get(i);
                 chartSeries.draw(canvas, mArcBounds);
                 // labels Unsupported if one or more series run anticlockwise
                 labelsSupported &= (!chartSeries.isVisible() || chartSeries.getSeriesItem().getSpinClockwise());
-                mMeasureViewableArea[i] = getVisibleArea(chartSeries, i);
+                mMeasureViewableArea[i] = getLabelPosition(i);
             }
 
             // Draw the labels as a second pass as we want all labels to be on top of all
@@ -371,8 +371,18 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
         }
     }
 
-    private float getVisibleArea(ChartSeries chartSeries, int index) {
+    /**
+     * Determine where a label should be displayed given its position and the position of all
+     * other data series
+     *
+     * @param index position of index in {@link #mChartSeries} array
+     * @return < 0 if label not visible, else 0f .. 1.0f to indicate position on circle
+     */
+    private float getLabelPosition(final int index) {
         float max = 0.0f;
+
+        ChartSeries chartSeries = mChartSeries.get(index);
+        // We only need to check those series drawn after this series
         for (int i = index + 1; i < mChartSeries.size(); i++) {
             ChartSeries innerSeries = mChartSeries.get(i);
             if (innerSeries.isVisible()) {
@@ -453,9 +463,29 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
      * @param index    index of the arc series to apply the move
      * @param position position of the arc
      */
-    @SuppressWarnings("unused")
     public void moveTo(int index, float position) {
         addEvent(new DecoEvent.Builder(position).setIndex(index).build());
+    }
+
+    /**
+     * Basic wrapper function to create an event with all defaults for the arc and simply execute
+     * a move for the current position of the arc. If you want to customize the move (such as delay,
+     * speed, interpolator...) then you need to use create an {@link DecoEvent} and call
+     * {@link #addEvent(DecoEvent)}
+     * <p/>
+     * This function will not create a {@link DecoEvent} if you pass 0 as the duration
+     *
+     * @param index    index of the arc series to apply the move
+     * @param position position of the arc
+     * @param duration duration of the move
+     */
+    public void moveTo(int index, float position, int duration) {
+        if (duration == 0) {
+            getChartSeries(index).setPosition(position);
+            invalidate();
+            return;
+        }
+        addEvent(new DecoEvent.Builder(position).setIndex(index).setDuration(duration).build());
     }
 
     /**
@@ -484,6 +514,12 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
         mChartSeries = null;
     }
 
+    /**
+     * Process event reveal as required
+     *
+     * @param event DecoEvent to process
+     * @return true if handled
+     */
     @SuppressWarnings("UnusedReturnValue")
     private boolean executeReveal(@NonNull DecoEvent event) {
         if ((event.getEventType() != DecoEvent.EventType.EVENT_SHOW) &&
@@ -506,6 +542,12 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
         return true;
     }
 
+    /**
+     * Process event effect as required
+     *
+     * @param event DecoEvent to process
+     * @return true is handled
+     */
     @SuppressWarnings("UnusedReturnValue")
     private boolean executeEffect(@NonNull DecoEvent event) {
         if (event.getEventType() != DecoEvent.EventType.EVENT_EFFECT) {
@@ -575,6 +617,7 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
 
     /**
      * Set the Vertical gravity of the DecoView
+     *
      * @param vertGravity Vertical Gravity
      */
     public void setVertGravity(VertGravity vertGravity) {
@@ -583,6 +626,7 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
 
     /**
      * Set the Horizontal Gravity of the DecoView
+     *
      * @param horizGravity Horizontal Gravity
      */
     public void setHorizGravity(HorizGravity horizGravity) {
@@ -607,7 +651,6 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
      * {@link Canvas#clipPath(Path)}
      * This is used to clip the drawing rectangle to help render the Edge details decorations
      */
-    @SuppressWarnings("unused")
     public void enableCompatibilityMode() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2
                 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -617,12 +660,27 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
 
     /**
      * Retrieve the {@link SeriesItem} based on the index
+     *
      * @param index index of the series item
      * @return SeriesItem
      */
+    @Deprecated
     public SeriesItem getSeriesItem(int index) {
         if (index >= 0 && index < mChartSeries.size()) {
             return mChartSeries.get(index).getSeriesItem();
+        }
+        return null;
+    }
+
+    /**
+     * Retrieve the {@link SeriesItem} based on the index
+     *
+     * @param index index of the series item
+     * @return ChartSeries at given index
+     */
+    public ChartSeries getChartSeries(int index) {
+        if (index >= 0 && index < mChartSeries.size()) {
+            return mChartSeries.get(index);
         }
         return null;
     }
