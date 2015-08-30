@@ -98,7 +98,7 @@ public class Sample2Fragment extends SampleFragment {
         final View[] linkedViews = {textPercent};
 
         decoView.addEvent(new DecoEvent.Builder(EventType.EVENT_SHOW, true)
-                .setDelay(1000)
+                .setDelay(500)
                 .setDuration(2000)
                 .setLinkedViews(linkedViews)
                 .build());
@@ -106,7 +106,8 @@ public class Sample2Fragment extends SampleFragment {
         decoView.addEvent(new DecoEvent.Builder(25).setIndex(mSeries1Index).setDelay(3300).build());
         decoView.addEvent(new DecoEvent.Builder(50).setIndex(mSeries1Index).setDelay(8000).setDuration(1000).build());
         decoView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries1Index).setDelay(13000).setDuration(6000).build());
-        decoView.addEvent(new DecoEvent.Builder(5).setIndex(mSeries2Index).setDelay(3600).build());
+
+        decoView.addEvent(new DecoEvent.Builder(5).setIndex(mSeries2Index).setDelay(4250).setDuration(2000).build());
         decoView.addEvent(new DecoEvent.Builder(30).setIndex(mSeries2Index).setDelay(9000).build());
         decoView.addEvent(new DecoEvent.Builder(0)
                 .setIndex(mSeries2Index)
