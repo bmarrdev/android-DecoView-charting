@@ -74,6 +74,7 @@ public class SampleEndcapFragment extends SampleFragment {
                 .setLineWidth(getDimension(30))
                 .setEndCap(EndCapType.CAP_CONCAVE)
                 .setShowPointWhenEmpty(true)
+                .addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_INNER, COLOR_EDGE, 0.3f))
                 .build();
 
         mSeries1Index = decoView.addSeries(series1Item);
