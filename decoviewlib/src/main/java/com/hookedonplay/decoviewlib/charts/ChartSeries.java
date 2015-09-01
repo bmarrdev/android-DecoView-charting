@@ -448,7 +448,16 @@ abstract public class ChartSeries {
         mPaint.setColor(mSeriesItem.getColor());
         mPaint.setStyle((mSeriesItem.getChartStyle() == SeriesItem.ChartStyle.STYLE_DONUT) ? Paint.Style.STROKE : Paint.Style.FILL);
         mPaint.setStrokeWidth(mSeriesItem.getLineWidth());
-        mPaint.setStrokeCap(mSeriesItem.getRoundCap() ? Paint.Cap.ROUND : Paint.Cap.BUTT);
+
+        if (mSeriesItem.getEndCap() == EndCapType.CAP_CONVEX) {
+            mPaint.setStrokeCap(Paint.Cap.ROUND);
+        } else if (mSeriesItem.getEndCap() == EndCapType.CAP_BUTTED) {
+            mPaint.setStrokeCap(Paint.Cap.BUTT);
+        } else if (mSeriesItem.getEndCap() == EndCapType.CAP_SQUARE) {
+            mPaint.setStrokeCap(Paint.Cap.SQUARE);
+        } else if (mSeriesItem.getEndCap() == EndCapType.CAP_CONCAVE) {
+            mPaint.setStrokeCap(Paint.Cap.ROUND);
+        }
         mPaint.setAntiAlias(true);
 
         // We need to reset the bounds for the case we are drawing a gradient and need to recreate

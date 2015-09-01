@@ -31,6 +31,8 @@ import java.util.ArrayList;
  */
 public class LineArcSeries extends ArcSeries {
 
+    private Path mConcaveClipPath;
+
     public LineArcSeries(@NonNull SeriesItem seriesItem, int totalAngle, int rotateAngle) {
         super(seriesItem, totalAngle, rotateAngle);
     }
@@ -47,9 +49,51 @@ public class LineArcSeries extends ArcSeries {
             return true;
         }
 
-        drawArc(canvas);
+        canvas.save();
+        if (getSeriesItem().getEndCap() == EndCapType.CAP_CONCAVE) {
+            processConcaveDraw(canvas);
+        }
+        if (getSeriesItem().getEndCap() == EndCapType.CAP_CONCAVE) {
+            if (mArcAngleSweep > 320) {
+                canvas.drawArc(mBoundsInset,
+                        mArcAngleStart,
+                        320,
+                        false,
+                        mPaint);
+            } else {
+                drawArc(canvas);
+            }
+        } else {
+            drawArc(canvas);
+        }
         drawArcEdgeDetail(canvas);
+        canvas.restore();
+
+        if (getSeriesItem().getEndCap() == EndCapType.CAP_CONCAVE) {
+            if (mArcAngleSweep > 320) {
+                canvas.drawArc(mBoundsInset,
+                        mArcAngleStart + 320,
+                        mArcAngleSweep - 320,
+                        false,
+                        mPaint);
+            }
+        }
+
         return true;
+    }
+
+    private void processConcaveDraw(Canvas canvas) {
+        float lineWidth = (getSeriesItem().getLineWidth() * 0.51f);
+        float radius = mBoundsInset.width() / 2;
+        float angle = (float)(Math.PI * mArcAngleStart / 180.0f);
+        float middleX = (float)(mBoundsInset.centerX() + radius * Math.cos(angle));
+        float middleY = (float)(mBoundsInset.centerY() + radius * Math.sin(angle));
+        if (mConcaveClipPath == null) {
+            mConcaveClipPath = new Path();
+        }
+        mConcaveClipPath.reset();
+        mConcaveClipPath.addCircle(middleX, middleY, lineWidth, Path.Direction.CW);
+        canvas.clipPath(mConcaveClipPath, Region.Op.DIFFERENCE);
     }
 
     protected void drawArc(@NonNull Canvas canvas) {
