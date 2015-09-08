@@ -104,7 +104,7 @@ public class LineArcSeries extends ArcSeries {
         mConcaveClipPath.addCircle(middleX, middleY, lineWidth, Path.Direction.CW);
         if (cleanUpAntialiasing) {
             // Add another rect to clean up the end-cap antialiasing.
-            mConcaveClipPath.addRect(middleX - lineWidth, middleY - lineWidth, middleX, middleY + lineWidth, Path.Direction.CW);
+            mConcaveClipPath.addRect(middleX - (lineWidth + 2.0f), middleY - lineWidth, middleX, middleY + lineWidth, Path.Direction.CW);
         }
         canvas.clipPath(mConcaveClipPath, Region.Op.DIFFERENCE);
     }
