@@ -92,11 +92,7 @@ public class LineArcSeries extends ArcSeries {
     }
 
     private void processConcaveDraw(Canvas canvas, float clipAngle, boolean cleanUpAntialiasing) {
-        float cleanupFactor = 0.0f;
-        if (cleanUpAntialiasing) {
-            cleanupFactor = 0.01f;
-        }
-        float lineWidth = (getSeriesItem().getLineWidth() * (0.5f + cleanupFactor));
+        float lineWidth = (getSeriesItem().getLineWidth() * 0.5f);
         float radius = mBoundsInset.width() / 2;
         float angle = (float)(Math.PI * clipAngle / 180.0f);
         float middleX = (float)(mBoundsInset.centerX() + radius * Math.cos(angle));
@@ -106,6 +102,10 @@ public class LineArcSeries extends ArcSeries {
         }
         mConcaveClipPath.reset();
         mConcaveClipPath.addCircle(middleX, middleY, lineWidth, Path.Direction.CW);
+        if (cleanUpAntialiasing) {
+            // Add another rect to clean up the end-cap antialiasing.
+            mConcaveClipPath.addRect(middleX - lineWidth, middleY - lineWidth, middleX, middleY + lineWidth, Path.Direction.CW);
+        }
         canvas.clipPath(mConcaveClipPath, Region.Op.DIFFERENCE);
     }
 
