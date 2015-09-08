@@ -1,5 +1,11 @@
 # DecoView Changelog
 
+v0.95
+===
+
+Remove `android:allowBackup="true"` from library project to prevent compilation issues for projects that require this attribute to be overridden.
+This manifest merger issue is discussed in the AOSP issue tracker issue 70073.
+
 v0.9.4
 ===
 

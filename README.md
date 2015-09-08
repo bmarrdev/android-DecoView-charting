@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/bmarrdev/android-DecoView-charting.svg?branch=master)](https://travis-ci.org/bmarrdev/android-DecoView-charting) [![Release](https://img.shields.io/github/release/bmarrdev/android-DecoView-charting.svg?label=JitPack)](https://jitpack.io/#bmarrdev/android-DecoView-charting) [![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-DecoView-green.svg?style=flat)](https://android-arsenal.com/details/1/2329)
 
-Powerful animated circular chart library for Android developers.
+Powerful animated circular wheel chart library for Android developers.
 
 DecoView is a powerful library that enables creation of highly configurable animated circular charts in your Android apps. It makes it simple to reproduce a user experience like the Google Fit circular wheel view within your own Android app. With extensive customization options it is simple and quick to change the look and feel of the charts to match your UI.
 
@@ -52,14 +52,12 @@ The main concepts you need to understand are:
 <com.hookedonplay.decoviewlib.DecoView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/dynamicArcView"
-    android:layout_margin="8dp">
+    android:id="@+id/dynamicArcView"/>
 ```
 
 **Configure DecoView data series in your Java code**
 
 ```java
-  
 DecoView arcView = (DecoView)findViewById(R.id.dynamicArcView);
 
 // Create background track
