@@ -543,6 +543,9 @@ abstract public class ChartSeries {
     protected void processRevealEffect() {
         if ((mDrawMode != DecoEvent.EventType.EVENT_HIDE) &&
                 (mDrawMode != DecoEvent.EventType.EVENT_SHOW)) {
+            if (mSeriesItem.getLineWidth() != mPaint.getStrokeWidth()) {
+                mPaint.setStrokeWidth(mSeriesItem.getLineWidth());
+            }
             return;
         }
 
