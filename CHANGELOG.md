@@ -1,5 +1,10 @@
 # DecoView Changelog
 
+v0.9.6
+===
+
+Fix issue where line width of arc was incorrect if onPause was called during the Event Show effect
+
 v0.9.5
 ===
 
