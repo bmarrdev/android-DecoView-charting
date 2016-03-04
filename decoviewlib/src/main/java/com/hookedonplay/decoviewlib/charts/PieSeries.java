@@ -44,13 +44,13 @@ public class PieSeries extends ArcSeries {
             return true;
         }
 
-        drawArc(canvas);
+        drawArc(canvas, mArcAngleStart, mArcAngleSweep);
         drawArcEdgeDetail(canvas);
 
         return true;
     }
 
-    protected void drawArc(@NonNull Canvas canvas) {
+    protected void drawArc(@NonNull Canvas canvas, float arcAngleStart, float arcAngleSweep) {
         canvas.drawArc(mBoundsInset,
                 mArcAngleStart,
                 mArcAngleSweep,
@@ -115,7 +115,7 @@ public class PieSeries extends ArcSeries {
         Shader shaderOld = mPaint.getShader();
         mPaint.setColor(color);
         mPaint.setShader(null);
-        drawArc(canvas);
+        drawArc(canvas, mArcAngleStart, mArcAngleSweep);
         mPaint.setColor(colorOld);
         mPaint.setShader(shaderOld);
         canvas.restore();

@@ -40,8 +40,10 @@ abstract public class ArcSeries extends ChartSeries {
      * Draw the arc in the current state
      *
      * @param canvas Canvas to draw onto
+     * @param arcAngleStart The angle of the start of the arc
+     * @param arcAngleSweep The angle to sweep
      */
-    abstract void drawArc(Canvas canvas);
+    abstract void drawArc(Canvas canvas, float arcAngleStart, float arcAngleSweep);
 
     /**
      * Draw this arc in the current position calculated by the ValueAnimator.

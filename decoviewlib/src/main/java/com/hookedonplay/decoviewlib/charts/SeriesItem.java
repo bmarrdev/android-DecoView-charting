@@ -115,6 +115,11 @@ public class SeriesItem {
      */
     private ArrayList<SeriesItemListener> mListeners;
 
+    /**
+     * Provides the end cap type
+     */
+    private EndCapType mEndCap;
+
     private SeriesItem(Builder builder) {
         mColor = builder.mColor;
         mColorSecondary = builder.mColorSecondary;
@@ -125,7 +130,7 @@ public class SeriesItem {
         mInitialValue = builder.mInitialValue;
         mInitialVisibility = builder.mInitialVisibility;
         mSpinClockwise = builder.mSpinClockwise;
-        mRoundCap = builder.mRoundCap;
+        mEndCap = builder.mEndCap;
         mDrawAsPoint = builder.mDrawAsPoint;
         mChartStyle = builder.mChartStyle;
         mInterpolator = builder.mInterpolator;
@@ -183,8 +188,8 @@ public class SeriesItem {
         return mSpinClockwise;
     }
 
-    public boolean getRoundCap() {
-        return mRoundCap;
+    public EndCapType getEndCap() {
+        return mEndCap;
     }
 
     public boolean getDrawAsPoint() {
@@ -276,7 +281,7 @@ public class SeriesItem {
         private float mInitialValue = 0f;
         private boolean mInitialVisibility = true;
         private boolean mSpinClockwise = true;
-        private boolean mRoundCap = true;
+        private EndCapType mEndCap = EndCapType.CAP_CONVEX;
         private boolean mDrawAsPoint = false;
         private ChartStyle mChartStyle = ChartStyle.STYLE_DONUT;
         private Interpolator mInterpolator;
@@ -318,7 +323,16 @@ public class SeriesItem {
         }
 
         public Builder setCapRounded(final boolean roundCap) {
-            mRoundCap = roundCap;
+            if (roundCap) {
+                mEndCap = EndCapType.CAP_CONVEX;
+            } else {
+                mEndCap = EndCapType.CAP_BUTTED;
+            }
+            return this;
+        }
+
+        public Builder setEndCap(final EndCapType capType) {
+            mEndCap = capType;
             return this;
         }
 

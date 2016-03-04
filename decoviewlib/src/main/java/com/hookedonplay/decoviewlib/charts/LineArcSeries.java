@@ -16,7 +16,11 @@
 package com.hookedonplay.decoviewlib.charts;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.support.annotation.NonNull;
@@ -30,6 +34,11 @@ import java.util.ArrayList;
  * Concrete class to use for Arc based line chart type drawing
  */
 public class LineArcSeries extends ArcSeries {
+
+    public static final int CONCAVE_CLIP_ANGLE = 320;
+    public static final float EXTRA_SWEEP_CLEANUP_FACTOR = 0.1f;
+
+    private Path mConcaveClipPath;
 
     public LineArcSeries(@NonNull SeriesItem seriesItem, int totalAngle, int rotateAngle) {
         super(seriesItem, totalAngle, rotateAngle);
@@ -47,15 +56,63 @@ public class LineArcSeries extends ArcSeries {
             return true;
         }
 
-        drawArc(canvas);
-        drawArcEdgeDetail(canvas);
+        canvas.save();
+        if (getSeriesItem().getEndCap() == EndCapType.CAP_CONCAVE) {
+            processConcaveDraw(canvas, mArcAngleStart, true);
+        }
+        if (getSeriesItem().getEndCap() == EndCapType.CAP_CONCAVE) {
+            if (mArcAngleSweep > CONCAVE_CLIP_ANGLE) {
+                drawArc(canvas, mArcAngleStart, CONCAVE_CLIP_ANGLE);
+                drawArcEdgeDetail(canvas, mArcAngleStart, CONCAVE_CLIP_ANGLE);
+            } else {
+                drawArc(canvas, mArcAngleStart, mArcAngleSweep);
+                drawArcEdgeDetail(canvas, mArcAngleStart, mArcAngleSweep);
+            }
+        } else {
+            drawArc(canvas, mArcAngleStart, mArcAngleSweep);
+            drawArcEdgeDetail(canvas, mArcAngleStart, mArcAngleSweep);
+        }
+        canvas.restore();
+
+        if (getSeriesItem().getEndCap() == EndCapType.CAP_CONCAVE) {
+            if (mArcAngleSweep > 320) {
+                canvas.save();
+                processConcaveDraw(canvas, mArcAngleStart + CONCAVE_CLIP_ANGLE, false);
+                drawArc(canvas,
+                        mArcAngleStart + CONCAVE_CLIP_ANGLE,
+                        mArcAngleSweep - CONCAVE_CLIP_ANGLE + EXTRA_SWEEP_CLEANUP_FACTOR);
+                drawArcEdgeDetail(canvas,
+                        mArcAngleStart + CONCAVE_CLIP_ANGLE,
+                        mArcAngleSweep - CONCAVE_CLIP_ANGLE + EXTRA_SWEEP_CLEANUP_FACTOR);
+                canvas.restore();
+            }
+        }
+
         return true;
     }
 
-    protected void drawArc(@NonNull Canvas canvas) {
+    private void processConcaveDraw(Canvas canvas, float clipAngle, boolean cleanUpAntialiasing) {
+        float lineWidth = (getSeriesItem().getLineWidth() * 0.5f);
+        float radius = mBoundsInset.width() / 2;
+        float angle = (float)(Math.PI * clipAngle / 180.0f);
+        float middleX = (float)(mBoundsInset.centerX() + radius * Math.cos(angle));
+        float middleY = (float)(mBoundsInset.centerY() + radius * Math.sin(angle));
+        if (mConcaveClipPath == null) {
+            mConcaveClipPath = new Path();
+        }
+        mConcaveClipPath.reset();
+        mConcaveClipPath.addCircle(middleX, middleY, lineWidth, Path.Direction.CW);
+        if (cleanUpAntialiasing) {
+            // Add another rect to clean up the end-cap antialiasing.
+            mConcaveClipPath.addRect(middleX - (lineWidth + 2.0f), middleY - lineWidth, middleX, middleY + lineWidth, Path.Direction.CW);
+        }
+        canvas.clipPath(mConcaveClipPath, Region.Op.DIFFERENCE);
+    }
+
+    protected void drawArc(@NonNull Canvas canvas, float arcAngleStart, float arcAngleSweep) {
         canvas.drawArc(mBoundsInset,
-                mArcAngleStart,
-                mArcAngleSweep,
+                arcAngleStart,
+                arcAngleSweep,
                 false,
                 mPaint);
     }
@@ -67,8 +124,10 @@ public class LineArcSeries extends ArcSeries {
      * called by the user, otherwise EdgeDetails will not be drawn
      *
      * @param canvas Canvas to draw to
+     * @param arcAngleStart The angle to start drawing the arc
+     * @param arcAngleSweep The sweep angle
      */
-    private void drawArcEdgeDetail(@NonNull Canvas canvas) {
+    private void drawArcEdgeDetail(@NonNull Canvas canvas, float arcAngleStart, float arcAngleSweep) {
         ArrayList<EdgeDetail> edgeDetailList = getSeriesItem().getEdgeDetail();
         if (edgeDetailList == null) {
             return;
@@ -89,7 +148,7 @@ public class LineArcSeries extends ArcSeries {
                 edgeDetail.setClipPath(clipPath);
             }
             drawClippedArc(canvas, edgeDetail.getClipPath(), edgeDetail.getColor(),
-                    drawInner ? Region.Op.INTERSECT : Region.Op.DIFFERENCE);
+                    drawInner ? Region.Op.INTERSECT : Region.Op.DIFFERENCE, arcAngleStart, arcAngleSweep);
         }
     }
 
@@ -99,7 +158,7 @@ public class LineArcSeries extends ArcSeries {
      * is provided which will disable on affected platforms however this needs to be explicitly
      * called by the user, otherwise EdgeDetails will not be drawn
      */
-    protected void drawClippedArc(@NonNull Canvas canvas, @NonNull Path path, int color, @NonNull Region.Op combine) {
+    protected void drawClippedArc(@NonNull Canvas canvas, @NonNull Path path, int color, @NonNull Region.Op combine, float arcAngleStart, float arcAngleSweep) {
         canvas.save();
 
         try {
@@ -112,7 +171,7 @@ public class LineArcSeries extends ArcSeries {
 
         int colorOld = mPaint.getColor();
         mPaint.setColor(color);
-        drawArc(canvas);
+        drawArc(canvas, arcAngleStart, arcAngleSweep);
         mPaint.setColor(colorOld);
         canvas.restore();
     }
