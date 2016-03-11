@@ -67,7 +67,7 @@ abstract public class SampleFragment extends Fragment {
                 if (mUpdateListeners) {
                     if (format.contains("%%")) {
                         // We found a percentage so we insert a percentage
-                        float percentFilled = ((currentPosition - seriesItem.getMinValue()) / (seriesItem.getMaxValue() - seriesItem.getMinValue()));
+                        float percentFilled = (currentPosition - seriesItem.getMinValue()) / (seriesItem.getMaxValue() - seriesItem.getMinValue());
                         view.setText(String.format(format, percentFilled * 100f));
                     } else {
                         view.setText(String.format(format, currentPosition));

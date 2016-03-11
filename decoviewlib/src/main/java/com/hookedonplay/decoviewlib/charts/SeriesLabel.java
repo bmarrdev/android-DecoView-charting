@@ -99,7 +99,7 @@ public class SeriesLabel {
             mTextBounds = new Rect();
             mPaintText.getTextBounds(mLabel, 0, mLabel.length(), mTextBounds);
             mTextDraw = new RectF();
-            mTextCenter = ((mPaintText.descent() + mPaintText.ascent()) / 2);
+            mTextCenter = (mPaintText.descent() + mPaintText.ascent()) / 2;
         }
     }
 

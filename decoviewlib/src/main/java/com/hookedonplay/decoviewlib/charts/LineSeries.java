@@ -46,7 +46,7 @@ public class LineSeries extends ChartSeries {
         final boolean reverse = !mSeriesItem.getSpinClockwise();
         float insetX = mSeriesItem.getInset() != null ? mSeriesItem.getInset().x : 0;
         float insetY = mSeriesItem.getInset() != null ? mSeriesItem.getInset().y : 0;
-        float lineWidth = (getSeriesItem().getLineWidth() / 2);
+        float lineWidth = getSeriesItem().getLineWidth() / 2;
         float posNow = mPositionCurrentEnd / (getSeriesItem().getMaxValue() - getSeriesItem().getMinValue());
         if (this.getSeriesItem().showPointWhenEmpty()) {
             /* Adjust to show point even when empty */
@@ -57,10 +57,10 @@ public class LineSeries extends ChartSeries {
 
         final float totalWidth = posNow * (canvas.getWidth() - (2 * lineWidth));
         final float totalHeight = posNow * (canvas.getHeight() - (2 * lineWidth));
-        float xVal1 = (!reverse ? lineWidth : canvas.getWidth() - lineWidth);
-        float yVal1 = (!reverse ? lineWidth : canvas.getHeight() - lineWidth);
-        float xVal2 = (!reverse ? lineWidth + totalWidth : xVal1 - totalWidth);
-        float yVal2 = (!reverse ? lineWidth + totalHeight : yVal1 - totalHeight);
+        float xVal1 = !reverse ? lineWidth : canvas.getWidth() - lineWidth;
+        float yVal1 = !reverse ? lineWidth : canvas.getHeight() - lineWidth;
+        float xVal2 = !reverse ? lineWidth + totalWidth : xVal1 - totalWidth;
+        float yVal2 = !reverse ? lineWidth + totalHeight : yVal1 - totalHeight;
 
         if (isHorizontal()) {
             switch (mVertGravity) {
