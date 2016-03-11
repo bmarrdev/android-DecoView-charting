@@ -62,7 +62,7 @@ public class DecoEventManager {
                 (event.getEffectType() == DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT) ||
                 (event.getEffectType() == DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT_FILL);
 
-        final boolean ignore = (event.getEventType() == DecoEvent.EventType.EVENT_MOVE);
+        final boolean ignore = event.getEventType() == DecoEvent.EventType.EVENT_MOVE;
 
         mHandler.postDelayed(new Runnable() {
             @Override

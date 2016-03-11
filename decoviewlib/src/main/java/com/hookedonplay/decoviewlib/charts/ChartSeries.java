@@ -205,8 +205,8 @@ abstract public class ChartSeries {
              * of a revolution multiplied by the default time for a full revolution. This ensures
              * that the speed of the move is consistent for all ranges
              */
-            animationDuration = (Math.abs((int) (mSeriesItem.getSpinDuration() *
-                    ((mPositionStart - mPositionEnd) / mSeriesItem.getMaxValue()))));
+            animationDuration = Math.abs((int) (mSeriesItem.getSpinDuration() *
+                    ((mPositionStart - mPositionEnd) / mSeriesItem.getMaxValue())));
 
         }
 
@@ -607,7 +607,7 @@ abstract public class ChartSeries {
         max -= min;
 
         if (Math.abs(start - end) < 0.01) {
-            return (start / max);
+            return start / max;
         }
 
         if ((mDrawMode == DecoEvent.EventType.EVENT_HIDE) ||

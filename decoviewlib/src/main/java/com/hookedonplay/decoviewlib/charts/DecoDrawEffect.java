@@ -174,7 +174,7 @@ public class DecoDrawEffect {
                 if (percentComplete <= step) {
                     drawMoveToCenter(canvas, bounds, percentComplete * (1f / step), startAngle, sweepAngle);
                 } else {
-                    final float remain = (1.0f - step);
+                    final float remain = 1.0f - step;
                     drawExplode(canvas, bounds, (percentComplete - step) / remain);
                     drawText(canvas, bounds, (percentComplete - step) / remain);
                 }
@@ -211,8 +211,8 @@ public class DecoDrawEffect {
                                  float percentComplete, float startAngle, float sweepAngle) {
 
         // Animation moves outward from center to outside
-        final boolean moveOutward = (mEffectType == EffectType.EFFECT_SPIRAL_OUT ||
-                mEffectType == EffectType.EFFECT_SPIRAL_OUT_FILL);
+        final boolean moveOutward = mEffectType == EffectType.EFFECT_SPIRAL_OUT ||
+                mEffectType == EffectType.EFFECT_SPIRAL_OUT_FILL;
 
         // Animation spins in a clockwise direction
         final boolean spinClockwise = mEffectType != EffectType.EFFECT_SPIRAL_IN &&
@@ -224,7 +224,7 @@ public class DecoDrawEffect {
         final float baseRotateAngle = mCircuits * 360f;
 
         float rotateAmount = (mEffectType == EffectType.EFFECT_SPIRAL_OUT_FILL) ? baseRotateAngle + 360f : baseRotateAngle;
-        float rotateOffset = (rotateAmount * percentComplete);
+        float rotateOffset = rotateAmount * percentComplete;
         float newAngle = (startAngle + (spinClockwise ? rotateOffset : -rotateOffset)) % 360;
         float sweep = getSweepAngle(percentComplete);
 
@@ -314,14 +314,14 @@ public class DecoDrawEffect {
      */
     public void drawExplode(@NonNull Canvas canvas, RectF bounds, float percentComplete) {
         boolean drawCircles = Build.VERSION.SDK_INT <= 17;
-        final float maxLength = (bounds.width() * EXPLODE_LINE_MAX);
-        final float minLength = (bounds.width() * EXPLODE_LINE_MIN);
-        final float startPosition = (bounds.width() * EXPLODE_LINE_MAX);
+        final float maxLength = bounds.width() * EXPLODE_LINE_MAX;
+        final float minLength = bounds.width() * EXPLODE_LINE_MIN;
+        final float startPosition = bounds.width() * EXPLODE_LINE_MAX;
         int alpha = MAX_ALPHA;
 
         float length;
         if (percentComplete > 0.5f) {
-            float completed = ((percentComplete - 0.5f) * 2);
+            float completed = (percentComplete - 0.5f) * 2;
             length = maxLength - (completed * (maxLength - minLength));
             alpha = MAX_ALPHA - (int) (MAX_ALPHA * completed);
         } else {
