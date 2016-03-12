@@ -165,8 +165,8 @@ public class SeriesLabel {
     }
 
     public static class Builder {
-        private String mLabel = null;
-        private Typeface mTypeface = null;
+        private String mLabel;
+        private Typeface mTypeface;
         private float mFontSize = 16;
         private int mColorText = Color.parseColor("#FFFFFFFF");
         private int mColorBack = Color.parseColor("#AA000000");

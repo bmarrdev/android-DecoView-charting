@@ -75,7 +75,7 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
      * default start point is 90 degrees. This is by design to provide the most common positions
      * as the defaults
      */
-    private int mRotateAngle = 0;
+    private int mRotateAngle;
     /**
      * Total angle of the orb. 360 = full circle, < 360 horseshoe/arc shape
      */

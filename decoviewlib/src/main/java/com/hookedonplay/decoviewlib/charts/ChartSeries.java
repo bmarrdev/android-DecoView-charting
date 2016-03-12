@@ -61,9 +61,9 @@ abstract public class ChartSeries {
     /**
      * Positions for current animation
      */
-    protected float mPositionStart = 0;
-    protected float mPositionEnd = 0;
-    protected float mPositionCurrentEnd = 0;
+    protected float mPositionStart;
+    protected float mPositionEnd;
+    protected float mPositionCurrentEnd;
     /**
      * 0..1.0f The percentage of the animation complete
      */
@@ -107,7 +107,7 @@ abstract public class ChartSeries {
     /**
      * Has the current move animation been paused
      */
-    private boolean mIsPaused = false;
+    private boolean mIsPaused;
 
     /**
      * Construct an ArcSeries based on the ArcItem attributes and the angle and shape

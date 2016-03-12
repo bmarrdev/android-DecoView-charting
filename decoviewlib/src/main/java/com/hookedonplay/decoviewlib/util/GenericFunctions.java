@@ -21,7 +21,7 @@ import android.support.annotation.NonNull;
 @SuppressWarnings("unused")
 public class GenericFunctions {
 
-    static private boolean mInitialized = false;
+    static private boolean mInitialized;
     static private float mScaledDensity = 3.0f;
 
     static public void initialize(@NonNull Context context) {

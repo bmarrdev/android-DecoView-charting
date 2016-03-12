@@ -271,19 +271,19 @@ public class SeriesItem {
         private int mColorSecondary = Color.argb(0, 0, 0, 0);
         private float mLineWidth = -1;
         private long mSpinDuration = 5000;
-        private float mMinValue = 0f;
+        private float mMinValue;
         private float mMaxValue = 100f;
-        private float mInitialValue = 0f;
+        private float mInitialValue;
         private boolean mInitialVisibility = true;
         private boolean mSpinClockwise = true;
         private boolean mRoundCap = true;
-        private boolean mDrawAsPoint = false;
+        private boolean mDrawAsPoint;
         private ChartStyle mChartStyle = ChartStyle.STYLE_DONUT;
         private Interpolator mInterpolator;
         private boolean mShowPointWhenEmpty = true;
-        private PointF mInset = null;
-        private ArrayList<EdgeDetail> mEdgeDetail = null;
-        private SeriesLabel mSeriesLabel = null;
+        private PointF mInset;
+        private ArrayList<EdgeDetail> mEdgeDetail;
+        private SeriesLabel mSeriesLabel;
 
         public Builder(int color) {
             mColor = color;
