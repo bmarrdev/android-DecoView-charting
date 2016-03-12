@@ -26,7 +26,6 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-
 import com.hookedonplay.decoviewlib.charts.ChartSeries;
 import com.hookedonplay.decoviewlib.charts.DecoDrawEffect;
 import com.hookedonplay.decoviewlib.charts.LineArcSeries;
@@ -85,7 +84,7 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
      * {@link DecoView}
      */
     private DecoEventManager mDecoEventManager;
-    private float mMeasureViewableArea[];
+    private float[] mMeasureViewableArea;
 
     public DecoView(Context context) {
         super(context);
@@ -385,10 +384,8 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
         // We only need to check those series drawn after this series
         for (int i = index + 1; i < mChartSeries.size(); i++) {
             ChartSeries innerSeries = mChartSeries.get(i);
-            if (innerSeries.isVisible()) {
-                if (max < innerSeries.getPositionPercent()) {
-                    max = innerSeries.getPositionPercent();
-                }
+            if (innerSeries.isVisible() && max < innerSeries.getPositionPercent()) {
+                max = innerSeries.getPositionPercent();
             }
         }
 
