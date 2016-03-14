@@ -196,18 +196,18 @@ public class DecoEvent {
     public static class Builder {
         private EventType mType;
         private long mEventID = EVENT_ID_UNSPECIFIED;
-        private long mDelay = 0;
-        private DecoDrawEffect.EffectType mEffectType = null;
+        private long mDelay;
+        private DecoDrawEffect.EffectType mEffectType;
         private long mFadeDuration = 1000;
-        private View[] mLinkedViews = null;
+        private View[] mLinkedViews;
         private long mEffectDuration = -1;
         private int mIndex = -1;
         private int mEffectRotations = 2;
-        private String mDisplayText = null;
-        private float mEndPosition = 0;
+        private String mDisplayText;
+        private float mEndPosition;
         private int mColor = Color.parseColor("#00000000");
-        private Interpolator mInterpolator = null;
-        private ExecuteEventListener mListener = null;
+        private Interpolator mInterpolator;
+        private ExecuteEventListener mListener;
 
         /**
          * Construct an {@link DecoEvent} of EventType.EVENT_MOVE to specify a new end position for

@@ -40,7 +40,7 @@ abstract public class SampleFragment extends Fragment {
     final protected int COLOR_BACK = Color.parseColor("#22888888");
     final protected int COLOR_NEUTRAL = Color.parseColor("#FF999999");
     protected boolean mUpdateListeners = true;
-    private boolean mInitialized = false;
+    private boolean mInitialized;
 
     /**
      * Add a listener to update the progress on a TextView
