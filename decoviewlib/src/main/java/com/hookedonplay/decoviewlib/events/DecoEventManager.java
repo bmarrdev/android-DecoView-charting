@@ -22,7 +22,6 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.TextView;
-
 import com.hookedonplay.decoviewlib.charts.DecoDrawEffect;
 
 /**
@@ -67,22 +66,18 @@ public class DecoEventManager {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (show) {
-                    if (event.getLinkedViews() != null) {
-                        for (View view : event.getLinkedViews()) {
+                if (show && event.getLinkedViews() != null) {
+                    for (View view : event.getLinkedViews()) {
 
-                            // Issue with ICS where View is not displayed after the setVisibility() call if it has no text
-                            // This results in subsequent calls to setText also not being visible
-                            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-                                if (view instanceof TextView) {
-                                    TextView textView = (TextView) view;
-                                    if (textView.getText().length() <= 0) {
-                                        textView.setText(" ");
-                                    }
-                                }
+                        // Issue with ICS where View is not displayed after the setVisibility() call if it has no text
+                        // This results in subsequent calls to setText also not being visible
+                        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1 && view instanceof TextView) {
+                            TextView textView = (TextView) view;
+                            if (textView.getText().length() <= 0) {
+                                textView.setText(" ");
                             }
-                            view.setVisibility(View.VISIBLE);
                         }
+                        view.setVisibility(View.VISIBLE);
                     }
                 }
                 if (!ignore && event.getLinkedViews() != null) {

@@ -43,7 +43,7 @@ public class Sample4Fragment extends SampleFragment {
             Color.parseColor("#DDDDDD"),
             Color.parseColor("#2222FF")
     };
-    private int mSeriesIndex[] = new int[7];
+    private int[] mSeriesIndex = new int[7];
     private int mBackIndex;
     private boolean mFullCircle = true;
     private boolean mFlip = true;

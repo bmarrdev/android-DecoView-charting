@@ -23,7 +23,6 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.support.annotation.NonNull;
 import android.util.Log;
-
 import com.hookedonplay.decoviewlib.DecoView;
 
 public class LineSeries extends ChartSeries {
@@ -48,11 +47,10 @@ public class LineSeries extends ChartSeries {
         float insetY = mSeriesItem.getInset() != null ? mSeriesItem.getInset().y : 0;
         float lineWidth = getSeriesItem().getLineWidth() / 2;
         float posNow = mPositionCurrentEnd / (getSeriesItem().getMaxValue() - getSeriesItem().getMinValue());
-        if (this.getSeriesItem().showPointWhenEmpty()) {
-            /* Adjust to show point even when empty */
-            if (Math.abs(posNow) < 0.01f) {
-                posNow = 0.01f;
-            }
+
+        /* Adjust to show point even when empty */
+        if (this.getSeriesItem().showPointWhenEmpty() && Math.abs(posNow) < 0.01f) {
+            posNow = 0.01f;
         }
 
         final float totalWidth = posNow * (canvas.getWidth() - (2 * lineWidth));
