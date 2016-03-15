@@ -55,7 +55,6 @@ public class SampleGenericFragment extends SampleFragment {
     @Override
     protected void createTracks() {
         setDemoFinished(false);
-        final float seriesMax = 50f;
         final DecoView arcView = getDecoView();
         final View view = getView();
         if (arcView == null || view == null) {
@@ -64,6 +63,7 @@ public class SampleGenericFragment extends SampleFragment {
         arcView.deleteAll();
         arcView.configureAngles(mTotalAngle[mStyleIndex], mRotateAngle[mStyleIndex]);
 
+        final float seriesMax = 50f;
         SeriesItem arcBackTrack = new SeriesItem.Builder(Color.argb(255, 228, 228, 228))
                 .setRange(0, seriesMax, seriesMax)
                 .setInitialVisibility(false)
