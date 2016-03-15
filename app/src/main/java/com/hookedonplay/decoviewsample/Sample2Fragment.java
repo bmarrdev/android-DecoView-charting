@@ -44,7 +44,6 @@ public class Sample2Fragment extends SampleFragment {
     @Override
     protected void createTracks() {
         setDemoFinished(false);
-        final float seriesMax = 50f;
         final DecoView decoView = getDecoView();
         final View view = getView();
         if (decoView == null || view == null) {
@@ -53,6 +52,7 @@ public class Sample2Fragment extends SampleFragment {
         decoView.deleteAll();
         decoView.configureAngles(280, 0);
 
+        final float seriesMax = 50f;
         decoView.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218))
                 .setRange(0, seriesMax, seriesMax)
                 .setInitialVisibility(false)

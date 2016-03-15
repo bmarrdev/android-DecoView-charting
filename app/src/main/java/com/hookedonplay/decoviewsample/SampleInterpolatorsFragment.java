@@ -71,7 +71,6 @@ public class SampleInterpolatorsFragment extends SampleFragment {
     }
 
     private void createTracks(int arcViewId, Interpolator interpolator, int color) {
-        final float mSeriesMax = 50f;
         final View view = getView();
         if (view == null) {
             return;
@@ -85,6 +84,7 @@ public class SampleInterpolatorsFragment extends SampleFragment {
         decoView.deleteAll();
         decoView.configureAngles(320, 180);
 
+        final float mSeriesMax = 50f;
         SeriesItem arcBackTrack = new SeriesItem.Builder(Color.argb(255, 228, 228, 228))
                 .setRange(0, mSeriesMax, mSeriesMax)
                 .setLineWidth(getDimension(12f))
