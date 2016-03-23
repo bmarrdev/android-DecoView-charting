@@ -108,7 +108,7 @@ public class LineArcSeries extends ArcSeries {
         try {
             canvas.clipPath(path, combine);
         } catch (UnsupportedOperationException e) {
-            Log.w(TAG, "clipPath unavailable on API 11 - 17 without disabling hardware acceleration. (EdgeDetail functionality requires clipPath). Call DecoView.enableCompatibilityMode() to enable");
+            Log.w(tag, "clipPath unavailable on API 11 - 17 without disabling hardware acceleration. (EdgeDetail functionality requires clipPath). Call DecoView.enableCompatibilityMode() to enable");
             canvas.restore();
             return;
         }

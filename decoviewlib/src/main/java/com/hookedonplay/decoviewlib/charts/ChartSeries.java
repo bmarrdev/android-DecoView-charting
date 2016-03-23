@@ -45,7 +45,7 @@ abstract public class ChartSeries {
     static final private float MIN_SWEEP_ANGLE_PIE = MIN_SWEEP_ANGLE_NONE;
 
     @SuppressWarnings("unused")
-    protected final String TAG = getClass().getSimpleName();
+    protected final String tag = getClass().getSimpleName();
     /**
      * ArcItem attributes to be drawn
      */
@@ -342,7 +342,7 @@ abstract public class ChartSeries {
             mColorAnimate = new ColorAnimate(mSeriesItem.getColor(), event.getColor());
             mSeriesItem.setColor(event.getColor());
         } else {
-            Log.w(TAG, "Must set new color to start CHANGE_COLOR event");
+            Log.w(tag, "Must set new color to start CHANGE_COLOR event");
             return;
         }
 

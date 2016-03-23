@@ -40,13 +40,13 @@ import com.hookedonplay.decoviewlib.charts.DecoDrawEffect;
  * {@link com.hookedonplay.decoviewlib.events.DecoEvent.Builder#setListener(ExecuteEventListener)}
  */
 @SuppressWarnings("unused")
-public class DecoEvent {
+public final class DecoEvent {
     /**
      * Default Identified for the {@link #mEventID} to be used when not set by the user.
      */
     static public final long EVENT_ID_UNSPECIFIED = -1;
     @SuppressWarnings("FieldCanBeLocal")
-    private final String TAG = getClass().getSimpleName();
+    private final String tag = getClass().getSimpleName();
     private final EventType mType;
     private final long mEventID;
     private final long mDelay;
@@ -83,7 +83,7 @@ public class DecoEvent {
         mListener = builder.mListener;
 
         if (mEventID != EVENT_ID_UNSPECIFIED && mListener == null) {
-            Log.w(TAG, "EventID redundant without specifying an event listener");
+            Log.w(tag, "EventID redundant without specifying an event listener");
         }
     }
 

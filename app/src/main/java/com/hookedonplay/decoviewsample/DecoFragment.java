@@ -83,7 +83,7 @@ public class DecoFragment extends SampleFragment {
             View finished = view.findViewById(R.id.imageSwipeRight);
             finished.setVisibility(View.INVISIBLE);
         } catch (NullPointerException npe) {
-            Log.e(TAG, "Unable to find swipe hint image");
+            Log.e(tag, "Unable to find swipe hint image");
         }
 
         int count = mPalette.length;
@@ -126,7 +126,7 @@ public class DecoFragment extends SampleFragment {
                                     View finished = getView().findViewById(R.id.imageSwipeRight);
                                     finished.setVisibility(View.VISIBLE);
                                 } catch (NullPointerException npe) {
-                                    Log.e(TAG, "Unable to access finished view");
+                                    Log.e(tag, "Unable to access finished view");
                                 }
                             }
                         }

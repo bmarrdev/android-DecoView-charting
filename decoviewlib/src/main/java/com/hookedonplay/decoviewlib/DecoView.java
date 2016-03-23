@@ -43,7 +43,7 @@ import java.util.ArrayList;
  */
 @SuppressWarnings("unused")
 public class DecoView extends View implements DecoEventManager.ArcEventManagerListener {
-    private final String TAG = getClass().getSimpleName();
+    private final String tag = getClass().getSimpleName();
     /**
      * Gravity settings
      */
@@ -214,7 +214,7 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
                 break;
             case STYLE_LINE_HORIZONTAL:
             case STYLE_LINE_VERTICAL:
-                Log.w(TAG, "STYLE_LINE_* is currently experimental");
+                Log.w(tag, "STYLE_LINE_* is currently experimental");
                 LineSeries lineSeries = new LineSeries(seriesItem, mTotalAngle, mRotateAngle);
                 lineSeries.setHorizGravity(mHorizGravity);
                 lineSeries.setVertGravity(mVertGravity);
@@ -430,7 +430,7 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
                     item.startAnimateMove(event);
                 }
             } else {
-                Log.e(TAG, "Ignoring move request: Invalid array index. Index: " + index + " Size: " + mChartSeries.size());
+                Log.e(tag, "Ignoring move request: Invalid array index. Index: " + index + " Size: " + mChartSeries.size());
             }
         }
     }
@@ -556,7 +556,7 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
         }
 
         if (event.getIndexPosition() < 0) {
-            Log.e(TAG, "EffectType " + event.getEventType().toString() + " must specify valid data series index");
+            Log.e(tag, "EffectType " + event.getEventType().toString() + " must specify valid data series index");
             return false;
         }
 

@@ -60,19 +60,19 @@ public class SampleFit2Fragment extends SampleFragment {
 
         final float mSeriesMax = 100f;
 
-        SeriesItem seriesBack1Item = new SeriesItem.Builder(COLOR_BACK)
+        SeriesItem seriesBack1Item = new SeriesItem.Builder(colorBack)
                 .setRange(0, mSeriesMax, mSeriesMax)
                 .setLineWidth(getDimension(46))
                 .build();
 
         decoView.addSeries(seriesBack1Item);
 
-        SeriesItem series1Item = new SeriesItem.Builder(COLOR_NEUTRAL)
+        SeriesItem series1Item = new SeriesItem.Builder(colorNeutral)
                 .setRange(0, mSeriesMax, 0)
                 .setInitialVisibility(false)
                 .setLineWidth(getDimension(46))
                 .setCapRounded(true)
-                .addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_INNER, COLOR_EDGE, 0.3f))
+                .addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_INNER, colorEdge, 0.3f))
                 .setShowPointWhenEmpty(true)
                 .build();
 
@@ -92,10 +92,10 @@ public class SampleFit2Fragment extends SampleFragment {
 
         final ImageView imgView = (ImageView) view.findViewById(R.id.imageViewAvatar);
 
-        addAnimation(arcView, mSeries1Index, 79.7f, 2000, imgView, R.drawable.ic_fit_bike, "Cycle %.0f Km", COLOR_GREEN, false);
-        addAnimation(arcView, mSeries1Index, 16.4f, 9000, imgView, R.drawable.ic_fit_run, "Run %.1f Km", COLOR_YELLOW, false);
-        addAnimation(arcView, mSeries1Index, 58f, 16000, imgView, R.drawable.ic_fit_gym, "Gym %.0f min", COLOR_PINK, false);
-        addAnimation(arcView, mSeries1Index, 3.38f, 23000, imgView, R.drawable.ic_fit_swim, "Swim %.2f Km", COLOR_BLUE, true);
+        addAnimation(arcView, mSeries1Index, 79.7f, 2000, imgView, R.drawable.ic_fit_bike, "Cycle %.0f Km", colorGreen, false);
+        addAnimation(arcView, mSeries1Index, 16.4f, 9000, imgView, R.drawable.ic_fit_run, "Run %.1f Km", colorYellow, false);
+        addAnimation(arcView, mSeries1Index, 58f, 16000, imgView, R.drawable.ic_fit_gym, "Gym %.0f min", colorPink, false);
+        addAnimation(arcView, mSeries1Index, 3.38f, 23000, imgView, R.drawable.ic_fit_swim, "Swim %.2f Km", colorBlue, true);
     }
 
     private void addAnimation(final DecoView arcView,

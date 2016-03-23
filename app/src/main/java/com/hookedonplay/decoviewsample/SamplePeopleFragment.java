@@ -33,11 +33,11 @@ import com.hookedonplay.decoviewlib.events.DecoEvent;
 import com.hookedonplay.decoviewlib.events.DecoEvent.EventType;
 
 public class SamplePeopleFragment extends SampleFragment {
-    final private int COLOR_BLUE = Color.parseColor("#1D76D2");
-    final private int COLOR_PINK = Color.parseColor("#FF4081");
-    final private int COLOR_YELLOW = Color.parseColor("#FFC107");
-    final private int COLOR_EDGE = Color.parseColor("#22000000");
-    final private int COLOR_BACK = Color.parseColor("#0166BB66");
+    private final int colorBlue = Color.parseColor("#1D76D2");
+    private final int colorPink = Color.parseColor("#FF4081");
+    private final int colorYellow = Color.parseColor("#FFC107");
+    private final int colorEdge = Color.parseColor("#22000000");
+    private final int colorBack = Color.parseColor("#0166BB66");
     final float mSeriesMax = 100f;
     private int mSeries1Index;
     private int mSeries2Index;
@@ -68,7 +68,7 @@ public class SamplePeopleFragment extends SampleFragment {
         decoView.deleteAll();
 
         float circleInset = getDimension(23) - (getDimension(46) * 0.3f);
-        SeriesItem seriesBack1Item = new SeriesItem.Builder(COLOR_BACK)
+        SeriesItem seriesBack1Item = new SeriesItem.Builder(colorBack)
                 .setRange(0, mSeriesMax, mSeriesMax)
                 .setChartStyle(SeriesItem.ChartStyle.STYLE_PIE)
                 .setInset(new PointF(circleInset, circleInset))
@@ -76,39 +76,39 @@ public class SamplePeopleFragment extends SampleFragment {
 
         mBack1Index = decoView.addSeries(seriesBack1Item);
 
-        SeriesItem series1Item = new SeriesItem.Builder(COLOR_BLUE)
+        SeriesItem series1Item = new SeriesItem.Builder(colorBlue)
                 .setRange(0, mSeriesMax, 0)
                 .setInitialVisibility(false)
                 .setLineWidth(getDimension(46))
                 .setSeriesLabel(new SeriesLabel.Builder("Men").build())
                 .setCapRounded(false)
-                .addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_INNER, COLOR_EDGE, 0.3f))
+                .addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_INNER, colorEdge, 0.3f))
                 .setShowPointWhenEmpty(false)
                 .build();
 
         mSeries1Index = decoView.addSeries(series1Item);
 
-        SeriesItem series2Item = new SeriesItem.Builder(COLOR_PINK)
+        SeriesItem series2Item = new SeriesItem.Builder(colorPink)
                 .setRange(0, mSeriesMax, 0)
                 .setInitialVisibility(false)
                 .setLineWidth(getDimension(46))
                 .setSeriesLabel(new SeriesLabel.Builder("Women").build())
                 .setCapRounded(false)
                         //.setChartStyle(SeriesItem.ChartStyle.STYLE_PIE)
-                .addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_INNER, COLOR_EDGE, 0.3f))
+                .addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_INNER, colorEdge, 0.3f))
                 .setShowPointWhenEmpty(false)
                 .build();
 
         mSeries2Index = decoView.addSeries(series2Item);
 
-        SeriesItem series3Item = new SeriesItem.Builder(COLOR_YELLOW)
+        SeriesItem series3Item = new SeriesItem.Builder(colorYellow)
                 .setRange(0, mSeriesMax, 0)
                 .setInitialVisibility(false)
                 .setLineWidth(getDimension(46))
                 .setSeriesLabel(new SeriesLabel.Builder("Children").build())
                 .setCapRounded(false)
                         //.setChartStyle(SeriesItem.ChartStyle.STYLE_PIE)
-                .addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_INNER, COLOR_EDGE, 0.3f))
+                .addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_INNER, colorEdge, 0.3f))
                 .setShowPointWhenEmpty(false)
                 .build();
 
@@ -129,8 +129,8 @@ public class SamplePeopleFragment extends SampleFragment {
         imgView.setImageDrawable(null);
         imgView.setVisibility(View.INVISIBLE);
 
-        addAnimation(arcView, mSeries1Index, 19, 3000, imgView, R.drawable.ic_avatar_man, COLOR_BLUE);
-        addAnimation(arcView, mSeries2Index, 45, 11000, imgView, R.drawable.ic_avatar_woman, COLOR_PINK);
+        addAnimation(arcView, mSeries1Index, 19, 3000, imgView, R.drawable.ic_avatar_man, colorBlue);
+        addAnimation(arcView, mSeries2Index, 45, 11000, imgView, R.drawable.ic_avatar_woman, colorPink);
 
         arcView.addEvent(new DecoEvent.Builder(64)
                 .setIndex(mSeries1Index)
@@ -138,7 +138,7 @@ public class SamplePeopleFragment extends SampleFragment {
                 .setDuration(5000)
                 .build());
 
-        addAnimation(arcView, mSeries3Index, 36, 19000, imgView, R.drawable.ic_avatar_child, COLOR_YELLOW);
+        addAnimation(arcView, mSeries3Index, 36, 19000, imgView, R.drawable.ic_avatar_child, colorYellow);
 
         arcView.addEvent(new DecoEvent.Builder(79)
                 .setIndex(mSeries2Index)
@@ -152,7 +152,7 @@ public class SamplePeopleFragment extends SampleFragment {
                 .setDuration(5000)
                 .build());
 
-        arcView.addEvent(new DecoEvent.Builder(EventType.EVENT_COLOR_CHANGE, COLOR_BACK)
+        arcView.addEvent(new DecoEvent.Builder(EventType.EVENT_COLOR_CHANGE, colorBack)
                 .setIndex(mBack1Index)
                 .setDelay(27000)
                 .setDuration(2000)
@@ -218,7 +218,7 @@ public class SamplePeopleFragment extends SampleFragment {
             public void onEventEnd(DecoEvent event) {
                 showAvatar(false, imageView);
 
-                arcView.addEvent(new DecoEvent.Builder(EventType.EVENT_COLOR_CHANGE, COLOR_BACK)
+                arcView.addEvent(new DecoEvent.Builder(EventType.EVENT_COLOR_CHANGE, colorBack)
                         .setIndex(mBack1Index)
                         .setDuration(2000)
                         .build());
