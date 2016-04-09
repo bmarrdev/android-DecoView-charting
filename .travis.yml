@@ -17,6 +17,7 @@ android:
     - extra-android-m2repository
     - extra-android-support
     - sys-img-armeabi-v7a-android-$ANDROID_API_LEVEL
+    - sys-img-armeabi-v7a-android-$EMULATOR_API_LEVEL
 
 jdk: oraclejdk7
 
