@@ -47,20 +47,20 @@ public class DecoEvent {
     static public final long EVENT_ID_UNSPECIFIED = -1;
     @SuppressWarnings("FieldCanBeLocal")
     private final String TAG = getClass().getSimpleName();
-    private EventType mType;
-    private long mEventID;
-    private long mDelay;
-    private DecoDrawEffect.EffectType mEffectType;
-    private long mFadeDuration;
-    private View[] mLinkedViews;
-    private long mEffectDuration;
-    private int mIndexPosition;
-    private int mEffectRotations;
-    private String mDisplayText;
-    private float mEndPosition;
-    private int mColor;
-    private Interpolator mInterpolator;
-    private ExecuteEventListener mListener;
+    private final EventType mType;
+    private final long mEventID;
+    private final long mDelay;
+    private final DecoDrawEffect.EffectType mEffectType;
+    private final long mFadeDuration;
+    private final View[] mLinkedViews;
+    private final long mEffectDuration;
+    private final int mIndexPosition;
+    private final int mEffectRotations;
+    private final String mDisplayText;
+    private final float mEndPosition;
+    private final int mColor;
+    private final Interpolator mInterpolator;
+    private final ExecuteEventListener mListener;
     /**
      * Construct the DecoEvent using the attributes set by the Builder
      *
@@ -194,7 +194,7 @@ public class DecoEvent {
     }
 
     public static class Builder {
-        private EventType mType;
+        private final EventType mType;
         private long mEventID = EVENT_ID_UNSPECIFIED;
         private long mDelay;
         private DecoDrawEffect.EffectType mEffectType;

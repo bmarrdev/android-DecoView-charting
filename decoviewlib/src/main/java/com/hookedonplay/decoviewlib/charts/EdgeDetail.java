@@ -32,18 +32,18 @@ public class EdgeDetail {
     /**
      * Color of the edge to draw. Recommended a shadow like 0x33000000
      */
-    private int mColor;
+    private final int mColor;
     /**
      * The ratio of the series width to fill with the edge detail. If you apply 0.5f as the ratio
      * then the effect will apply to half of the line width of the data. 1.0 will fill the complete
      * line with the new color, although this would be the least efficient method to change the
      * line color
      */
-    private float mRatio;
+    private final float mRatio;
     /**
      * Inner or Outer Edge to apply shadow
      */
-    private EdgeType mEdgeType;
+    private final EdgeType mEdgeType;
     /**
      * Internal clip path used to apply the effect to only {@link #mRatio} of the line
      */

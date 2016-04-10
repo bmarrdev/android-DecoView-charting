@@ -39,7 +39,7 @@ public class DecoEventManager {
      */
     private final Handler mHandler = new Handler();
 
-    private ArcEventManagerListener mListener;
+    private final ArcEventManagerListener mListener;
 
     public DecoEventManager(@NonNull ArcEventManagerListener listener) {//DynamicArcView arcView) {
         mListener = listener;
