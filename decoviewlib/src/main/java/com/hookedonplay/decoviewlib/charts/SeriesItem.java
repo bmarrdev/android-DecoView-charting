@@ -53,51 +53,51 @@ public class SeriesItem {
     /**
      * Duration taken to animate a 360 degree animation of an arc
      */
-    private long mSpinDuration;
+    private final long mSpinDuration;
     /**
      * Minimum value the represents the start of the arc. For example the view may represent
      * a distance where it starts at 0km and ends at 100km
      */
-    private float mMinValue;
+    private final float mMinValue;
     /**
      * Value to represent the end of the arc
      */
-    private float mMaxValue;
+    private final float mMaxValue;
     /**
      * Initial value for this arc. When drawing a background track this should be set to the
      * maximum value
      */
-    private float mInitialValue;
+    private final float mInitialValue;
     /**
      * Initial value for visibility of this arc.
      */
-    private boolean mInitialVisibility;
+    private final boolean mInitialVisibility;
     /**
      * Determines if the arc animate in a clockwise or anticlockwise direction
      */
-    private boolean mSpinClockwise;
+    private final boolean mSpinClockwise;
     /**
      * Set the cap of the arc to be rounded rather than square
      */
-    private boolean mRoundCap;
+    private final boolean mRoundCap;
     /**
      * Draw this series as a point rather than an arc
      */
-    private boolean mDrawAsPoint;
+    private final boolean mDrawAsPoint;
     /**
      * Style to draw the data
      * {@link ChartStyle}
      */
-    private ChartStyle mChartStyle;
+    private final ChartStyle mChartStyle;
     /**
      * Interpolator used to perform the animation as the current
      * value is moved
      */
-    private Interpolator mInterpolator;
+    private final Interpolator mInterpolator;
     /**
      * Draw the arc even when it is empty
      */
-    private boolean mShowPointWhenEmpty;
+    private final boolean mShowPointWhenEmpty;
     /**
      * Draw the arc at an amount inset from the outside of the view
      */

@@ -78,7 +78,7 @@ public class DecoDrawEffect {
     /**
      * Bounds used to allow contraction (or expansion) of spiral animations
      */
-    private RectF mSpinBounds = new RectF();
+    private final RectF mSpinBounds = new RectF();
 
     private int mCircuits = 6;
 

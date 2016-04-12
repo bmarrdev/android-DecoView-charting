@@ -49,14 +49,14 @@ public class SeriesLabel {
     private String mLabel;
     private Paint mPaintBack;
     private Paint mPaintText;
-    private float mFontSize;
-    private Typeface mTypeface;
+    private final float mFontSize;
+    private final Typeface mTypeface;
     private Rect mTextBounds;
     private RectF mTextDraw;
     private float mTextCenter;
-    private boolean mVisible;
-    private int mColorText;
-    private int mColorBack;
+    private final boolean mVisible;
+    private final int mColorText;
+    private final int mColorBack;
 
     private SeriesLabel(Builder builder) {
         mLabel = builder.mLabel;
@@ -165,7 +165,7 @@ public class SeriesLabel {
     }
 
     public static class Builder {
-        private String mLabel;
+        private final String mLabel;
         private Typeface mTypeface;
         private float mFontSize = 16;
         private int mColorText = Color.parseColor("#FFFFFFFF");

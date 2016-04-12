@@ -34,11 +34,11 @@ public class ColorAnimate {
     /**
      * Color at 0% complete
      */
-    private int mColorStart;
+    private final int mColorStart;
     /**
      * Color at 100% complete
      */
-    private int mColorEnd;
+    private final int mColorEnd;
     /**
      * Current calculated color
      */
