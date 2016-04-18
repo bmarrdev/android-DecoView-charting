@@ -53,6 +53,9 @@ public class LineArcSeries extends ArcSeries {
     }
 
     protected void drawArc(@NonNull Canvas canvas) {
+        if (mArcAngleSweep == 0) {
+            return;
+        }
         canvas.drawArc(mBoundsInset,
                 mArcAngleStart,
                 mArcAngleSweep,

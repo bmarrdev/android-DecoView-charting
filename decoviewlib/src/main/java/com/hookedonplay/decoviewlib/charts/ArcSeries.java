@@ -63,7 +63,10 @@ abstract public class ArcSeries extends ChartSeries {
         if (mSeriesItem.getDrawAsPoint()) {
             mArcAngleStart = adjustDrawPointAngle(mArcAngleSweep);
             mArcAngleSweep = adjustSweepDirection(getMinSweepAngle());
+        } else if (mArcAngleSweep == 0) {
+            return true;
         }
+
 
         return false;
     }
