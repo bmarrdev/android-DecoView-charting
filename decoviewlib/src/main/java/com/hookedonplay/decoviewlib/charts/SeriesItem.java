@@ -111,6 +111,18 @@ public class SeriesItem {
      */
     private SeriesLabel mSeriesLabel;
     /**
+     * Set the shadow size for the series. This is drawn as a fade around the series that goes from
+     * the color set mShadowColor and fades for mShadowSize pixels until it is transparent
+     *
+     * IMPORTANT: If you set this you need to call DecoView.disableHardwareAccelerationForDecoView()
+     * as drawing of this shadow cannot be done with hardware acceleration enabled
+     */
+    private float mShadowSize;
+    /**
+     * Set the color of the shadow surrounding the series
+     */
+    private int mShadowColor;
+    /**
      * Provides optional callback functionality on progress update of animation
      */
     private ArrayList<SeriesItemListener> mListeners;
@@ -133,6 +145,8 @@ public class SeriesItem {
         mInset = builder.mInset;
         mEdgeDetail = builder.mEdgeDetail;
         mSeriesLabel = builder.mSeriesLabel;
+        mShadowSize = builder.mShadowSize;
+        mShadowColor = builder.mShadowColor;
     }
 
     public int getColor() {
@@ -233,6 +247,22 @@ public class SeriesItem {
         return mSeriesLabel;
     }
 
+    public void setShadowSize(float shadowSize) {
+        mShadowSize = shadowSize;
+    }
+
+    public float getShadowSize() {
+        return mShadowSize;
+    }
+
+    public void setShadowColor(int shadowColor) {
+        mShadowColor = shadowColor;
+    }
+
+    public int getShadowColor() {
+        return mShadowColor;
+    }
+
     /**
      * Set a listener to get notification of completion of animation
      *
@@ -284,6 +314,8 @@ public class SeriesItem {
         private PointF mInset;
         private ArrayList<EdgeDetail> mEdgeDetail;
         private SeriesLabel mSeriesLabel;
+        private float mShadowSize = 0f;
+        private int mShadowColor = Color.BLACK;
 
         public Builder(int color) {
             mColor = color;
@@ -384,6 +416,15 @@ public class SeriesItem {
             return this;
         }
 
+        public Builder setShadowSize(float shadowSize) {
+            mShadowSize = shadowSize;
+            return this;
+        }
+
+        public Builder setShadowColor(int shadowColor) {
+            mShadowColor = shadowColor;
+            return this;
+        }
         /**
          * Creates a {@link SeriesItem} with the arguments supplied to this builder.
          */

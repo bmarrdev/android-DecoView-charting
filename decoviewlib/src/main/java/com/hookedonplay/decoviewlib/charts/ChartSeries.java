@@ -451,6 +451,10 @@ abstract public class ChartSeries {
         mPaint.setStrokeCap(mSeriesItem.getRoundCap() ? Paint.Cap.ROUND : Paint.Cap.BUTT);
         mPaint.setAntiAlias(true);
 
+        if (mSeriesItem.getShadowSize() > 0) {
+            mPaint.setShadowLayer(mSeriesItem.getShadowSize(), 0, 0, mSeriesItem.getShadowColor());
+        }
+
         // We need to reset the bounds for the case we are drawing a gradient and need to recreate
         // based on the bounds
         mBounds = null;
