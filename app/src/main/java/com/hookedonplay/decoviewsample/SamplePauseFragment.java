@@ -55,6 +55,10 @@ public class SamplePauseFragment extends SampleFragment {
         decoView.executeReset();
         decoView.deleteAll();
 
+        // Important: As we are going to use shadows on this DecoView, we must disable hardware
+        // acceleration or the shadow will not render.
+        decoView.disableHardwareAccelerationForDecoView();
+
         final float seriesMax = 100f;
 
         float circleInset = getDimension(18);
@@ -66,9 +70,15 @@ public class SamplePauseFragment extends SampleFragment {
 
         mPieIndex = decoView.addSeries(seriesBack1Item);
 
-        SeriesItem series1Item = new SeriesItem.Builder(COLOR_YELLOW)
+        // Note: As we are placing a shadow on this view we are insetting it by the amount of the
+        // shadow. This is because otherwise at the center of the top and side edge the shadow
+        // will render outside the bounds of the view.
+        SeriesItem series1Item = new SeriesItem.Builder(Color.parseColor("#FFFFC107"))
                 .setRange(0, seriesMax, 0)
                 .setLineWidth(getDimension(36))
+                .setInset(new PointF(getDimension(8f), getDimension(8f)))
+                .setShadowSize(getDimension(8f))
+                .setShadowColor(Color.BLACK)
                 .setInterpolator(new LinearInterpolator())
                 .build();
 
