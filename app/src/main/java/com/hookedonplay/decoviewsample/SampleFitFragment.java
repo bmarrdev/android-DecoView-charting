@@ -142,7 +142,7 @@ public class SampleFitFragment extends SampleFragment {
                     .setDuration(2000)
                     .build());
         } else {
-            decoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT_FILL)
+            decoView.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
                     .setIndex(mBackIndex)
                     .setDuration(3000)
                     .build());

@@ -656,6 +656,17 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
     }
 
     /**
+     * Allows DecoView to draw drop shadows. This should be enabled if you plan on using the
+     * feature SeriesItem.setShadowSize(float) to add a drop shadow on one or more of your arc
+     * series. Calling this function need only be done once.
+     */
+    public void disableHardwareAccelerationForDecoView() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            setLayerType(LAYER_TYPE_SOFTWARE, null);
+        }
+    }
+
+    /**
      * Retrieve the {@link SeriesItem} based on the index
      *
      * @param index index of the series item

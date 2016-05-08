@@ -29,7 +29,7 @@ Step 1. Add the repositories into your build.gradle
 Step 2. Add the dependency in the form
 
 	dependencies {
-	    compile 'com.github.bmarrdev:android-DecoView-charting:v1.0.1'
+	    compile 'com.github.bmarrdev:android-DecoView-charting:v1.1'
 	}
 
 
@@ -403,6 +403,34 @@ Note that in the example above the color uses transparency to give the edge of t
 
 NOTE: On Android 4.0 to 4.3 Adding an EdgeDetail to a data series will result in Hardware acceleration being turned off for that DecoView. This is due to these platforms not supporting the clipPath() functions with hardware acceleration. It would be unusual for this cause any noticeable difference to the performance of the View.
 
+Adding a shadow to a SeriesItem
+===
+
+Shadows were introduced in DecoView 1.1, check you gradle dependency before adding shadows.
+
+![Sample Shadow Image](https://github.com/bmarrdev/android-DecoView-charting/blob/master/art/shadow_example.png)
+
+There are a couple of very important notes before adding shadows.
+
+When creating a DecoView with shadows you must call ```java DecoView.disableHardwareAccelerationForDecoView();``` to disable hardware acceleration for the view. The shadow functionality built into the Android canvas operations are not supported with hardware acceleration. Please note that this may cause performance issues if you are animating multiple views concurrently.
+
+If you are setting a shadow you will most likely want to also add the size of your shadow to the inset of the series item. The reason for this is the the decoView cannot draw outside of the given view canvas. If you don't inset your series then at the top and side edges of the view the shadow will be clipped.
+
+
+```java
+mDecoView = (DecoView) findViewById(R.id.dynamicArcView);
+mDecoView.disableHardwareAccelerationForDecoView();
+
+final SeriesItem seriesItem = new SeriesItem.Builder(Color.parseColor("#FFFF8800"))
+        .setRange(0, mSeriesMax, 0)
+        .setInset(new PointF(30, 30))
+        .setShadowSize(30)
+        .setShadowColor(Color.DKGRAY)
+        .setInitialVisibility(false)
+        .build();
+```
+
+
 
 Fitness tracker Sample
 ===
@@ -428,7 +456,7 @@ Credits
 License
 ===
 
-    Copyright 2015 Brent Marriott
+    Copyright 2016 Brent Marriott
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
