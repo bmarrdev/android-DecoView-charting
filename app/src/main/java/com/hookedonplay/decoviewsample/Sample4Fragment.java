@@ -33,8 +33,8 @@ import com.hookedonplay.decoviewlib.events.DecoEvent.EventType;
 import java.util.Random;
 
 public class Sample4Fragment extends SampleFragment {
-    final float mSeriesMax = 50f;
-    final private int[] mColor = {
+    private static final float M_SERIES_MAX = 50f;
+    private static final int[] M_COLOR = {
             Color.parseColor("#FF0000"),
             Color.parseColor("#FFFFFF"),
             Color.parseColor("#0000FF"),
@@ -80,7 +80,7 @@ public class Sample4Fragment extends SampleFragment {
 
         float widthLine = getDimension(8f);
         SeriesItem seriesBackItem = new SeriesItem.Builder(Color.argb(255, 32, 32, 32))
-                .setRange(0, mSeriesMax, mSeriesMax)
+                .setRange(0, M_SERIES_MAX, M_SERIES_MAX)
                 .setLineWidth(widthLine * mSeriesIndex.length)
                 .setInitialVisibility(false)
                 .setDrawAsPoint(false)
@@ -89,8 +89,8 @@ public class Sample4Fragment extends SampleFragment {
         mBackIndex = decoView.addSeries(seriesBackItem);
 
         for (int i = 0; i < mSeriesIndex.length; i++) {
-            SeriesItem seriesItem = new SeriesItem.Builder(mColor[i])
-                    .setRange(0, mSeriesMax, 0)
+            SeriesItem seriesItem = new SeriesItem.Builder(M_COLOR[i])
+                    .setRange(0, M_SERIES_MAX, 0)
                     .setLineWidth(widthLine * (mSeriesIndex.length - i))
                     .setInitialVisibility(false)
                     .setDrawAsPoint(i != 0)
@@ -147,29 +147,29 @@ public class Sample4Fragment extends SampleFragment {
                     .build());
 
             if (i == 0) {
-                arcView.addEvent(new DecoEvent.Builder(mSeriesMax)
+                arcView.addEvent(new DecoEvent.Builder(M_SERIES_MAX)
                         .setIndex(index)
                         .setDelay(5000)
                         .build());
 
-                arcView.addEvent(new DecoEvent.Builder(mSeriesMax / 2)
+                arcView.addEvent(new DecoEvent.Builder(M_SERIES_MAX / 2)
                         .setIndex(index)
                         .setDelay(9500)
                         .build());
 
             } else {
-                arcView.addEvent(new DecoEvent.Builder(rand.nextInt((int) mSeriesMax))
+                arcView.addEvent(new DecoEvent.Builder(rand.nextInt((int) M_SERIES_MAX))
                         .setIndex(index)
                         .setDelay(5000 + (mSeriesIndex.length - 1 - i) * 750)
                         .build());
 
-                arcView.addEvent(new DecoEvent.Builder(rand.nextInt((int) mSeriesMax / 2))
+                arcView.addEvent(new DecoEvent.Builder(rand.nextInt((int) M_SERIES_MAX / 2))
                         .setIndex(index)
                         .setDelay(9500 + (mSeriesIndex.length - 1 - i) * 500)
                         .build());
             }
 
-            arcView.addEvent(new DecoEvent.Builder(mSeriesMax)
+            arcView.addEvent(new DecoEvent.Builder(M_SERIES_MAX)
                     .setIndex(index)
                     .setDelay(14000)
                     .setDuration(3000)

@@ -21,7 +21,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
 public class SamplerAdapter extends FragmentStatePagerAdapter {
-    private final int mCount = 10;
+    private static final int mCount = 10;
 
     public SamplerAdapter(FragmentManager fm) {
         super(fm);

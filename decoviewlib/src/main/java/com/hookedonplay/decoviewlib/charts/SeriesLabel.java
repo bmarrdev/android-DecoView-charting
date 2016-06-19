@@ -44,8 +44,8 @@ import com.hookedonplay.decoviewlib.util.GenericFunctions;
 @SuppressWarnings("unused")
 public class SeriesLabel {
     static private Typeface mDefaultTypeFace;
-    private final float mBufferX = 15f;
-    private final float mBufferY = 15f;
+    private static final float M_BUFFER_X = 15f;
+    private static final float M_BUFFER_Y = 15f;
     private String mLabel;
     private Paint mPaintBack;
     private Paint mPaintText;
@@ -133,8 +133,8 @@ public class SeriesLabel {
         float xVal = (float) Math.cos(radians) * radius + rect.centerX();
         float yVal = (float) Math.sin(radians) * radius + rect.centerY();
 
-        final float halfWidth = (mTextBounds.width() / 2) + mBufferX;
-        final float halfHeight = (mTextBounds.height() / 2) + mBufferY;
+        final float halfWidth = (mTextBounds.width() / 2) + M_BUFFER_X;
+        final float halfHeight = (mTextBounds.height() / 2) + M_BUFFER_Y;
         if (0 > xVal - halfWidth) {
             xVal = halfWidth;
         }

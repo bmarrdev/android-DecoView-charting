@@ -34,8 +34,8 @@ import com.hookedonplay.decoviewlib.events.DecoEvent.EventType;
 import java.util.Random;
 
 public class Sample3Fragment extends SampleFragment {
-    final float mSeriesMax = 50f;
-    final private int[] mColor = {
+    private static final float M_SERIES_MAX = 50f;
+    private static final int[] M_COLOR = {
             Color.parseColor("#7B1FA2"),
             Color.parseColor("#FBC02D"),
             Color.parseColor("#FF5722"),
@@ -78,7 +78,7 @@ public class Sample3Fragment extends SampleFragment {
         float widthLine = getDimension(14f);
 
         SeriesItem seriesBackItem = new SeriesItem.Builder(Color.parseColor("#11FFFFFF"))
-                .setRange(0, mSeriesMax, mSeriesMax)
+                .setRange(0, M_SERIES_MAX, M_SERIES_MAX)
                 .setLineWidth(widthLine * mSeriesIndex.length)
                 .setInitialVisibility(false)
                 .setCapRounded(false)
@@ -88,8 +88,8 @@ public class Sample3Fragment extends SampleFragment {
 
         float inset = -((widthLine * (mSeriesIndex.length - 1)) / 2);
         for (int i = 0; i < mSeriesIndex.length; i++) {
-            SeriesItem seriesItem = new SeriesItem.Builder(mColor[i])
-                    .setRange(0, mSeriesMax, mSeriesMax)
+            SeriesItem seriesItem = new SeriesItem.Builder(M_COLOR[i])
+                    .setRange(0, M_SERIES_MAX, M_SERIES_MAX)
                     .setLineWidth(widthLine)
                     .setInset(new PointF(inset, inset))
                     .setInitialVisibility(false)
@@ -147,24 +147,24 @@ public class Sample3Fragment extends SampleFragment {
                     .setDuration(2500)
                     .build());
 
-            decoView.addEvent(new DecoEvent.Builder(rand.nextInt((int) mSeriesMax))
+            decoView.addEvent(new DecoEvent.Builder(rand.nextInt((int) M_SERIES_MAX))
                     .setIndex(index)
                     .setDelay(5000 + i * 750)
                     .build());
 
-            decoView.addEvent(new DecoEvent.Builder(rand.nextInt((int) mSeriesMax / 2))
+            decoView.addEvent(new DecoEvent.Builder(rand.nextInt((int) M_SERIES_MAX / 2))
                     .setIndex(index)
                     .setDelay(10000 + i * 500)
                     .setColor(Color.parseColor("#FF555555"))
                     .setDuration(2000)
                     .build());
 
-            decoView.addEvent(new DecoEvent.Builder(mSeriesMax)
+            decoView.addEvent(new DecoEvent.Builder(M_SERIES_MAX)
                     .setIndex(index)
                     .setDelay(15000)
                     .setDuration(2000)
                     .setInterpolator(new BounceInterpolator())
-                    .setColor(mColor[i])
+                    .setColor(M_COLOR[i])
                     .build());
 
             decoView.addEvent(new DecoEvent.Builder(0)

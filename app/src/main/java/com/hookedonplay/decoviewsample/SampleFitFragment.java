@@ -30,13 +30,13 @@ import com.hookedonplay.decoviewlib.charts.SeriesItem;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
 
 public class SampleFitFragment extends SampleFragment {
-    final private float[] mTrackBackWidth = {30f, 60f, 30f, 40f, 30f};
-    final private float[] mTrackWidth = {30f, 30f, 30f, 30f, 30f};
-    final private boolean[] mClockwise = {true, true, true, false, true};
-    final private boolean[] mRounded = {true, true, true, true, true};
-    final private boolean[] mPie = {false, false, false, false, true};
-    final private int[] mTotalAngle = {360, 360, 320, 260, 360};
-    final private int[] mRotateAngle = {0, 180, 180, 0, 270};
+    private static final float[] M_TRACK_BACK_WIDTH = {30f, 60f, 30f, 40f, 30f};
+    private static final float[] M_TRACK_WIDTH = {30f, 30f, 30f, 30f, 30f};
+    private static final boolean[] M_CLOCKWISE = {true, true, true, false, true};
+    private static final boolean[] M_ROUNDED = {true, true, true, true, true};
+    private static final boolean[] M_PIE = {false, false, false, false, true};
+    private static final int[] M_TOTAL_ANGLE = {360, 360, 320, 260, 360};
+    private static final int[] M_ROTATE_ANGLE = {0, 180, 180, 0, 270};
     private int mBackIndex;
     private int mSeries1Index;
     private int mSeries2Index;
@@ -60,30 +60,30 @@ public class SampleFitFragment extends SampleFragment {
             return;
         }
         decoView.deleteAll();
-        decoView.configureAngles(mTotalAngle[mStyleIndex], mRotateAngle[mStyleIndex]);
+        decoView.configureAngles(M_TOTAL_ANGLE[mStyleIndex], M_ROTATE_ANGLE[mStyleIndex]);
 
         final float seriesMax = 50f;
         SeriesItem arcBackTrack = new SeriesItem.Builder(Color.argb(255, 228, 228, 228))
                 .setRange(0, seriesMax, seriesMax)
                 .setInitialVisibility(false)
-                .setLineWidth(getDimension(mTrackBackWidth[mStyleIndex]))
-                .setChartStyle(mPie[mStyleIndex] ? SeriesItem.ChartStyle.STYLE_PIE : SeriesItem.ChartStyle.STYLE_DONUT)
+                .setLineWidth(getDimension(M_TRACK_BACK_WIDTH[mStyleIndex]))
+                .setChartStyle(M_PIE[mStyleIndex] ? SeriesItem.ChartStyle.STYLE_PIE : SeriesItem.ChartStyle.STYLE_DONUT)
                 .build();
 
         mBackIndex = decoView.addSeries(arcBackTrack);
 
         float inset = 0;
-        if (mTrackBackWidth[mStyleIndex] != mTrackWidth[mStyleIndex]) {
-            inset = getDimension((mTrackBackWidth[mStyleIndex] - mTrackWidth[mStyleIndex]) / 2);
+        if (M_TRACK_BACK_WIDTH[mStyleIndex] != M_TRACK_WIDTH[mStyleIndex]) {
+            inset = getDimension((M_TRACK_BACK_WIDTH[mStyleIndex] - M_TRACK_WIDTH[mStyleIndex]) / 2);
         }
         SeriesItem seriesItem1 = new SeriesItem.Builder(Color.argb(255, 255, 165, 0))
                 .setRange(0, seriesMax, 0)
                 .setInitialVisibility(false)
-                .setLineWidth(getDimension(mTrackWidth[mStyleIndex]))
+                .setLineWidth(getDimension(M_TRACK_WIDTH[mStyleIndex]))
                 .setInset(new PointF(-inset, -inset))
-                .setSpinClockwise(mClockwise[mStyleIndex])
-                .setCapRounded(mRounded[mStyleIndex])
-                .setChartStyle(mPie[mStyleIndex] ? SeriesItem.ChartStyle.STYLE_PIE : SeriesItem.ChartStyle.STYLE_DONUT)
+                .setSpinClockwise(M_CLOCKWISE[mStyleIndex])
+                .setCapRounded(M_ROUNDED[mStyleIndex])
+                .setChartStyle(M_PIE[mStyleIndex] ? SeriesItem.ChartStyle.STYLE_PIE : SeriesItem.ChartStyle.STYLE_DONUT)
                 .build();
 
         mSeries1Index = decoView.addSeries(seriesItem1);
@@ -92,9 +92,9 @@ public class SampleFitFragment extends SampleFragment {
                 .setRange(0, seriesMax, 0)
                 .setInitialVisibility(false)
                 .setCapRounded(true)
-                .setLineWidth(getDimension(mTrackWidth[mStyleIndex]))
+                .setLineWidth(getDimension(M_TRACK_WIDTH[mStyleIndex]))
                 .setInset(new PointF(inset, inset))
-                .setCapRounded(mRounded[mStyleIndex])
+                .setCapRounded(M_ROUNDED[mStyleIndex])
                 .build();
 
         mSeries2Index = decoView.addSeries(seriesItem2);
@@ -136,7 +136,7 @@ public class SampleFitFragment extends SampleFragment {
         final View[] linkedViews = {textPercent, textToGo, layout};
         final int fadeDuration = 2000;
 
-        if (mPie[mStyleIndex]) {
+        if (M_PIE[mStyleIndex]) {
             decoView.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
                     .setIndex(mBackIndex)
                     .setDuration(2000)
@@ -196,7 +196,7 @@ public class SampleFitFragment extends SampleFragment {
                     @Override
                     public void onEventEnd(DecoEvent event) {
                         mStyleIndex++;
-                        if (mStyleIndex >= mTrackBackWidth.length) {
+                        if (mStyleIndex >= M_TRACK_BACK_WIDTH.length) {
                             mStyleIndex = 0;
                             setDemoFinished(true);
                             return;
