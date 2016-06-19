@@ -38,7 +38,7 @@ public class SamplePeopleFragment extends SampleFragment {
     final private int COLOR_YELLOW = Color.parseColor("#FFC107");
     final private int COLOR_EDGE = Color.parseColor("#22000000");
     final private int COLOR_BACK = Color.parseColor("#0166BB66");
-    final float mSeriesMax = 100f;
+    static final float M_SERIES_MAX = 100f;
     private int mSeries1Index;
     private int mSeries2Index;
     private int mSeries3Index;
@@ -69,7 +69,7 @@ public class SamplePeopleFragment extends SampleFragment {
 
         float circleInset = getDimension(23) - (getDimension(46) * 0.3f);
         SeriesItem seriesBack1Item = new SeriesItem.Builder(COLOR_BACK)
-                .setRange(0, mSeriesMax, mSeriesMax)
+                .setRange(0, M_SERIES_MAX, M_SERIES_MAX)
                 .setChartStyle(SeriesItem.ChartStyle.STYLE_PIE)
                 .setInset(new PointF(circleInset, circleInset))
                 .build();
@@ -77,7 +77,7 @@ public class SamplePeopleFragment extends SampleFragment {
         mBack1Index = decoView.addSeries(seriesBack1Item);
 
         SeriesItem series1Item = new SeriesItem.Builder(COLOR_BLUE)
-                .setRange(0, mSeriesMax, 0)
+                .setRange(0, M_SERIES_MAX, 0)
                 .setInitialVisibility(false)
                 .setLineWidth(getDimension(46))
                 .setSeriesLabel(new SeriesLabel.Builder("Men").build())
@@ -89,7 +89,7 @@ public class SamplePeopleFragment extends SampleFragment {
         mSeries1Index = decoView.addSeries(series1Item);
 
         SeriesItem series2Item = new SeriesItem.Builder(COLOR_PINK)
-                .setRange(0, mSeriesMax, 0)
+                .setRange(0, M_SERIES_MAX, 0)
                 .setInitialVisibility(false)
                 .setLineWidth(getDimension(46))
                 .setSeriesLabel(new SeriesLabel.Builder("Women").build())
@@ -102,7 +102,7 @@ public class SamplePeopleFragment extends SampleFragment {
         mSeries2Index = decoView.addSeries(series2Item);
 
         SeriesItem series3Item = new SeriesItem.Builder(COLOR_YELLOW)
-                .setRange(0, mSeriesMax, 0)
+                .setRange(0, M_SERIES_MAX, 0)
                 .setInitialVisibility(false)
                 .setLineWidth(getDimension(46))
                 .setSeriesLabel(new SeriesLabel.Builder("Children").build())

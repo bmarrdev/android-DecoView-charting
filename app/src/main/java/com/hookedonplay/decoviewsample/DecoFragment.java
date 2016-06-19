@@ -33,7 +33,7 @@ import com.hookedonplay.decoviewlib.events.DecoEvent;
 
 public class DecoFragment extends SampleFragment {
 
-    final private int[] mPalette = {Color.parseColor("#f57c00"), Color.parseColor("#212121"), Color.parseColor("#4caf50"), Color.parseColor("#727272"), Color.parseColor("#b6b6b6")};
+    private static final int[] mPalette = {Color.parseColor("#f57c00"), Color.parseColor("#212121"), Color.parseColor("#4caf50"), Color.parseColor("#727272"), Color.parseColor("#b6b6b6")};
     private int mSeries1Index;
 
     public DecoFragment() {

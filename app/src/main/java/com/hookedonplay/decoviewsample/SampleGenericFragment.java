@@ -30,14 +30,14 @@ import com.hookedonplay.decoviewlib.events.DecoEvent;
 import com.hookedonplay.decoviewlib.events.DecoEvent.EventType;
 
 public class SampleGenericFragment extends SampleFragment {
-    final private float[] mTrackBackWidth = {30f, 60f, 30f, 40f, 20f};
-    final private float[] mTrackWidth = {30f, 60f, 30f, 40f, 20f};
-    final private float[] mDetailEdge = {0.3f, 0.2f, 0.4f, 0.21f, 0.25f};
-    final private boolean[] mClockwise = {true, true, true, false, true};
-    final private boolean[] mRounded = {true, true, true, true, true};
-    final private boolean[] mPie = {false, false, false, false, true};
-    final private int[] mTotalAngle = {360, 360, 320, 260, 360};
-    final private int[] mRotateAngle = {0, 180, 180, 0, 270};
+    private static final float[] M_TRACK_BACK_WIDTH = {30f, 60f, 30f, 40f, 20f};
+    private static final float[] M_TRACK_WIDTH = {30f, 60f, 30f, 40f, 20f};
+    private static final float[] M_DETAIL_EDGE = {0.3f, 0.2f, 0.4f, 0.21f, 0.25f};
+    private static final boolean[] M_CLOCKWISE = {true, true, true, false, true};
+    private static final boolean[] M_ROUNDED = {true, true, true, true, true};
+    private static final boolean[] M_PIE = {false, false, false, false, true};
+    private static final int[] M_TOTAL_ANGLE = {360, 360, 320, 260, 360};
+    private static final int[] M_ROTATE_ANGLE = {0, 180, 180, 0, 270};
     private int mBackIndex;
     private int mSeries1Index;
     private int mSeries2Index;
@@ -61,34 +61,34 @@ public class SampleGenericFragment extends SampleFragment {
             return;
         }
         arcView.deleteAll();
-        arcView.configureAngles(mTotalAngle[mStyleIndex], mRotateAngle[mStyleIndex]);
+        arcView.configureAngles(M_TOTAL_ANGLE[mStyleIndex], M_ROTATE_ANGLE[mStyleIndex]);
 
         final float seriesMax = 50f;
         SeriesItem arcBackTrack = new SeriesItem.Builder(Color.argb(255, 228, 228, 228))
                 .setRange(0, seriesMax, seriesMax)
                 .setInitialVisibility(false)
-                .setLineWidth(getDimension(mTrackBackWidth[mStyleIndex]))
-                .setChartStyle(mPie[mStyleIndex] ? SeriesItem.ChartStyle.STYLE_PIE : SeriesItem.ChartStyle.STYLE_DONUT)
+                .setLineWidth(getDimension(M_TRACK_BACK_WIDTH[mStyleIndex]))
+                .setChartStyle(M_PIE[mStyleIndex] ? SeriesItem.ChartStyle.STYLE_PIE : SeriesItem.ChartStyle.STYLE_DONUT)
                 .build();
 
         mBackIndex = arcView.addSeries(arcBackTrack);
 
         float inset = 0;
-        if (mTrackBackWidth[mStyleIndex] != mTrackWidth[mStyleIndex]) {
-            inset = getDimension((mTrackBackWidth[mStyleIndex] - mTrackWidth[mStyleIndex]) / 2);
+        if (M_TRACK_BACK_WIDTH[mStyleIndex] != M_TRACK_WIDTH[mStyleIndex]) {
+            inset = getDimension((M_TRACK_BACK_WIDTH[mStyleIndex] - M_TRACK_WIDTH[mStyleIndex]) / 2);
         }
         SeriesItem seriesItem1 = new SeriesItem.Builder(Color.argb(255, 255, 165, 0))
                 .setRange(0, seriesMax, 0)
                 .setInitialVisibility(false)
-                .setLineWidth(getDimension(mTrackWidth[mStyleIndex]))
+                .setLineWidth(getDimension(M_TRACK_WIDTH[mStyleIndex]))
                 .setInset(new PointF(-inset, -inset))
-                .setSpinClockwise(mClockwise[mStyleIndex])
-                .setCapRounded(mRounded[mStyleIndex])
-                .setChartStyle(mPie[mStyleIndex] ? SeriesItem.ChartStyle.STYLE_PIE : SeriesItem.ChartStyle.STYLE_DONUT)
+                .setSpinClockwise(M_CLOCKWISE[mStyleIndex])
+                .setCapRounded(M_ROUNDED[mStyleIndex])
+                .setChartStyle(M_PIE[mStyleIndex] ? SeriesItem.ChartStyle.STYLE_PIE : SeriesItem.ChartStyle.STYLE_DONUT)
                 .build();
 
-        if (mDetailEdge[mStyleIndex] > 0) {
-            seriesItem1.addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_OUTER, Color.parseColor("#33000000"), mDetailEdge[mStyleIndex]));
+        if (M_DETAIL_EDGE[mStyleIndex] > 0) {
+            seriesItem1.addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_OUTER, Color.parseColor("#33000000"), M_DETAIL_EDGE[mStyleIndex]));
         }
 
         mSeries1Index = arcView.addSeries(seriesItem1);
@@ -97,13 +97,13 @@ public class SampleGenericFragment extends SampleFragment {
                 .setRange(0, seriesMax, 0)
                 .setInitialVisibility(false)
                 .setCapRounded(true)
-                .setLineWidth(getDimension(mTrackWidth[mStyleIndex]))
+                .setLineWidth(getDimension(M_TRACK_WIDTH[mStyleIndex]))
                 .setInset(new PointF(inset, inset))
-                .setCapRounded(mRounded[mStyleIndex])
+                .setCapRounded(M_ROUNDED[mStyleIndex])
                 .build();
 
-        if (mDetailEdge[mStyleIndex] > 0) {
-            seriesItem2.addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_INNER, Color.parseColor("#20000000"), mDetailEdge[mStyleIndex]));
+        if (M_DETAIL_EDGE[mStyleIndex] > 0) {
+            seriesItem2.addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_INNER, Color.parseColor("#20000000"), M_DETAIL_EDGE[mStyleIndex]));
         }
 
         mSeries2Index = arcView.addSeries(seriesItem2);
@@ -145,7 +145,7 @@ public class SampleGenericFragment extends SampleFragment {
                     @Override
                     public void onEventEnd(DecoEvent event) {
                         mStyleIndex++;
-                        if (mStyleIndex >= mTrackBackWidth.length) {
+                        if (mStyleIndex >= M_TRACK_BACK_WIDTH.length) {
                             mStyleIndex = 0;
                             setDemoFinished(true);
                             return;
