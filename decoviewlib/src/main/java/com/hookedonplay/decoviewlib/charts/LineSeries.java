@@ -26,14 +26,14 @@ import android.util.Log;
 import com.hookedonplay.decoviewlib.DecoView;
 
 public class LineSeries extends ChartSeries {
-    private final String TAG = getClass().getSimpleName();
+    private final String tag = getClass().getSimpleName();
     private final Path mDrawPath = new Path();
     private DecoView.HorizGravity mHorizGravity = DecoView.HorizGravity.GRAVITY_HORIZONTAL_CENTER;
     private DecoView.VertGravity mVertGravity = DecoView.VertGravity.GRAVITY_VERTICAL_CENTER;
 
     public LineSeries(@NonNull SeriesItem seriesItem, int totalAngle, int rotateAngle) {
         super(seriesItem, totalAngle, rotateAngle);
-        Log.e(TAG, "LineSeries is experimental. Not all functionality is implemented.");
+        Log.e(tag, "LineSeries is experimental. Not all functionality is implemented.");
     }
 
     @Override
@@ -73,7 +73,7 @@ public class LineSeries extends ChartSeries {
                     yVal2 -= insetY;
                     break;
                 default:
-                    Log.w(TAG, "Invalid Gravity set, VERTICAL_CENTER set (" + mVertGravity + ")");
+                    Log.w(tag, "Invalid Gravity set, VERTICAL_CENTER set (" + mVertGravity + ")");
                 case GRAVITY_VERTICAL_CENTER:
                     yVal1 = yVal2 = canvas.getHeight() / 2;
                     yVal1 += insetY;
@@ -92,7 +92,7 @@ public class LineSeries extends ChartSeries {
                     xVal2 -= insetX;
                     break;
                 default:
-                    Log.w(TAG, "Invalid Gravity set, HORIZONTAL_CENTER set (" + mHorizGravity + ")");
+                    Log.w(tag, "Invalid Gravity set, HORIZONTAL_CENTER set (" + mHorizGravity + ")");
                 case GRAVITY_HORIZONTAL_CENTER:
                     xVal1 = xVal2 = canvas.getWidth() / 2;
                     xVal1 += insetX;

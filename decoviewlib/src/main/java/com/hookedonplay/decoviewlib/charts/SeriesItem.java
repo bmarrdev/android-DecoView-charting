@@ -36,7 +36,7 @@ import java.util.ArrayList;
  * .build();
  */
 @SuppressWarnings("unused")
-public class SeriesItem {
+public final class SeriesItem {
     /**
      * Main color of the arc
      */

@@ -189,6 +189,8 @@ public class DecoDrawEffect {
             case EFFECT_SPIRAL_OUT_FILL:
                 drawMoveToCenter(canvas, bounds, percentComplete, startAngle, sweepAngle);
                 break;
+            default:
+                break;
         }
     }
 

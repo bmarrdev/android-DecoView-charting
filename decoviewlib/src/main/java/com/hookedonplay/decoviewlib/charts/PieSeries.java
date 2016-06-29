@@ -76,7 +76,7 @@ public class PieSeries extends ArcSeries {
             final boolean drawInner = edgeDetail.getEdgeType() == EdgeDetail.EdgeType.EDGE_INNER;
             if (drawInner) {
                 //TODO: Implement EDGE_INNER for pie
-                Log.w(TAG, "EDGE_INNER Not Yet Implemented for pie chart");
+                Log.w(tag, "EDGE_INNER Not Yet Implemented for pie chart");
                 continue;
             }
             if (edgeDetail.getClipPath() == null) {
@@ -106,7 +106,7 @@ public class PieSeries extends ArcSeries {
         try {
             canvas.clipPath(path, combine);
         } catch (UnsupportedOperationException e) {
-            Log.w(TAG, "clipPath unavailable on API 11 - 17 without disabling hardware acceleration. (EdgeDetail functionality requires clipPath). Call DecoView.enableCompatibilityMode() to enable");
+            Log.w(tag, "clipPath unavailable on API 11 - 17 without disabling hardware acceleration. (EdgeDetail functionality requires clipPath). Call DecoView.enableCompatibilityMode() to enable");
             canvas.restore();
             return;
         }

@@ -42,7 +42,7 @@ import com.hookedonplay.decoviewlib.util.GenericFunctions;
  * if you want the actual current value of the series "%.0f min to goal"
  */
 @SuppressWarnings("unused")
-public class SeriesLabel {
+public final class SeriesLabel {
     static private Typeface mDefaultTypeFace;
     private final float mBufferX = 15f;
     private final float mBufferY = 15f;
