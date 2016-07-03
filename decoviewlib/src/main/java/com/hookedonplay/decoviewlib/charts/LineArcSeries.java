@@ -80,7 +80,7 @@ public class LineArcSeries extends ArcSeries {
         for (EdgeDetail edgeDetail : edgeDetailList) {
             final boolean drawInner = edgeDetail.getEdgeType() == EdgeDetail.EdgeType.EDGE_INNER;
             if (edgeDetail.getClipPath() == null) {
-                float inset = (edgeDetail.getRatio() - 0.5f) * mPaint.getStrokeWidth();
+                float inset = (edgeDetail.getRatio() - 0.5f) * mSeriesItem.getLineWidth();
                 if (drawInner) {
                     inset = -inset;
                 }
