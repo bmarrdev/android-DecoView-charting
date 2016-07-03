@@ -29,7 +29,7 @@ Step 1. Add the repositories into your build.gradle
 Step 2. Add the dependency in the form
 
 	dependencies {
-	    compile 'com.github.bmarrdev:android-DecoView-charting:v1.1'
+	    compile 'com.github.bmarrdev:android-DecoView-charting:v1.2'
 	}
 
 
