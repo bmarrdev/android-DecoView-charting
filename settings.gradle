@@ -1,1 +1,1 @@
-include ':decoviewlib', ':app'
+include ':decoviewlib', ':sampleapp'
