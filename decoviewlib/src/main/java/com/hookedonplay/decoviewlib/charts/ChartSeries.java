@@ -15,6 +15,9 @@
  */
 package com.hookedonplay.decoviewlib.charts;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -26,9 +29,6 @@ import android.view.animation.LinearInterpolator;
 
 import com.hookedonplay.decoviewlib.DecoView;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorListenerAdapter;
-import com.nineoldandroids.animation.ValueAnimator;
 
 /**
  * ChartSeries is the implementation of one series of data.
