@@ -7,8 +7,8 @@ android {
         applicationId 'com.hookedonplay.decoviewsample'
         minSdkVersion 8
         targetSdkVersion 23
-        versionCode 8
-        versionName "1.0.1"
+        versionCode 10
+        versionName "1.2"
     }
     buildTypes {
         release {
