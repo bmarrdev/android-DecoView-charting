@@ -38,7 +38,7 @@ Usage
 
 DecoView is subclassed from the Android View class. Just like other View subclasses, such as TextView and ImageView, it can be added and configured from your layout XML then controlled in your Activity code.
 
-This repository includes a number of samples for constructing and animating a DecoView. You will find the code for the samples in the [app project](https://github.com/bmarrdev/android-DecoView-charting/tree/master/app/src/main/java/com/hookedonplay/decoviewsample).
+This repository includes a number of samples for constructing and animating a DecoView. You will find the code for the samples in the [sampleapp project](https://github.com/bmarrdev/android-DecoView-charting/tree/master/sampleapp/src/main/java/com/hookedonplay/decoviewsample).
 
 The main concepts you need to understand are:
 - DecoView is a View, it subclasses android.view.View
