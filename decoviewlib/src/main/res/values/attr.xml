@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="DecoView">
+        <attr name="dv_fitToSize" format="boolean" />
         <attr name="dv_lineWidth" format="dimension" />
         <attr name="dv_rotateAngle" format="integer" />
         <attr name="dv_totalAngle" format="integer" />
