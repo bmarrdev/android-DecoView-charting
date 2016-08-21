@@ -80,6 +80,10 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
      */
     private int mTotalAngle = 360;
     /**
+     * If set to true makes the DecoView bounds squared
+     */
+    private boolean mFitToSize = false;
+    /**
      * Event manager that controls the timing of events to be executed on the
      * {@link DecoView}
      */
@@ -101,6 +105,7 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
 
         int rotateAngle = 0;
         try {
+            mFitToSize = a.getBoolean(R.styleable.DecoView_dv_fitToSize, false);
             mDefaultLineWidth = a.getDimension(R.styleable.DecoView_dv_lineWidth, 30f);
             rotateAngle = a.getInt(R.styleable.DecoView_dv_rotateAngle, 0);
             mTotalAngle = a.getInt(R.styleable.DecoView_dv_totalAngle, 360);
@@ -256,6 +261,21 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
         mCanvasHeight = height;
 
         recalcLayout();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int width = getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec);
+        int height = getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec);
+        if(mFitToSize) {
+            if(height >= width) {
+                setMeasuredDimension(width, width);
+            } else {
+                setMeasuredDimension(height, height);
+            }
+        } else {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
     }
 
     /**
