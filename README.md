@@ -444,7 +444,7 @@ The steps required to build this sample are detailed in the following article:
 Requirements
 ===
 
-Android 2.2+
+Android 2.3+
 
 Credits
 ===
