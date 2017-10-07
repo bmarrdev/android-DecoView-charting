@@ -16,25 +16,26 @@ Sample app available from the play store.
 
 [![Google Play Store](https://github.com/bmarrdev/android-DecoView-charting/blob/master/art/en_app_rgb_wo_60.png)](https://play.google.com/store/apps/details?id=com.hookedonplay.decoviewsample)
 
-Including DecoView in your project
-===
+## Including DecoView in your project
 
 Step 1. Add the repositories into your build.gradle
 
-	repositories {
-	    // ...
-	    maven { url "https://jitpack.io" }
-	}
+```groovy
+repositories {
+    // ...
+    maven { url "https://jitpack.io" }
+}
+```
 
 Step 2. Add the dependency in the form
 
-	dependencies {
-	    compile 'com.github.bmarrdev:android-DecoView-charting:v1.2'
-	}
+```groovy
+dependencies {
+    compile 'com.github.bmarrdev:android-DecoView-charting:v1.2'
+}
+```
 
-
-Usage
-===
+## Usage
 
 DecoView is subclassed from the Android View class. Just like other View subclasses, such as TextView and ImageView, it can be added and configured from your layout XML then controlled in your Activity code.
 
@@ -44,7 +45,6 @@ The main concepts you need to understand are:
 - DecoView is a View, it subclasses android.view.View
 - Use [SeriesItem.Builder](https://github.com/bmarrdev/android-DecoView-charting/blob/master/decoviewlib/src/main/java/com/hookedonplay/decoviewlib/charts/SeriesItem.java) to build one or more data series or your DecoView will not be visible
 - Use [DecoEvent.Builder](https://github.com/bmarrdev/android-DecoView-charting/blob/master/decoviewlib/src/main/java/com/hookedonplay/decoviewlib/events/DecoEvent.java) to schedule animating events for each data series
-
 
 **Add DecoView to your xml layout**
 
@@ -74,7 +74,6 @@ SeriesItem seriesItem1 = new SeriesItem.Builder(Color.argb(255, 64, 196, 0))
         .build();
 
 int series1Index = arcView.addSeries(seriesItem1);
-
 ```
 
 **Add events to animate the data series**
@@ -91,8 +90,7 @@ arcView.addEvent(new DecoEvent.Builder(10).setIndex(series1Index).setDelay(12000
 
 ```
 
-Chart Shape and orientation
-===
+### Chart Shape and orientation
 
 The chart can be a full circle (360 degrees) or part of a circle. The number of degrees and the orientation can be set in the DecoView.
 
@@ -108,8 +106,7 @@ By default when using a full circle the data series will originate at the top of
 
 When the view is not a complete circle the default initial point is the bottom of the view. Passing 90 will set the initial point to the leftmost point and 180 the topmost.
 
-Chart Gravity
-===
+### Chart Gravity
 
 By default the chart will maintain a square shape regardless of the dimensions of the DecoView in the layout.
 
@@ -135,8 +132,7 @@ decoView.setHorizGravity(DecoView.HorizGravity.GRAVITY_HORIZONTAL_FILL);
 decoView.setVertGravity(DecoView.VertGravity.GRAVITY_VERTICAL_BOTTOM);
 ```
 
-Constructing a data series
-===
+### Constructing a data series
 
 One or more data series can be added to the DecoView. These are created using the SeriesItem.Builder(...) class.
 
@@ -166,8 +162,7 @@ SeriesItem seriesItem1 = new SeriesItem.Builder(Color.argb(255, 64, 196, 0))
         .build();
 ```
 
-Adding a listener to a data series
-===
+### Adding a listener to a data series
 
 Once you have a SeriesItem created you can optionally add a SeriesItem.SeriesItemListener() that will allow you to use a callback to monitor the progress of an animation for the data series.
 
@@ -196,8 +191,7 @@ seriesItem.addArcSeriesItemListener(new SeriesItem.SeriesItemListener() {
 
 Note that the progress callback includes a percentComplete parameter. This is the percent complete of the current animation being executed, you can calculate the percent filled using the current position.
 
-Animating the data series
-===
+### Animating the data series
 
 Each data series in the DecoView can be animated in a number of ways.
 
@@ -230,8 +224,7 @@ In the above example some important points to note are:
 - The index that is passed was returned from the DecoView.addSeries(...) function call
 - All durations are specified in milliseconds
 
-Adding a listener to an DecoEvent
-===
+### Adding a listener to an DecoEvent
 
 Adding a listener to a DecoEvent is useful for getting a callback when an event starts and also when an event finishes.
 
@@ -254,8 +247,7 @@ decoView.addEvent(new DecoEvent.Builder(EventType.EVENT_HIDE, false)
         .build());
 ```
 
-Configuring animation
-===
+### Configuring animation
 
 Animating the movement when moving the current position of a data series is done using the built-in [Android Interpolator classes](http://developer.android.com/reference/android/view/animation/Interpolator.html).
 
@@ -282,8 +274,7 @@ decoView.addEvent(new DecoEvent.Builder(10)
         .build());
 ```
 
-Configuring the animation duration
-===
+### Configuring the animation duration
 
 Much like configuring the Interpolator, the total duration taken to complete an animation can be set when creating the data series, or overridden for each event.
 
@@ -308,8 +299,7 @@ decoView.addEvent(new DecoEvent.Builder(10)
         .build());
 ```
 
-Adding labels to a data series
-===
+### Adding labels to a data series
 
 Labels can be added to one or more data series. The labels will only be shown when the data series is visible.
 
@@ -332,8 +322,7 @@ It is possible to use a custom font for the text used on the data labels. Load t
 
 Note: Labels are currently not supported on DecoViews which have a data series that move in an anti-clockwise direction.
 
-Insetting arc radius
-===
+### Insetting arc radius
 
 By default each arc in a series will be located at the center of the widest series of data. The result of this is that two arcs with the same line width will be drawn at the same radius from the center of the view.
 
@@ -352,8 +341,7 @@ SeriesItem seriesItem = new SeriesItem.Builder(Color.parseColor("#FF00FF00")
 
 It is also possible to move a data series in an outward direction by using a negative inset. To do this you need to ensure that you don't move the data series outside the viewable area of the View.
 
-Animating color change
-===
+### Animating color change
 
 Solid color change can be animated from one color to another. This can be done as a stand alone event or during a move event.
 
@@ -381,8 +369,7 @@ decoView.addEvent(new DecoEvent.Builder(EventType.EVENT_COLOR_CHANGE, Color.pars
 
 Note: It is not possible to animate color change on series with a color gradient.
 
-Adding an EdgeDetail to a data series
-===
+### Adding an EdgeDetail to a data series
 
 The EdgeDetail class allows you to apply an effect to the edge of a data series. The image below shows an EdgeDetail applied to each data series.
 
@@ -403,8 +390,7 @@ Note that in the example above the color uses transparency to give the edge of t
 
 NOTE: On Android 4.0 to 4.3 Adding an EdgeDetail to a data series will result in Hardware acceleration being turned off for that DecoView. This is due to these platforms not supporting the clipPath() functions with hardware acceleration. It would be unusual for this cause any noticeable difference to the performance of the View.
 
-Adding a shadow to a SeriesItem
-===
+### Adding a shadow to a SeriesItem
 
 Shadows were introduced in DecoView 1.1, check you gradle dependency before adding shadows.
 
@@ -430,10 +416,7 @@ final SeriesItem seriesItem = new SeriesItem.Builder(Color.parseColor("#FFFF8800
         .build();
 ```
 
-
-
-Fitness tracker Sample
-===
+## Fitness tracker Sample
 
 In addition to the samples built in this repository a [Fitness tracker sample is available on GitHub](https://github.com/bmarrdev/fauxfit-decoview-sample).
 
@@ -441,20 +424,18 @@ The steps required to build this sample are detailed in the following article:
 
 [https://androidbycode.wordpress.com/2015/08/16/creating-a-google-fit-style-circular-animated-view/](https://androidbycode.wordpress.com/2015/08/16/creating-a-google-fit-style-circular-animated-view/)
 
-Requirements
-===
+## Requirements
 
-Android 2.2+
+Android 2.3+
 
-Credits
-===
+## Credits
+
 - Continuous integration is provided by [Travis CI](https://travis-ci.org/bmarrdev/android-DecoView-charting).
 - Jake Wharton for <a href="https://github.com/JakeWharton/NineOldAndroids/">NineOldAndroids</a> allowing support for Android 2.2+ devices.
 - [Infographic vector designed by Freepik](http://www.freepik.com/free-photos-vectors/infographic)
 - [Avatars designed by Freepik](http://www.freepik.com/free-vector/family-avatars_796722.htm)
 
-License
-===
+## License
 
     Copyright 2016 Brent Marriott
 

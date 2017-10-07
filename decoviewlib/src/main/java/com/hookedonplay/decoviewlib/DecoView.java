@@ -15,6 +15,7 @@
  */
 package com.hookedonplay.decoviewlib;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -648,6 +649,7 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
      * {@link Canvas#clipPath(Path)}
      * This is used to clip the drawing rectangle to help render the Edge details decorations
      */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void enableCompatibilityMode() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2
                 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
