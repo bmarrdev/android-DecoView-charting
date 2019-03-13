@@ -362,7 +362,7 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
             // series data
             for (int i = 0; i < mChartSeries.size(); i++) {
                 ChartSeries chartSeries = mChartSeries.get(i);
-                chartSeries.drawLabel(canvas, chartSeries.mBoundsInset, mMeasureViewableArea[i]);
+                chartSeries.drawLabel(canvas, chartSeries.mBoundsInset, 100f);
             }
         }
     }
@@ -388,7 +388,7 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
 
         if (max < chartSeries.getPositionPercent()) {
             // Adjust for incomplete circles
-            float adjusted = ((chartSeries.getPositionPercent()) / 2) * ((float) mTotalAngle / 360f);
+            float adjusted = ((chartSeries.getPositionPercent())) * ((float) mTotalAngle / 360f);
 
             // Adjust for rotation of start point
             float adjust = adjusted + (((float) mRotateAngle + 90f) / 360f);
