@@ -71,11 +71,11 @@ abstract public class ChartSeries {
     /**
      * Drawing bounds for arc
      */
-    protected RectF mBounds;
+    public RectF mBounds;
     /**
      * Drawing bounds for arc after inset applied
      */
-    protected RectF mBoundsInset;
+    public RectF mBoundsInset;
     /**
      * Angle of drawing point origin.
      */

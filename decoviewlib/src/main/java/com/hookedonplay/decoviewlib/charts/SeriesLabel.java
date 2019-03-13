@@ -130,8 +130,8 @@ public class SeriesLabel {
         float radius = rect.width() / 2;
         float radians = ((360f * percentAngle) - 90) * (float) (Math.PI / 180f);
 
-        float xVal = (float) Math.cos(radians) * radius + rect.centerX();
-        float yVal = (float) Math.sin(radians) * radius + rect.centerY();
+        float xVal = (float) Math.cos(radians) * radius + rect.left;
+        float yVal = (float) Math.sin(radians) * radius + rect.bottom;
 
         final float halfWidth = (mTextBounds.width() / 2) + mBufferX;
         final float halfHeight = (mTextBounds.height() / 2) + mBufferY;
@@ -152,11 +152,6 @@ public class SeriesLabel {
                 yVal - halfHeight,
                 xVal + halfWidth,
                 yVal + halfHeight);
-
-
-        canvas.drawRoundRect(
-                mTextDraw,
-                10f, 10f, mPaintBack);
 
         yVal -= mTextCenter;
         canvas.drawText(getDisplayString(percentComplete, positionValue), xVal, yVal, mPaintText);

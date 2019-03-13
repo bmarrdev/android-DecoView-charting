@@ -26,6 +26,7 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+
 import com.hookedonplay.decoviewlib.charts.ChartSeries;
 import com.hookedonplay.decoviewlib.charts.DecoDrawEffect;
 import com.hookedonplay.decoviewlib.charts.LineArcSeries;
@@ -348,24 +349,20 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
 
         if (mChartSeries != null) {
             boolean labelsSupported = true;
+
             for (int i = 0; i < mChartSeries.size(); i++) {
                 ChartSeries chartSeries = mChartSeries.get(i);
                 chartSeries.draw(canvas, mArcBounds);
                 // labels Unsupported if one or more series run anticlockwise
-                labelsSupported &= (!chartSeries.isVisible() || chartSeries.getSeriesItem().getSpinClockwise());
+                // labelsSupported &= (!chartSeries.isVisible() || chartSeries.getSeriesItem().getSpinClockwise());
                 mMeasureViewableArea[i] = getLabelPosition(i);
             }
 
             // Draw the labels as a second pass as we want all labels to be on top of all
             // series data
-            if (labelsSupported) {
-                for (int i = 0; i < mMeasureViewableArea.length; i++) {
-                    if (mMeasureViewableArea[i] >= 0f) {
-                        ChartSeries chartSeries = mChartSeries.get(i);
-                        chartSeries.drawLabel(canvas, mArcBounds, mMeasureViewableArea[i]);
-                        //TODO: Keep bounds of all labels and don't allow overlap
-                    }
-                }
+            for (int i = 0; i < mChartSeries.size(); i++) {
+                ChartSeries chartSeries = mChartSeries.get(i);
+                chartSeries.drawLabel(canvas, chartSeries.mBoundsInset, 100f);
             }
         }
     }
@@ -391,7 +388,7 @@ public class DecoView extends View implements DecoEventManager.ArcEventManagerLi
 
         if (max < chartSeries.getPositionPercent()) {
             // Adjust for incomplete circles
-            float adjusted = ((chartSeries.getPositionPercent() + max) / 2) * ((float) mTotalAngle / 360f);
+            float adjusted = ((chartSeries.getPositionPercent())) * ((float) mTotalAngle / 360f);
 
             // Adjust for rotation of start point
             float adjust = adjusted + (((float) mRotateAngle + 90f) / 360f);
